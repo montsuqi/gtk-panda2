@@ -1,0 +1,103 @@
+## Makefile.am for gtk+panda
+
+AUTOMAKE_OPTIONS = 1.4
+
+LTVERSION = 1:0:0
+
+gtkpanda_public_h_sources = \
+	debug.h 				\
+	numeric.h 				\
+	gtkpanda.h 				\
+	gtkpandaclist.h			\
+	gtkpandacombo.h			\
+	gtknumberentry.h		\
+	gtkpandaentry.h 		\
+	gtkpandahtml.h 			\
+	gtkpandaps.h 			\
+	gtkgs.h					\
+	gsio.h					\
+	ps.h					\
+	gtkpandatext.h			\
+	gtkpandatimer.h	
+
+gtkpanda_c_sources = 		\
+	numeric.c 				\
+	gtkpandamain.c 			\
+	gtkpandaclist.c			\
+	gtkpandacombo.c			\
+	gtknumberentry.c 		\
+	gtkpandaentry.c 		\
+	gtkpandahtml.c			\
+	gtkpandaps.c			\
+	gtkgs.c					\
+	gsio.c					\
+	ps.c					\
+	gtkpandatext.c			\
+	gtkpandatimer.c
+
+gtkpanda_private_h_sources =
+
+INCLUDES = $(GTK_PANDA_CFLAGS) -I$(top_srcdir)
+AM_CPPFLAGS = -g -DLOCALEDIR=\"$(localedir)\"
+
+libgtkpandaincludedir = $(includedir)/gtkpanda-2.0/gtkpanda
+libgtkpandainclude_HEADERS = $(gtkpanda_public_h_sources)
+
+lib_LTLIBRARIES = libgtkpanda-2.0.la
+libgtkpanda_2_0_la_SOURCES =		\
+	$(gtkpanda_c_sources)			\
+	$(gtkpanda_public_h_sources)
+libgtkpanda_2_0_la_LDFLAGS = 			\
+	-version-info  $(LTVERSION) 		\
+	-export-dynamic $(GTK_PANDA_LIBS)
+EXTRA_HEADERS =
+EXTRA_DIST = 						\
+	$(gtkpanda_private_h_sources) 	\
+	gtkpanda.def makefile.msc 		\
+	tree_plus.xpm 					\
+	tree_minus.xpm 					\
+	zoom-in.xpm 					\
+	zoom-out.xpm 					\
+	zoom-fitp.xpm 					\
+	zoom-fitw.xpm
+
+# test programs, not to be installed
+
+noinst_PROGRAMS = 	\
+    testclist		\
+	testcombo		\
+	testnumeric 	\
+	testentry 		\
+	testhtml		\
+	testps			\
+	testtext		\
+	testtimer
+
+DEPS = libgtkpanda-2.0.la
+LDADDS =	\
+	./libgtkpanda-2.0.la	\
+	$(GTK_PANDA_LIBS)
+
+testclist_DEPENDENCIES = $(DEPS)
+testclist_LDADD = $(LDADDS)
+
+testcombo_DEPENDENCIES = $(DEPS)
+testcombo_LDADD = $(LDADDS)
+
+testnumeric_DEPENDENCIES = $(DEPS)
+testnumeric_LDADD = $(LDADDS)
+
+testentry_DEPENDENCIES = $(DEPS)
+testentry_LDADD = $(LDADDS)
+
+testhtml_DEPENDENCIES = $(DEPS)
+testhtml_LDADD = $(LDADDS)
+
+testps_DEPENDENCIES = $(DEPS)
+testps_LDADD = $(LDADDS)
+
+testtext_DEPENDENCIES = $(DEPS)
+testtext_LDADD = $(LDADDS)
+
+testtimer_DEPENDENCIES = $(DEPS)
+testtimer_LDADD = $(LDADDS)

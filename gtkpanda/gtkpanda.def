@@ -1,0 +1,3 @@
+EXPORTS
+ gtk_number_entry_get_type
+ gtk_number_entry_set_value
