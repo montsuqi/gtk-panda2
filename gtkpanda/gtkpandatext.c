@@ -97,8 +97,10 @@ gtk_panda_text_init (GtkPandaText * text)
   GtkTextBuffer *buffer;
 
   text->xim_enabled = FALSE;
-
   buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+
+  gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_CHAR);
+
   g_signal_connect(buffer, "changed",
     G_CALLBACK(gtk_panda_text_changed), text);
 }
