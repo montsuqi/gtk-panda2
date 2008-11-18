@@ -1,3 +1,9 @@
+2008-11-18 Hiroyuki Ikegami <ikegam@netlab.jp>
+
+	* GtkIMContextのサンプルコード追加
+	* configureオプションの--enable-popplerを廃し、--enable-testcodeを追加
+	* gtkmozembedのために必要なpcファイルを探すように変更
+
 2008-06-XX  yusuke mihara  <mihara@netlab.jp>
 
 	* バージョン0.0.1リリース
