@@ -51,31 +51,29 @@ AC_CHECK_FUNCS([dup2 memset putenv setlocale strcasecmp strchr strdup strrchr st
 AC_SUBST(LIBGNOME_REQUIRED, 2.0.0)
 AC_SUBST(GTK_REQUIRED, 2.0.0)
 AC_SUBST(GLIB_REQUIRED, 2.0.0)
-AC_SUBST(XUL_REQUIRED, 1.8.0.0)
-AC_SUBST(POPPLER_REQUIRED, 0.8.0)
+AC_SUBST(MOZEMBED_REQUIRED, 1.8.0.0)
+AC_SUBST(POPPLER_REQUIRED, 0.6.4)
+
+PKG_CHECK_EXISTS(mozilla-gtkmozembed,
+                 [AC_SUBST(MOZEMBED, mozilla-gtkmozembed)],
+                 [AC_SUBST(MOZEMBED, xulrunner-gtkmozembed)])
 
 PKG_CHECK_MODULES(GTK_PANDA,
 [
 	libgnomeui-2.0 	>=	$LIBGNOME_REQUIRED
 	glib-2.0		>=	$GLIB_REQUIRED
 	gtk+-2.0 		>=	$GTK_REQUIRED
-    xulrunner-gtkmozembed >= $XUL_REQUIRED
+  $MOZEMBED >= $MOZEMBED_REQUIRED
+  poppler-glib >= $POPPLER_REQUIRED
 ])
 
 dnl ***************************************************************************
-dnl use popler
+dnl enable testcode
 dnl ***************************************************************************
 
-AC_ARG_ENABLE(popplertest,
- [ --enable-poppler enable poppler [[disable]]],,[enable_poppler="no"] )
-
-if test "x$enable_poppler" = "xyes"; then
-  PKG_CHECK_MODULES(POPPLER,
-  [
-   poppler-glib >= $POPPLER_REQUIRED
-  ])
-fi
-AM_CONDITIONAL(POPPLER, test "x$enable_poppler" = "xyes")
+AC_ARG_ENABLE(testcode,
+ [ --enable-testcode sample code [[disable]] ],,[enable_testcode="no"] )
+AM_CONDITIONAL(TESTCODE, test "x$enable_testcode" = "xyes")
 
 AC_CONFIG_FILES([Makefile docs/Makefile gtkpanda/Makefile gtkpanda2.pc intl/Makefile po/Makefile.in test/Makefile ])
 AC_OUTPUT

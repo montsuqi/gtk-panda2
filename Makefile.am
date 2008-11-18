@@ -1,9 +1,14 @@
 ## Makefile.am for gtk+panda
 
+if TESTCODE
+TESTDIRS = test
+endif
+
 SUBDIRS = intl po 					\
-	test \
 	gtkpanda 				\
+	$(TESTDIRS) \
 	docs
+
 
 pkgconfigdir = 					\
 	$(libdir)/pkgconfig
@@ -16,7 +21,7 @@ EXTRA_DIST = config.rpath 					\
 	gtkpanda2.pc.in
 
 snapshot:
-        $(MAKE) dist distdir=$(PACKAGE)`date +"%y%m%d"`
+	$(MAKE) dist distdir=$(PACKAGE)`date +"%y%m%d"`
 
 ACLOCAL_AMFLAGS = -I m4
 

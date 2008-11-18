@@ -3,11 +3,6 @@ INCLUDES = $(GTK_PANDA_CFLAGS) $(POPPLER_CFLAGS) -I$(top_srcdir)
 AM_CPPFLAGS = -g -DLOCALEDIR=\"$(localedir)\"
 AM_LDFLAGS = $(GTK_PANDA_LIBS) $(POPPLER_LIBS) 
 
-if POPPLER
-poppler_test = testPoppler
-testPoppler_SOURCES = testPoppler.c
-endif
-
 bin_PROGRAMS = \
 	testGtkButton 				\
 	testGtkToggleButton 		\
@@ -28,7 +23,8 @@ bin_PROGRAMS = \
 	testGtkImage 				\
 	testGtkFileChooserWidget 	\
 	testGtkMozEmbed 			\
-	$(poppler_test)
+	testGtkIMContext \
+	testPoppler
 
 testGtkButton_SOURCES = testGtkButton.c
 testGtkToggleButton_SOURCES = testGtkToggleButton.c
@@ -49,3 +45,5 @@ testGtkFixed_SOURCES = testGtkFixed.c
 testGtkImage_SOURCES = testGtkImage.c
 testGtkFileChooserWidget_SOURCES = testGtkFileChooserWidget.c
 testGtkMozEmbed_SOURCES = testGtkMozEmbed.c
+testGtkIMContext_SOURCES = testGtkIMContext.c
+testPoppler_SOURCES = testPoppler.c
