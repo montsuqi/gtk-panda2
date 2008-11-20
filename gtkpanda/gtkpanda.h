@@ -29,7 +29,7 @@
 #include <gtkpanda/gtkpandacombo.h>
 #include <gtkpanda/gtkpandaentry.h>
 #include <gtkpanda/gtkpandahtml.h>
-#include <gtkpanda/gtkpandaps.h>
+#include <gtkpanda/gtkpandapdf.h>
 #include <gtkpanda/gtkpandatext.h>
 #include <gtkpanda/gtkpandatimer.h>
 

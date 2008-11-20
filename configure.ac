@@ -18,12 +18,8 @@ fi
 AC_GNU_SOURCE
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
-AC_PATH_PROG(GS_PROG, gs)
-AC_DEFINE_UNQUOTED(GS_PATH, "$GS_PROG", "")
 AC_PATH_PROG(GNOME_MOZ_REMOTE_PROG, gnome-moz-remote, "")
 AC_DEFINE_UNQUOTED(OPEN_BROWSER_COMMAND, "$GNOME_MOZ_REMOTE_PROG", "")
-AC_PATH_PROG(GS_PROG, gs)
-AC_DEFINE_UNQUOTED(GS_PATH, "$GS_PROG", [Path to the 'gs' executable.])
 
 # Checks for libraries.
 AM_GNU_GETTEXT
@@ -63,8 +59,8 @@ PKG_CHECK_MODULES(GTK_PANDA,
 	libgnomeui-2.0 	>=	$LIBGNOME_REQUIRED
 	glib-2.0		>=	$GLIB_REQUIRED
 	gtk+-2.0 		>=	$GTK_REQUIRED
-  $MOZEMBED >= $MOZEMBED_REQUIRED
-  poppler-glib >= $POPPLER_REQUIRED
+	$MOZEMBED >= $MOZEMBED_REQUIRED
+	poppler-glib >= $POPPLER_REQUIRED
 ])
 
 dnl ***************************************************************************
@@ -75,5 +71,11 @@ AC_ARG_ENABLE(testcode,
  [ --enable-testcode sample code [[disable]] ],,[enable_testcode="no"] )
 AM_CONDITIONAL(TESTCODE, test "x$enable_testcode" = "xyes")
 
-AC_CONFIG_FILES([Makefile docs/Makefile gtkpanda/Makefile gtkpanda2.pc intl/Makefile po/Makefile.in test/Makefile ])
+AC_CONFIG_FILES([	Makefile 
+					docs/Makefile 
+					gtkpanda/Makefile 
+					gtkpanda2.pc 
+					intl/Makefile 
+					po/Makefile.in 
+					test/Makefile ])
 AC_OUTPUT

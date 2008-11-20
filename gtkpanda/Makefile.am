@@ -13,10 +13,7 @@ gtkpanda_public_h_sources = \
 	gtknumberentry.h		\
 	gtkpandaentry.h 		\
 	gtkpandahtml.h 			\
-	gtkpandaps.h 			\
-	gtkgs.h					\
-	gsio.h					\
-	ps.h					\
+	gtkpandapdf.h 			\
 	gtkpandatext.h			\
 	gtkpandatimer.h	
 
@@ -28,10 +25,7 @@ gtkpanda_c_sources = 		\
 	gtknumberentry.c 		\
 	gtkpandaentry.c 		\
 	gtkpandahtml.c			\
-	gtkpandaps.c			\
-	gtkgs.c					\
-	gsio.c					\
-	ps.c					\
+	gtkpandapdf.c 			\
 	gtkpandatext.c			\
 	gtkpandatimer.c
 
@@ -55,11 +49,7 @@ EXTRA_DIST = 						\
 	$(gtkpanda_private_h_sources) 	\
 	gtkpanda.def makefile.msc 		\
 	tree_plus.xpm 					\
-	tree_minus.xpm 					\
-	zoom-in.xpm 					\
-	zoom-out.xpm 					\
-	zoom-fitp.xpm 					\
-	zoom-fitw.xpm
+	tree_minus.xpm
 
 # test programs, not to be installed
 
@@ -69,7 +59,7 @@ noinst_PROGRAMS = 	\
 	testnumeric 	\
 	testentry 		\
 	testhtml		\
-	testps			\
+	testpdf			\
 	testtext		\
 	testtimer
 
@@ -93,8 +83,8 @@ testentry_LDADD = $(LDADDS)
 testhtml_DEPENDENCIES = $(DEPS)
 testhtml_LDADD = $(LDADDS)
 
-testps_DEPENDENCIES = $(DEPS)
-testps_LDADD = $(LDADDS)
+testpdf_DEPENDENCIES = $(DEPS)
+testpdf_LDADD = $(LDADDS)
 
 testtext_DEPENDENCIES = $(DEPS)
 testtext_LDADD = $(LDADDS)
