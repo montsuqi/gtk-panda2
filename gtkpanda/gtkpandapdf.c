@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gtk/gtk.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkbindings.h>
 #include <gtk/gtkmarshal.h>
@@ -198,8 +199,8 @@ gtk_panda_pdf_destroy(GtkObject *object)
   GtkPandaPDF *self = GTK_PANDA_PDF(object);
 
   if (self->doc) g_object_unref(self->doc);
-  if (self->page) g_object_unref(self->page);
   if (self->pixbuf) g_object_unref(self->pixbuf);
+  if (self->data) g_free(self->data);
   GTK_OBJECT_CLASS(parent_class)->destroy(object);
 }
 
@@ -207,9 +208,11 @@ static void
 arrange_scale_combo(GtkPandaPDF *self, 
   float zoom)
 {
+#if 0
   GtkComboBox *combo;
   guint i;
-  
+
+  /* FIXME cause Segv when running next line*/
   combo = GTK_COMBO_BOX(self->scale);
   for (i = 0; i < n_zoom_levels; i++)   {
     if (zoom_levels[i].level > 0 && zoom < zoom_levels[i].level) {
@@ -219,16 +222,18 @@ arrange_scale_combo(GtkPandaPDF *self,
       break;
     }
   }
+#endif
 }
 
 static double
 compute_zoom(GtkPandaPDF *self)
 {
+  PopplerPage *page;
   double doc_w, doc_h, isize;
   double zoom;
 
-  if (self->page == NULL) return 1.0;
-  poppler_page_get_size(self->page, &doc_w, &doc_h);
+  page = poppler_document_get_page(self->doc, self->npage);
+  poppler_page_get_size(page, &doc_w, &doc_h);
   if (self->zoom == SCALE_ZOOM_FIT_PAGE) {
     isize = (gtk_scrolled_window_get_vadjustment(
               GTK_SCROLLED_WINDOW(self->scroll)))->page_size;
@@ -240,6 +245,7 @@ compute_zoom(GtkPandaPDF *self)
   } else {
     zoom = self->zoom;
   }
+  g_object_unref(page);
   return zoom;
 }
 
@@ -248,21 +254,25 @@ render_page(GtkPandaPDF *self)
 {
   double doc_w, doc_h;
   double zoom;
+  PopplerPage *page;
 
   g_return_if_fail(self->doc);
-  self->page = poppler_document_get_page(self->doc, self->npage);
-  if (self->page == NULL) return;
-  if (self->pixbuf) g_object_unref(self->pixbuf);
+  if (self->pixbuf) {
+    g_object_unref(self->pixbuf);
+    self->pixbuf = NULL;
+  }
+  page = poppler_document_get_page(self->doc, self->npage);
+
   zoom = compute_zoom(self);
-  poppler_page_get_size(self->page, &doc_w, &doc_h);
+  poppler_page_get_size(page, &doc_w, &doc_h);
 
   self->pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 
     (int)(doc_w * zoom),
     (int)(doc_h * zoom));
-
-  poppler_page_render_to_pixbuf(self->page, 0, 0, 
-    (int)doc_w, (int)doc_h, zoom, 0, self->pixbuf);
+  poppler_page_render_to_pixbuf(page, 0, 0, 
+    (int)(doc_w), (int)(doc_h), zoom, 0, self->pixbuf);
   gtk_image_set_from_pixbuf(GTK_IMAGE(self->image), self->pixbuf);
+  g_object_unref(page);
 }
 
 void
@@ -303,7 +313,7 @@ gtk_panda_pdf_zoom_in (GtkPandaPDF *self)
   double zoom;
 
   zoom = compute_zoom(self) * 1.2;
-  if (zoom > 4.0) {
+  if (zoom < 4.0) {
     self->zoom = zoom;
   } else {
     self->zoom = 4.0;
@@ -318,7 +328,7 @@ gtk_panda_pdf_zoom_out (GtkPandaPDF *self)
   double zoom;
 
   zoom = compute_zoom(self) / 1.2;
-  if (zoom < 0.2) {
+  if (zoom > 0.2) {
     self->zoom = zoom;
   } else {
     self->zoom = 0.2;
@@ -351,6 +361,7 @@ static void
 gtk_panda_pdf_init (GtkPandaPDF *self)
 {
   GtkWidget *align;
+  GtkAccelGroup *accel_group;
   GtkCellRenderer *renderer;
   GtkListStore    *store;
   GtkTreeIter      iter;
@@ -367,7 +378,10 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
 
   self->pixbuf = NULL;
   self->doc = NULL;
-  self->page = NULL;
+  self->data = NULL;
+
+  /* Create accelerator table */
+  accel_group = gtk_accel_group_new ();
 
   /* scale combo */
   store = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_BOOLEAN);
@@ -387,21 +401,23 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   }
 
   /* combo_box */
-  self->scale = gtk_combo_box_new_with_model(GTK_TREE_MODEL (store));
-  g_object_unref (store);
+  self->scale = gtk_combo_box_new_with_model(GTK_TREE_MODEL(store));
   renderer = gtk_cell_renderer_text_new ();
   gtk_cell_layout_pack_start(GTK_CELL_LAYOUT (self->scale), renderer, TRUE);
-  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT (self->scale), renderer,
-    "text", COL_TEXT, NULL);
+  gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT (self->scale), 
+    renderer,
+    "text", 
+    COL_TEXT, 
+    NULL);
   gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX(self->scale),
     (GtkTreeViewRowSeparatorFunc) row_is_separator, NULL, NULL);
   gtk_combo_box_set_focus_on_click (GTK_COMBO_BOX(self->scale), FALSE);
-  g_object_ref (self->scale);
-  gtk_object_sink (GTK_OBJECT (self->scale));
-  gtk_widget_show (GTK_WIDGET (self->scale));
   gtk_combo_box_set_active (GTK_COMBO_BOX(self->scale), 0);
-  g_signal_connect (self->scale, "changed",
+  gtk_combo_box_popup(GTK_COMBO_BOX(self->scale));
+  g_signal_connect (GTK_COMBO_BOX(self->scale), "changed",
     G_CALLBACK (combo_changed_cb), self);
+  g_object_unref (store);
+  gtk_widget_show (GTK_WIDGET (self->scale));
 
   align = gtk_alignment_new(0, 0.5, 0, 0);
   gtk_alignment_set_padding (GTK_ALIGNMENT(align), 0, 0, 8, 8);
@@ -417,25 +433,22 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   GTK_WIDGET_SET_FLAGS (self, GTK_CAN_FOCUS);
 }
 
+// public API
 GtkWidget *
-gtk_panda_pdf (void)
+gtk_panda_pdf_new (void)
 {
   return g_object_new (GTK_PANDA_TYPE_PDF, NULL);
 }
 
-
-// public API
 void
-gtk_panda_pdf_set (GtkPandaPDF *self, size_t size, const char *data)
+gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
 {
-  GError *error;
+  GError *error = NULL;
 
   if (self->doc) g_object_unref(self->doc);
-  if (self->page) g_object_unref(self->page);
-  if (self->pixbuf) g_object_unref(self->pixbuf);
-
-  self->doc = poppler_document_new_from_data(
-    (char *)data, (int)size, NULL, &error);
+  if (self->data) g_free(self->data);
+  self->data = (char *)g_memdup(data, size);
+  self->doc = poppler_document_new_from_data(self->data, size, NULL, &error);
   if (error != NULL) {
     fprintf(stderr, "can't open file: %s\n", error->message);
     gtk_image_set_from_pixbuf(GTK_IMAGE(self->image), NULL);
@@ -443,7 +456,5 @@ gtk_panda_pdf_set (GtkPandaPDF *self, size_t size, const char *data)
     return;
   }
   self->npage = 0;
-  self->zoom = SCALE_ZOOM_FIT_WIDTH;
   render_page(self);
 }
-
