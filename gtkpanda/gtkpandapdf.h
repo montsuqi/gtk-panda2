@@ -50,7 +50,7 @@ typedef struct _GtkPandaPDFClass  GtkPandaPDFClass;
 
 struct _GtkPandaPDF
 {
-  GtkBin parent;
+  GtkVBox parent;
 
   GtkWidget *scale;
   GtkWidget *scroll;
@@ -58,7 +58,8 @@ struct _GtkPandaPDF
   GdkPixbuf *pixbuf;
   PopplerDocument *doc;
   double zoom;
-  int npage;
+  int pageno;
+  int size;
   char *data;
 };
 
@@ -69,6 +70,10 @@ struct _GtkPandaPDFClass
   void (*zoom_fit_width) (GtkPandaPDF *pdf);
   void (*zoom_in)        (GtkPandaPDF *pdf);
   void (*zoom_out)       (GtkPandaPDF *pdf);
+  void (*page_next)      (GtkPandaPDF *pdf);
+  void (*page_prev)      (GtkPandaPDF *pdf);
+  void (*save)           (GtkPandaPDF *pdf);
+  void (*print)          (GtkPandaPDF *pdf);
 };
 
 extern GType gtk_panda_pdf_get_type (void);

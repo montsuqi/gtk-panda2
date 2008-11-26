@@ -20,7 +20,7 @@ static void clicked(GtkWidget *widget,
 	if (g_file_get_contents (gtk_entry_get_text(GTK_ENTRY(entry)), 
 		&data, &size, &error)) {
 		gtk_panda_pdf_set(GTK_PANDA_PDF(pdf), (int)size, data);
-		//g_free(data);
+		g_free(data);
 	} else {
 		fprintf(stderr, "error : %s\n", error->message);
 		g_error_free (error);
@@ -58,6 +58,8 @@ int main( int   argc,
   gtk_container_add(GTK_CONTAINER(window), vbox);
 
   g_signal_connect(G_OBJECT(button), "clicked",
+    G_CALLBACK(clicked), NULL);
+  g_signal_connect(G_OBJECT(entry), "activate",
     G_CALLBACK(clicked), NULL);
 
   gtk_widget_show_all (window);
