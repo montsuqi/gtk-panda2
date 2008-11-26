@@ -35,13 +35,6 @@
 #include <gtk/gtkbindings.h>
 #include <gtk/gtkmarshal.h>
 #include <gdk/gdkkeysyms.h>
-#include <libgnomeprint/gnome-print.h>
-#define  GNOME_PRINT_UNSTABLE_API
-#include <libgnomeprint/gnome-print-job.h>
-#undef   GNOME_PRINT_UNSTABLE_API
-#include <libgnomeprint/gnome-font.h>
-#include <libgnomeprintui/gnome-print-dialog.h>
-#include <libgnomeprintui/gnome-print-job-preview.h>
 
 #include "gtkpandaintl.h"
 #include "gtkpandapdf.h"
@@ -385,96 +378,88 @@ gtk_panda_pdf_save (GtkPandaPDF *self)
   gtk_widget_destroy (dialog);
 }
 
-static void
-print_on_context(PopplerDocument *doc, GnomePrintContext *ctx)
-{
-  PopplerPage *page;
-  GdkPixbuf *pixbuf;
-  double doc_w, doc_h;
-  double matrix[6] = { 1, 0, 0, 1, 0, 0 };
-  int i;
-  int width, height;
+static void 
+begin_print(GtkPrintOperation *print, 
+  GtkPrintContext *context, 
+  GtkPandaPDF *self)
+{   
+    gtk_print_operation_set_n_pages(print,
+      poppler_document_get_n_pages(self->doc));
+}
 
-  for( i = 0; i < poppler_document_get_n_pages(doc); i++ ) {
-    page = poppler_document_get_page(doc, i);
+static void 
+draw_page(GtkPrintOperation *print, 
+  GtkPrintContext *context, 
+  gint pageno, 
+  GtkPandaPDF *self)
+{
+    PopplerPage *page;
+    GdkPixbuf *pixbuf;
+    gdouble doc_w, doc_h;
+    cairo_t *cr;
+    int w, h;
+
+    page = poppler_document_get_page(self->doc, pageno);
+    if (page == NULL) return;
     poppler_page_get_size(page, &doc_w, &doc_h);
-    width = (int)(doc_w);
-    height = (int)(doc_h);
-    pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, width, height);
-    poppler_page_render_to_pixbuf(page, 0, 0, width, height, 1.0, 0, pixbuf);
-    gnome_print_beginpage(ctx, "gtk_panda_pdf_preview.ps");
-    gnome_print_concat(ctx, matrix);
-    gnome_print_translate(ctx, 0, 0);
-    gnome_print_scale(ctx, width, height);
-    gnome_print_rgbaimage(ctx,
-                          gdk_pixbuf_get_pixels(pixbuf),
-                          width, height, 
-                          gdk_pixbuf_get_rowstride(pixbuf));
-    gnome_print_showpage(ctx);
+    w = (int)(doc_w); 
+    h = (int)(doc_h);
+    pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, w, h);
+    poppler_page_render_to_pixbuf(page, 0, 0, w, h, 1.0, 0, pixbuf);
+
+    cr = gtk_print_context_get_cairo_context(context);
+#if 0
+    /* may be need poppler >= 0.8 */
+    poppler_page_render_for_printing(page, cr):
+#else
+    cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 0.0);
+    poppler_page_render(page, cr);
+#endif
+    g_object_unref(page);
     g_object_unref(pixbuf);
-  }
 }
 
 void
 gtk_panda_pdf_print(GtkPandaPDF *self)
 {
-    GnomePrintConfig *cfg = NULL;
-    GnomePrintContext *ctx = NULL;
-    GnomePrintJob *job = NULL;
-    int copies = 1;
-    int collate = 0;
-    int do_preview = 0;
-    int do_print = 0;
-    int reply = 0;
+    GtkWidget *main_window = NULL;
+    GtkPrintOperation *print;
+    static GtkPrintSettings *settings = NULL;
+    GtkPageSetup *page_setup;
+    GtkPrintOperationResult r;
 
     if (self->doc == NULL) return;
 
-    GnomePrintDialog *gpd = NULL;
+    print = gtk_print_operation_new();
+    g_assert(print);
+    g_signal_connect(print, "draw_page", 
+      G_CALLBACK(draw_page), (gpointer) self);  
+    g_signal_connect(print, "begin_print", 
+      G_CALLBACK(begin_print), (gpointer) self);
 
-    cfg = gnome_print_config_default();
-    job = gnome_print_job_new(cfg);
-    gpd = GNOME_PRINT_DIALOG(gnome_print_dialog_new(job, "Print", 0));
-    gnome_print_dialog_set_copies(gpd, copies, collate);
+    page_setup = gtk_print_operation_get_default_page_setup(print);
+    if (page_setup == NULL)
+      page_setup = gtk_page_setup_new();
+    gtk_page_setup_set_top_margin(page_setup, 0.0, GTK_UNIT_MM);    
+    gtk_page_setup_set_bottom_margin(page_setup, 0.0, GTK_UNIT_MM);    
+    gtk_page_setup_set_left_margin(page_setup, 0.0, GTK_UNIT_MM);    
+    gtk_page_setup_set_right_margin(page_setup, 0.0, GTK_UNIT_MM);    
+    gtk_print_operation_set_default_page_setup(print, page_setup);
 
-    reply = gtk_dialog_run(GTK_DIALOG(gpd));
-    fprintf(stderr,"print dialog response is %d\n", reply);
-    switch (reply)
-    {
-    case GNOME_PRINT_DIALOG_RESPONSE_PRINT:
-        fprintf(stderr, "print dialog response print\n");
-        do_preview = 0;
-        do_print = 1;
-        break;
-    case GNOME_PRINT_DIALOG_RESPONSE_PREVIEW:
-        fprintf(stderr, "print dialog response preview\n");
-        do_preview = 1;
-        break;
-    case GNOME_PRINT_DIALOG_RESPONSE_CANCEL:
-        fprintf(stderr, "print dialog reponse cancel\n");
-        break;
-    }
+    if (settings) gtk_print_operation_set_print_settings(print, settings);
+    gtk_print_operation_set_job_name(print, "gtk_panda_pdf_print");
+    gtk_print_operation_set_n_pages(print , 
+      poppler_document_get_n_pages(self->doc));
+    r = gtk_print_operation_run(print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
+                          GTK_WINDOW(main_window), NULL);
 
-    gtk_widget_destroy(GTK_WIDGET(gpd));
- 
-    ctx = gnome_print_job_get_context(job);
-    print_on_context(self->doc, ctx);
-    gnome_print_job_close(job);
-
-    if (do_preview)
+    if (r == GTK_PRINT_OPERATION_RESULT_APPLY)
     {   
-        GnomePrintJobPreview *pmp;
-        pmp = GNOME_PRINT_JOB_PREVIEW(gnome_print_job_preview_new(job, 
-          _("Print Preview")));
-        g_signal_connect((gpointer)pmp, "destroy", 
-          G_CALLBACK(gtk_widget_destroy), (gpointer)pmp);
-        gtk_window_set_modal(GTK_WINDOW(pmp), TRUE);
-        gtk_widget_show(GTK_WIDGET(pmp));
+        if (settings)
+            g_object_unref(settings);
+        settings = g_object_ref(gtk_print_operation_get_print_settings(print));
     }
-    else if (do_print)
-    {   
-        gnome_print_job_print(job);
-    }
-    // todo: unref objects?
+    g_object_unref(print);
 }
 
 void

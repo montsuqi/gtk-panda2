@@ -49,8 +49,6 @@ AC_SUBST(GTK_REQUIRED, 2.0.0)
 AC_SUBST(GLIB_REQUIRED, 2.0.0)
 AC_SUBST(MOZEMBED_REQUIRED, 1.8.0.0)
 AC_SUBST(POPPLER_REQUIRED, 0.6.4)
-AC_SUBST(LIBGNOMEPRINT_REQUIRED, 2.18.4)
-AC_SUBST(LIBGNOMEPRINTUI_REQUIRED, 2.18.2)
 
 PKG_CHECK_EXISTS(mozilla-gtkmozembed,
                  [AC_SUBST(MOZEMBED, mozilla-gtkmozembed)],
@@ -63,8 +61,6 @@ PKG_CHECK_MODULES(GTK_PANDA,
 	gtk+-2.0 		>=	$GTK_REQUIRED
 	$MOZEMBED >= $MOZEMBED_REQUIRED
 	poppler-glib >= $POPPLER_REQUIRED
-	libgnomeprint-2.2 >= $LIBGNOMEPRINT_REQUIRED
-	libgnomeprintui-2.2 >= $LIBGNOMEPRINTUI_REQUIRED
 ])
 
 dnl ***************************************************************************
