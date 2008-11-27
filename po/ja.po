@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, 
 msgid ""
 msgstr ""
 "Project-Id-Version: gtk+panda 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-05 19:39+0900\n"
+"POT-Creation-Date: 2008-11-27 11:38+0900\n"
 "PO-Revision-Date: 2007-07-02 11:20+0900\n"
 "Last-Translator: yusuke mihara <mihara@netlab.jp>\n"
 "Language-Team: yusuke mihara <mihara@netlab.jp>\n"
@@ -16,125 +15,66 @@ msgstr ""
 "Content-Type: text/plain; charset=euc-jp\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gtkpanda/gtkgs.c:174
-msgid "in catch Pipe!!!\n"
-msgstr "SIGPIPEを検出しました\n"
-
-#: gtkpanda/gtkgs.c:692
-msgid ""
-"no pipe to gs\n"
-"error in send_ps\n"
-msgstr ""
-"gsへのパイプがありません\n"
-"send_psでエラーが発生しました\n"
-
-#: gtkpanda/gtkgs.c:964
-msgid "Broken pipe."
-msgstr "パイプ破壊:読み手のないパイプへ書き出しました."
-
-#: gtkpanda/gtkgs.c:1044
-msgid "Unable to open pipe to ghostview\n"
-msgstr "Ghostviewへのパイプが開けません\n"
-
-#: gtkpanda/gtkgs.c:1105
-#, c-format
-msgid "Unable to execute [%s]\n"
-msgstr "[%s]の実行ができません\n"
-
-#: gtkpanda/gtkgs.c:1312
-#, c-format
-msgid "Error while decompressing file %s:\n"
-msgstr "ファイル:%sの展開中エラーが発生しました\n"
-
-#: gtkpanda/gtkgs.c:1392
-#, c-format
-msgid "Error while scanning pdf file %s:\n"
-msgstr "PDFファイル:%sの解析中エラーが発生しました\n"
-
-#: gtkpanda/gtkgs.c:1700
-#, c-format
-msgid "Cannot open file %s\n"
-msgstr "ファイル %sを開けません\n"
-
-#: gtkpanda/gtkgs.c:1722
-#, c-format
-msgid "Error while scanning file %s\n"
-msgstr "ファイル %sを解析中エラーが発生しました\n"
-
-#: gtkpanda/gtkgs.c:1765
-#, c-format
-msgid "Unknown orientation %d"
-msgstr "不明な文書の向き %d"
-
-#: gtkpanda/gtkpandaclist.c:956
-#, 
-msgid "Not initialized gtkpanda. Call gtkpanda_init().\n"
-msgstr "gtkpandaが初期化されていません．gtkpanda_init()を使用してください．\n"
-
-#: gtkpanda/gtkpandaclist.c:976 gtkpanda/gtkpandacombo.c:785
-msgid "Not initialized gtkpanda. Call gtkpanda_init()\n"
-msgstr "gtkpandaが初期化されていません．gtkpanda_init()を使用してください．\n"
-
-#: gtkpanda/gtkpandaentry.c:342
+#: gtkpanda/gtkpandaentry.c:202
 msgid "over-the-spot style requires fontset"
 msgstr "フォントセットにover-the-spotスタイルが必要です"
 
-#: gtkpanda/gtkpandaentry.c:362
+#: gtkpanda/gtkpandaentry.c:222
 msgid "Can't create input context."
 msgstr "入力コンテキストを作成できません．"
 
-#: gtkpanda/gtkpandahtml.c:130
+#: gtkpanda/gtkpandapdf.c:59
+msgid "Fit Page"
+msgstr "全体に合わせる"
+
+#: gtkpanda/gtkpandapdf.c:60
+msgid "Fit Page Width"
+msgstr "幅に合わせる"
+
+#: gtkpanda/gtkpandapdf.c:62
+msgid "50%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:63
+msgid "75%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:64
+msgid "100%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:65
+msgid "125%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:66
+msgid "150%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:67
+msgid "175%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:68
+msgid "200%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:69
+msgid "300%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:70
+msgid "400%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:369
 #, c-format
-msgid "<body>Cannot connect to <tt>%s</tt></body>"
-msgstr "<body><tt>%s</tt>に接続できません</body>"
+msgid "can not save %s: %s"
+msgstr "%sに保存できません:%s"
 
-#: gtkpanda/gtkpandahtml.c:156
-#, c-format
-msgid "<body>Cannot open  <tt>%s</tt><br>The File is too large</body>"
-msgstr "<body><tt>%s</tt>を開けません．ファイルが大きすぎます</body>"
-
-#: gtkpanda/gtkpandahtml.c:169
-#, c-format
-msgid "<body>Cannot open <tt>%s</tt></body>"
-msgstr "<body><tt>%s</tt>を開けません</body>"
-
-#: gtkpanda/gtkpandahtml.c:192
-#, c-format
-msgid "<body>Connecting to <tt>%s...</tt></body>"
-msgstr "<body><tt>%s</tt>に接続中です...</body>"
-
-#: gtkpanda/gtkpandahtml.c:204
-#, c-format
-msgid "<body>Loading <tt>%s...</tt></body>"
-msgstr "<body><tt>%s</tt>に接続中です...</body>"
-
-#: gtkpanda/gtkpandaps.c:302
-msgid "scale:"
-msgstr "スケール："
-
-#: gtkpanda/gtkpandaps.c:312
-msgid "scale"
-msgstr "スケール"
-
-#: gtkpanda/gtkpandaps.c:315
-msgid "Zoom page fit"
-msgstr "全体表示"
-
-#: gtkpanda/gtkpandaps.c:317
-msgid "Zoom width fit"
-msgstr "幅にあわせる"
-
-#: gtkpanda/gtkpandaps.c:318
-msgid "Zoom out"
-msgstr "縮小"
-
-#: gtkpanda/gtkpandaps.c:319
-msgid "Zoom in"
-msgstr "拡大"
-
-#: gtkpanda/gtkpandatreeitem.c:317
-msgid "there is already a subtree for this tree item\n"
-msgstr "ツリーアイテムに既にサブツリーが存在しています\n"
+#: gtkpanda/gtkpandapdf.c:697
+msgid "can not open pdf document: %s\n"
+msgstr "PDFファイルを開けません: %s\n"
 
 #: gtkpanda/numeric.c:1357
 #, c-format
@@ -175,11 +115,3 @@ msgstr "EXP()の引数が大きすぎます"
 #, c-format
 msgid "math error on numeric - cannot compute LN of value <= zero"
 msgstr "負の値の対数を計算できません"
-
-#: gtkpanda/ps.c:235
-msgid "psscan: empty input file.\n"
-msgstr "psscan: 入力ファイルが空です.\n"
-
-#: gtkpanda/ps.c:247
-msgid "psscan error: input files seems to be a PJL file.\n"
-msgstr "psscanエラー: 入力ファイルがPJLファイルのようです.\n"

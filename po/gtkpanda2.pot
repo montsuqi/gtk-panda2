@@ -3,11 +3,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-07-05 19:39+0900\n"
+"POT-Creation-Date: 2008-11-27 11:38+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,121 +16,66 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gtkpanda/gtkgs.c:174
-msgid "in catch Pipe!!!\n"
-msgstr ""
-
-#: gtkpanda/gtkgs.c:692
-msgid ""
-"no pipe to gs\n"
-"error in send_ps\n"
-msgstr ""
-
-#: gtkpanda/gtkgs.c:964
-msgid "Broken pipe."
-msgstr ""
-
-#: gtkpanda/gtkgs.c:1044
-msgid "Unable to open pipe to ghostview\n"
-msgstr ""
-
-#: gtkpanda/gtkgs.c:1105
-#, c-format
-msgid "Unable to execute [%s]\n"
-msgstr ""
-
-#: gtkpanda/gtkgs.c:1312
-#, c-format
-msgid "Error while decompressing file %s:\n"
-msgstr ""
-
-#: gtkpanda/gtkgs.c:1392
-#, c-format
-msgid "Error while scanning pdf file %s:\n"
-msgstr ""
-
-#: gtkpanda/gtkgs.c:1700
-#, c-format
-msgid "Cannot open file %s\n"
-msgstr ""
-
-#: gtkpanda/gtkgs.c:1722
-#, c-format
-msgid "Error while scanning file %s\n"
-msgstr ""
-
-#: gtkpanda/gtkgs.c:1765
-#, c-format
-msgid "Unknown orientation %d"
-msgstr ""
-
-#: gtkpanda/gtkpandaclist.c:956
-msgid "Not initialized gtkpanda. Call gtkpanda_init().\n"
-msgstr ""
-
-#: gtkpanda/gtkpandaclist.c:976 gtkpanda/gtkpandacombo.c:785
-msgid "Not initialized gtkpanda. Call gtkpanda_init()\n"
-msgstr ""
-
-#: gtkpanda/gtkpandaentry.c:342
+#: gtkpanda/gtkpandaentry.c:202
 msgid "over-the-spot style requires fontset"
 msgstr ""
 
-#: gtkpanda/gtkpandaentry.c:362
+#: gtkpanda/gtkpandaentry.c:222
 msgid "Can't create input context."
 msgstr ""
 
-#: gtkpanda/gtkpandahtml.c:130
+#: gtkpanda/gtkpandapdf.c:59
+msgid "Fit Page"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:60
+msgid "Fit Page Width"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:62
+msgid "50%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:63
+msgid "75%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:64
+msgid "100%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:65
+msgid "125%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:66
+msgid "150%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:67
+msgid "175%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:68
+msgid "200%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:69
+msgid "300%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:70
+msgid "400%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:369
 #, c-format
-msgid "<body>Cannot connect to <tt>%s</tt></body>"
+msgid "can not save %s: %s"
 msgstr ""
 
-#: gtkpanda/gtkpandahtml.c:156
+#: gtkpanda/gtkpandapdf.c:697
 #, c-format
-msgid "<body>Cannot open  <tt>%s</tt><br>The File is too large</body>"
-msgstr ""
-
-#: gtkpanda/gtkpandahtml.c:169
-#, c-format
-msgid "<body>Cannot open <tt>%s</tt></body>"
-msgstr ""
-
-#: gtkpanda/gtkpandahtml.c:192
-#, c-format
-msgid "<body>Connecting to <tt>%s...</tt></body>"
-msgstr ""
-
-#: gtkpanda/gtkpandahtml.c:204
-#, c-format
-msgid "<body>Loading <tt>%s...</tt></body>"
-msgstr ""
-
-#: gtkpanda/gtkpandaps.c:302
-msgid "scale:"
-msgstr ""
-
-#: gtkpanda/gtkpandaps.c:312
-msgid "scale"
-msgstr ""
-
-#: gtkpanda/gtkpandaps.c:315
-msgid "Zoom page fit"
-msgstr ""
-
-#: gtkpanda/gtkpandaps.c:317
-msgid "Zoom width fit"
-msgstr ""
-
-#: gtkpanda/gtkpandaps.c:318
-msgid "Zoom out"
-msgstr ""
-
-#: gtkpanda/gtkpandaps.c:319
-msgid "Zoom in"
-msgstr ""
-
-#: gtkpanda/gtkpandatreeitem.c:317
-msgid "there is already a subtree for this tree item\n"
+msgid "can not open pdf document: %s\n"
 msgstr ""
 
 #: gtkpanda/numeric.c:1357
@@ -168,12 +114,4 @@ msgstr ""
 #: gtkpanda/numeric.c:2477
 #, c-format
 msgid "math error on numeric - cannot compute LN of value <= zero"
-msgstr ""
-
-#: gtkpanda/ps.c:235
-msgid "psscan: empty input file.\n"
-msgstr ""
-
-#: gtkpanda/ps.c:247
-msgid "psscan error: input files seems to be a PJL file.\n"
 msgstr ""
