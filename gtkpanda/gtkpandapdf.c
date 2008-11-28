@@ -24,6 +24,10 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -366,8 +370,7 @@ gtk_panda_pdf_save (GtkPandaPDF *self)
                                   GTK_DIALOG_MODAL,
                                   GTK_MESSAGE_ERROR,
                                   GTK_BUTTONS_CLOSE,
-                                  _("can not save %s: %s"),
-                                  filename,
+                                  "%s",
                                   error->message);
         gtk_dialog_run (GTK_DIALOG (mdialog));
         gtk_widget_destroy (mdialog);
@@ -694,8 +697,7 @@ gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
   self->doc = poppler_document_new_from_data(self->data, self->size, 
     NULL, &error);
   if (error != NULL) {
-    fprintf(stderr, _("can not open pdf document: %s\n"), 
-      error->message);
+    fprintf(stderr, "%s\n", error->message);
     gtk_image_set_from_pixbuf(GTK_IMAGE(self->image), NULL);
     g_error_free (error);
     return;

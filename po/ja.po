@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtk+panda 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-27 11:38+0900\n"
+"POT-Creation-Date: 2008-11-28 11:00+0900\n"
 "PO-Revision-Date: 2007-07-02 11:20+0900\n"
 "Last-Translator: yusuke mihara <mihara@netlab.jp>\n"
 "Language-Team: yusuke mihara <mihara@netlab.jp>\n"
@@ -23,58 +23,54 @@ msgstr "フォントセットにover-the-spotスタイルが必要です"
 msgid "Can't create input context."
 msgstr "入力コンテキストを作成できません．"
 
-#: gtkpanda/gtkpandapdf.c:59
+#: gtkpanda/gtkpandapdf.c:63 gtkpanda/gtkpandapdf.c:705
 msgid "Fit Page"
 msgstr "全体に合わせる"
 
-#: gtkpanda/gtkpandapdf.c:60
+#: gtkpanda/gtkpandapdf.c:64
 msgid "Fit Page Width"
 msgstr "幅に合わせる"
 
-#: gtkpanda/gtkpandapdf.c:62
+#: gtkpanda/gtkpandapdf.c:66
 msgid "50%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:63
+#: gtkpanda/gtkpandapdf.c:67
 msgid "75%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:64
+#: gtkpanda/gtkpandapdf.c:68
 msgid "100%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:65
+#: gtkpanda/gtkpandapdf.c:69
 msgid "125%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:66
+#: gtkpanda/gtkpandapdf.c:70
 msgid "150%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:67
+#: gtkpanda/gtkpandapdf.c:71
 msgid "175%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:68
+#: gtkpanda/gtkpandapdf.c:72
 msgid "200%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:69
+#: gtkpanda/gtkpandapdf.c:73
 msgid "300%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:70
+#: gtkpanda/gtkpandapdf.c:74
 msgid "400%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:369
+#: gtkpanda/gtkpandapdf.c:705 gtkpanda/numeric.c:2104
 #, c-format
-msgid "can not save %s: %s"
-msgstr "%sに保存できません:%s"
-
-#: gtkpanda/gtkpandapdf.c:697
-msgid "can not open pdf document: %s\n"
-msgstr "PDFファイルを開けません: %s\n"
+msgid "division by zero on numeric"
+msgstr "numeric型での0割です"
 
 #: gtkpanda/numeric.c:1357
 #, c-format
@@ -96,11 +92,6 @@ msgstr ""
 "numeric型オーバーフロー\n"
 "精度%2$d、位取り%3$dのフィールドで絶対値が10^%1$d以上です"
 
-#: gtkpanda/numeric.c:2104
-#, c-format
-msgid "division by zero on numeric"
-msgstr "numeric型での0割です"
-
 #: gtkpanda/numeric.c:2340
 #, c-format
 msgid "math error on numeric - cannot compute SQRT of negative value"
@@ -115,3 +106,9 @@ msgstr "EXP()の引数が大きすぎます"
 #, c-format
 msgid "math error on numeric - cannot compute LN of value <= zero"
 msgstr "負の値の対数を計算できません"
+
+#~ msgid "can not save %s: %s"
+#~ msgstr "%sに保存できません:%s"
+
+#~ msgid "can not open pdf document: %s\n"
+#~ msgstr "PDFファイルを開けません: %s\n"
