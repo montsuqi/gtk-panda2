@@ -32,10 +32,7 @@
 #include <gtkpanda/gtkpandaps.h>
 #include <gtkpanda/gtkpandatext.h>
 #include <gtkpanda/gtkpandatimer.h>
-
-#if HAVE_POPPLER
-#	include <gtkpanda/gtkpandapdf.h>
-#endif
+#include <gtkpanda/gtkpandapdf.h>
 
 void gtk_panda_init (int *argc, char ***argv);
 

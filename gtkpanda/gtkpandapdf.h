@@ -27,6 +27,8 @@
 #ifndef __GTK_PANDA_PDF_H__
 #define __GTK_PANDA_PDF_H__
 
+#ifdef HAVE_POPPLER
+
 #include <gtk/gtk.h>
 #include <poppler.h>
 
@@ -84,5 +86,6 @@ extern void gtk_panda_pdf_set (GtkPandaPDF *pps, int size, char *buff);
 }
 #endif /* __cplusplus */
 
+#endif
 
 #endif /* __GTK_PANDA_PDF_H__ */

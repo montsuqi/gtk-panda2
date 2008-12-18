@@ -6,11 +6,9 @@ LTVERSION = 1:0:0
 
 if PDF
 gtkpandapdf_c = gtkpandapdf.c
-gtkpandapdf_h = gtkpandapdf.h
 testpdf = testpdf
 else
 gtkpandapdf_c =
-gtkpandapdf_h =
 testpdf =
 endif
 
@@ -29,7 +27,7 @@ gtkpanda_public_h_sources = \
 	gtkgs.h					\
 	gtkpandaps.h			\
 	ps.h					\
-	$(gtkpandapdf_h)
+	gtkpandapdf.h
 
 gtkpanda_c_sources = 		\
 	numeric.c 				\
