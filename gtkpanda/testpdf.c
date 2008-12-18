@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include "config.h"
 #include "gtkpanda.h"
 
 static  GtkWidget *pdf;

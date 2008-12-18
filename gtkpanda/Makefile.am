@@ -4,6 +4,16 @@ AUTOMAKE_OPTIONS = 1.4
 
 LTVERSION = 1:0:0
 
+if PDF
+gtkpandapdf_c = gtkpandapdf.c
+gtkpandapdf_h = gtkpandapdf.h
+testpdf = testpdf
+else
+gtkpandapdf_c =
+gtkpandapdf_h =
+testpdf =
+endif
+
 gtkpanda_public_h_sources = \
 	debug.h 				\
 	numeric.h 				\
@@ -13,9 +23,13 @@ gtkpanda_public_h_sources = \
 	gtknumberentry.h		\
 	gtkpandaentry.h 		\
 	gtkpandahtml.h 			\
-	gtkpandapdf.h 			\
 	gtkpandatext.h			\
-	gtkpandatimer.h	
+	gtkpandatimer.h			\
+	gsio.h					\
+	gtkgs.h					\
+	gtkpandaps.h			\
+	ps.h					\
+	$(gtkpandapdf_h)
 
 gtkpanda_c_sources = 		\
 	numeric.c 				\
@@ -25,13 +39,17 @@ gtkpanda_c_sources = 		\
 	gtknumberentry.c 		\
 	gtkpandaentry.c 		\
 	gtkpandahtml.c			\
-	gtkpandapdf.c 			\
 	gtkpandatext.c			\
-	gtkpandatimer.c
+	gtkpandatimer.c			\
+	gsio.c					\
+	gtkgs.c					\
+	gtkpandaps.c			\
+	ps.c					\
+	$(gtkpandapdf_c)
 
 gtkpanda_private_h_sources =
 
-INCLUDES = $(GTK_PANDA_CFLAGS) -I$(top_srcdir)
+INCLUDES = $(GTK_PANDA_CFLAGS) $(POPPLER_CFLAGS) -I$(top_srcdir)
 AM_CPPFLAGS = -g -DLOCALEDIR=\"$(localedir)\"
 
 libgtkpandaincludedir = $(includedir)/gtkpanda-2.0/gtkpanda
@@ -43,7 +61,9 @@ libgtkpanda_2_0_la_SOURCES =		\
 	$(gtkpanda_public_h_sources)
 libgtkpanda_2_0_la_LDFLAGS = 			\
 	-version-info  $(LTVERSION) 		\
-	-export-dynamic $(GTK_PANDA_LIBS)
+	-export-dynamic 					\
+	$(GTK_PANDA_LIBS)					\
+	$(POPPLER_LIBS)
 EXTRA_HEADERS =
 EXTRA_DIST = 						\
 	$(gtkpanda_private_h_sources) 	\
@@ -59,14 +79,17 @@ noinst_PROGRAMS = 	\
 	testnumeric 	\
 	testentry 		\
 	testhtml		\
-	testpdf			\
 	testtext		\
-	testtimer
+	testtimer		\
+	testps			\
+	$(testpdf)
 
-DEPS = libgtkpanda-2.0.la
+DEPS = \
+	libgtkpanda-2.0.la
 LDADDS =	\
 	./libgtkpanda-2.0.la	\
-	$(GTK_PANDA_LIBS)
+	$(GTK_PANDA_LIBS)		\
+	$(POPPLER_LIBS)
 
 testclist_DEPENDENCIES = $(DEPS)
 testclist_LDADD = $(LDADDS)
@@ -83,11 +106,16 @@ testentry_LDADD = $(LDADDS)
 testhtml_DEPENDENCIES = $(DEPS)
 testhtml_LDADD = $(LDADDS)
 
-testpdf_DEPENDENCIES = $(DEPS)
-testpdf_LDADD = $(LDADDS)
+testps_DEPENDENCIES = $(DEPS)
+testps_LDADD = $(LDADDS)
 
 testtext_DEPENDENCIES = $(DEPS)
 testtext_LDADD = $(LDADDS)
 
 testtimer_DEPENDENCIES = $(DEPS)
 testtimer_LDADD = $(LDADDS)
+
+if PDF 
+testpdf_DEPENDENCIES = $(DEPS)
+testpdf_LDADD = $(LDADDS)
+endif

@@ -29,9 +29,13 @@
 #include <gtkpanda/gtkpandacombo.h>
 #include <gtkpanda/gtkpandaentry.h>
 #include <gtkpanda/gtkpandahtml.h>
-#include <gtkpanda/gtkpandapdf.h>
+#include <gtkpanda/gtkpandaps.h>
 #include <gtkpanda/gtkpandatext.h>
 #include <gtkpanda/gtkpandatimer.h>
+
+#if HAVE_POPPLER
+#	include <gtkpanda/gtkpandapdf.h>
+#endif
 
 void gtk_panda_init (int *argc, char ***argv);
 

@@ -4,4 +4,5 @@ gtkpanda/gtkpandacombo.c
 gtkpanda/gtkpandaentry.c
 gtkpanda/gtkpandahtml.c
 gtkpanda/gtkpandapdf.c
+gtkpanda/gtkpandaps.c
 gtkpanda/numeric.c

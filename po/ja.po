@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtk+panda 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-11-28 11:00+0900\n"
+"POT-Creation-Date: 2008-12-18 10:08+0900\n"
 "PO-Revision-Date: 2007-07-02 11:20+0900\n"
 "Last-Translator: yusuke mihara <mihara@netlab.jp>\n"
 "Language-Team: yusuke mihara <mihara@netlab.jp>\n"
@@ -23,54 +23,57 @@ msgstr "フォントセットにover-the-spotスタイルが必要です"
 msgid "Can't create input context."
 msgstr "入力コンテキストを作成できません．"
 
-#: gtkpanda/gtkpandapdf.c:63 gtkpanda/gtkpandapdf.c:705
+#: gtkpanda/gtkpandapdf.c:63 gtkpanda/gtkpandaps.c:59
 msgid "Fit Page"
 msgstr "全体に合わせる"
 
-#: gtkpanda/gtkpandapdf.c:64
+#: gtkpanda/gtkpandapdf.c:64 gtkpanda/gtkpandaps.c:60
 msgid "Fit Page Width"
 msgstr "幅に合わせる"
 
-#: gtkpanda/gtkpandapdf.c:66
+#: gtkpanda/gtkpandapdf.c:66 gtkpanda/gtkpandaps.c:62
 msgid "50%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:67
+#: gtkpanda/gtkpandapdf.c:67 gtkpanda/gtkpandaps.c:63
 msgid "75%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:68
+#: gtkpanda/gtkpandapdf.c:68 gtkpanda/gtkpandaps.c:64
 msgid "100%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:69
+#: gtkpanda/gtkpandapdf.c:69 gtkpanda/gtkpandaps.c:65
 msgid "125%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:70
+#: gtkpanda/gtkpandapdf.c:70 gtkpanda/gtkpandaps.c:66
 msgid "150%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:71
+#: gtkpanda/gtkpandapdf.c:71 gtkpanda/gtkpandaps.c:67
 msgid "175%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:72
+#: gtkpanda/gtkpandapdf.c:72 gtkpanda/gtkpandaps.c:68
 msgid "200%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:73
+#: gtkpanda/gtkpandapdf.c:73 gtkpanda/gtkpandaps.c:69
 msgid "300%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:74
+#: gtkpanda/gtkpandapdf.c:74 gtkpanda/gtkpandaps.c:70
 msgid "400%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:705 gtkpanda/numeric.c:2104
-#, c-format
-msgid "division by zero on numeric"
-msgstr "numeric型での0割です"
+#: gtkpanda/gtkpandaps.c:490
+msgid "pritner selection"
+msgstr "プリンタ選択"
+
+#: gtkpanda/gtkpandaps.c:501
+msgid "printer"
+msgstr "プリンタ"
 
 #: gtkpanda/numeric.c:1357
 #, c-format
@@ -91,6 +94,11 @@ msgid ""
 msgstr ""
 "numeric型オーバーフロー\n"
 "精度%2$d、位取り%3$dのフィールドで絶対値が10^%1$d以上です"
+
+#: gtkpanda/numeric.c:2104
+#, c-format
+msgid "division by zero on numeric"
+msgstr "numeric型での0割です"
 
 #: gtkpanda/numeric.c:2340
 #, c-format

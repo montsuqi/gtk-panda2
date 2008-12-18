@@ -20,6 +20,18 @@ AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 AC_PATH_PROG(GNOME_MOZ_REMOTE_PROG, gnome-moz-remote, "")
 AC_DEFINE_UNQUOTED(OPEN_BROWSER_COMMAND, "$GNOME_MOZ_REMOTE_PROG", "")
+AC_PATH_PROG(GS_PROG, gs)
+AC_DEFINE_UNQUOTED(GS_PATH, "$GS_PROG", [Path to the 'gs' executable.])
+AC_PATH_PROG(LPSTAT_PROG, lpstat, "")
+AC_DEFINE_UNQUOTED(LPSTAT_PATH, "$LPSTAT_PROG", "")
+if test "$LPSTAT_PROG" = ""; then
+    AC_MSG_ERROR([lpstat not found])
+fi
+AC_PATH_PROG(LPR_PROG, lpr)
+AC_DEFINE_UNQUOTED(LPR_PATH, "$LPR_PROG", "")
+if test "$LPR_PROG" = ""; then
+    AC_MSG_ERROR([lpr not found])
+fi
 
 # Checks for libraries.
 AM_GNU_GETTEXT
@@ -60,13 +72,26 @@ PKG_CHECK_MODULES(GTK_PANDA,
 	glib-2.0		>=	$GLIB_REQUIRED
 	gtk+-2.0 		>=	$GTK_REQUIRED
 	$MOZEMBED >= $MOZEMBED_REQUIRED
-	poppler-glib >= $POPPLER_REQUIRED
 ])
+
+dnl ***************************************************************************
+dnl enable pdf
+dnl ***************************************************************************
+AC_CHECK_LIB(poppler-glib, poppler_document_new_from_data,
+	enable_pdf=1,
+	enable_pdf=0)
+AM_CONDITIONAL(PDF, test $enable_pdf = 1)
+if test $enable_pdf = 1 ; then
+	PKG_CHECK_MODULES(POPPLER,
+	[
+		poppler-glib >= $POPPLER_REQUIRED
+	])
+	AC_DEFINE(HAVE_POPPLER, 1, "")
+fi
 
 dnl ***************************************************************************
 dnl enable testcode
 dnl ***************************************************************************
-
 AC_ARG_ENABLE(testcode,
  [ --enable-testcode sample code [[disable]] ],,[enable_testcode="no"] )
 AM_CONDITIONAL(TESTCODE, test "x$enable_testcode" = "xyes")
