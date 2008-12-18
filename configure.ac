@@ -86,7 +86,7 @@ if test $enable_pdf = 1 ; then
 	[
 		poppler-glib >= $POPPLER_REQUIRED
 	])
-	AC_DEFINE(HAVE_POPPLER, 1, "")
+	AC_DEFINE(USE_PDF, 1, "")
 fi
 
 dnl ***************************************************************************
