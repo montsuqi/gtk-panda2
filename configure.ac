@@ -56,7 +56,6 @@ AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_CHECK_FUNCS([dup2 memset putenv setlocale strcasecmp strchr strdup strrchr strtol])
 
-AC_SUBST(LIBGNOME_REQUIRED, 2.0.0)
 AC_SUBST(GTK_REQUIRED, 2.0.0)
 AC_SUBST(GLIB_REQUIRED, 2.0.0)
 AC_SUBST(MOZEMBED_REQUIRED, 1.8.0.0)
@@ -68,7 +67,6 @@ PKG_CHECK_EXISTS(mozilla-gtkmozembed,
 
 PKG_CHECK_MODULES(GTK_PANDA,
 [
-	libgnomeui-2.0 	>=	$LIBGNOME_REQUIRED
 	glib-2.0		>=	$GLIB_REQUIRED
 	gtk+-2.0 		>=	$GTK_REQUIRED
 	$MOZEMBED >= $MOZEMBED_REQUIRED
