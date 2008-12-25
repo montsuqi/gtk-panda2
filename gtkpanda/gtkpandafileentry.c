@@ -119,17 +119,17 @@ gtk_panda_fileentry_destroy(GtkObject *object)
 void
 gtk_panda_fileentry_browse_clicked(GtkPandaFileentry *self)
 {
-	g_signal_emit_by_name(G_OBJECT(self->entry), "activate", NULL);
+	g_signal_emit_by_name(G_OBJECT(self->button), "clicked", NULL);
 }
 
 static void
-entry_activated_cb(GtkEntry *entry, GtkPandaFileentry *self)
+entry_activate_cb(GtkEntry *entry, GtkPandaFileentry *self)
 {
   // do nothing
 }
 
 static void
-button_clicked_cb(GtkButton *button, GtkPandaFileentry *self)
+button_click_cb(GtkButton *button, GtkPandaFileentry *self)
 {
   GError *error = NULL;
   GtkWidget *dialog;
@@ -185,6 +185,7 @@ button_clicked_cb(GtkButton *button, GtkPandaFileentry *self)
       break;
     }
     g_free(filename);
+	g_signal_emit_by_name(G_OBJECT(self->entry), "activate", NULL);
   }
   gtk_widget_destroy (dialog);
 }
@@ -201,9 +202,9 @@ gtk_panda_fileentry_init (GtkPandaFileentry *self)
   self->data = NULL;
 
   g_signal_connect(G_OBJECT(self->entry), "activate",
-    G_CALLBACK(entry_activated_cb), self);
+    G_CALLBACK(entry_activate_cb), self);
   g_signal_connect(G_OBJECT(self->button), "clicked",
-    G_CALLBACK(button_clicked_cb), self);
+    G_CALLBACK(button_click_cb), self);
 
   hbox = gtk_hbox_new(FALSE, 0);
 
