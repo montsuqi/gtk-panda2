@@ -65,7 +65,8 @@ struct _GtkPandaFileentryClass
 
 extern GType gtk_panda_fileentry_get_type (void);
 extern GtkWidget *gtk_panda_fileentry_new (void);
-extern void gtk_panda_fileentry_set_mode (GtkPandaFileentry *fe, int mode);
+extern void gtk_panda_fileentry_set_mode (GtkPandaFileentry *fe, GtkFileChooserAction mode);
+extern GtkFileChooserAction gtk_panda_fileentry_get_mode (GtkPandaFileentry *fe);
 extern void gtk_panda_fileentry_set_data (GtkPandaFileentry *fe, int size, char *buff);
 
 #ifdef __cplusplus

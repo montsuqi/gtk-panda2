@@ -136,6 +136,8 @@ button_clicked_cb(GtkButton *button, GtkPandaFileentry *self)
   	gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog),
     	gtk_entry_get_text(GTK_ENTRY(self->entry)));
     break;
+  default:
+    break;
   }
 
   if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
@@ -163,6 +165,8 @@ button_clicked_cb(GtkButton *button, GtkPandaFileentry *self)
         gtk_widget_destroy (mdialog);
         g_error_free(error);
       }
+      break;
+    default:
       break;
     }
     g_free(filename);
@@ -206,7 +210,7 @@ gtk_panda_fileentry_new (void)
 }
 
 void
-gtk_panda_fileentry_set_mode (GtkPandaFileentry *self, int mode)
+gtk_panda_fileentry_set_mode (GtkPandaFileentry *self, GtkFileChooserAction mode)
 {
   self->mode = mode;
   gtk_button_set_use_stock(GTK_BUTTON(self->button), TRUE);
@@ -223,6 +227,12 @@ gtk_panda_fileentry_set_mode (GtkPandaFileentry *self, int mode)
     gtk_button_set_label(GTK_BUTTON(self->button), GTK_STOCK_STOP);
 	break;
   }
+}
+
+GtkFileChooserAction
+gtk_panda_fileentry_get_mode (GtkPandaFileentry *self)
+{
+  return self->mode;
 }
 
 void

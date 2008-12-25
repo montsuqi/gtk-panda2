@@ -95,6 +95,7 @@ gtk_panda_combo_init (GtkPandaCombo * combo)
                                   "text", 0,
                                   NULL);
   gtk_combo_box_set_active (GTK_COMBO_BOX (combo), -1);
+  gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(combo), FALSE);
  
   combo->case_sensitive = 0;
   combo->value_in_list = 0;
@@ -554,4 +555,5 @@ gtk_panda_combo_set_popdown_strings (GtkPandaCombo * combo, GList * strings)
       gtk_combo_box_append_text(GTK_COMBO_BOX(combo), list->data);
       list = list->next;
     }
+  gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 }
