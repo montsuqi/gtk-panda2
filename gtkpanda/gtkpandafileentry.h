@@ -61,6 +61,7 @@ struct _GtkPandaFileentry
 struct _GtkPandaFileentryClass
 {
   GtkHBoxClass parent_class;
+  void (*browse_clicked) (GtkPandaFileentry *fe);
 };
 
 extern GType gtk_panda_fileentry_get_type (void);

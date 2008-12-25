@@ -49,6 +49,16 @@ static void gtk_panda_fileentry_destroy       (GtkObject      *fileentry);
 
 static GtkHBoxClass *parent_class = NULL;
 
+enum
+{
+  BROWSE_CLICKED,
+  LAST_SIGNAL
+};
+
+static guint signals [LAST_SIGNAL] = { 0 };
+
+void gtk_panda_fileentry_browse_clicked(GtkPandaFileentry *fe);
+
 GType
 gtk_panda_fileentry_get_type (void)
 {
@@ -79,6 +89,7 @@ gtk_panda_fileentry_get_type (void)
 static void
 gtk_panda_fileentry_class_init (GtkPandaFileentryClass *klass)
 {
+  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GtkObjectClass *gtk_object_class;
   GtkWidgetClass *widget_class;
 
@@ -87,12 +98,28 @@ gtk_panda_fileentry_class_init (GtkPandaFileentryClass *klass)
   parent_class = gtk_type_class (GTK_TYPE_HBOX);
 
   gtk_object_class->destroy = gtk_panda_fileentry_destroy;
+  klass->browse_clicked = gtk_panda_fileentry_browse_clicked;
+
+  signals[BROWSE_CLICKED] =
+  g_signal_new ("browse_clicked",
+        G_OBJECT_CLASS_TYPE (gobject_class),
+        G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+        G_STRUCT_OFFSET (GtkPandaFileentryClass, browse_clicked),
+        NULL, NULL,
+        g_cclosure_marshal_VOID__VOID,
+        G_TYPE_NONE, 0);
 }
 
 static void
 gtk_panda_fileentry_destroy(GtkObject *object)
 {
   GTK_OBJECT_CLASS(parent_class)->destroy(object);
+}
+
+void
+gtk_panda_fileentry_browse_clicked(GtkPandaFileentry *self)
+{
+	g_signal_emit_by_name(G_OBJECT(self->entry), "activate", NULL);
 }
 
 static void
@@ -106,25 +133,13 @@ button_clicked_cb(GtkButton *button, GtkPandaFileentry *self)
 {
   GError *error = NULL;
   GtkWidget *dialog;
-  const gchar *label;
   char *filename;
   
-  switch(self->mode) {
-  case GTK_FILE_CHOOSER_ACTION_OPEN:
-    label = GTK_STOCK_OPEN; 
-    break;
-  case GTK_FILE_CHOOSER_ACTION_SAVE:
-    label = GTK_STOCK_SAVE; 
-    break;
-  default:
-    return;
-  }
-
   dialog = gtk_file_chooser_dialog_new ("Open File",
     (GtkWindow *)gtk_widget_get_toplevel(GTK_WIDGET(self)),
     self->mode,
     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-    label, GTK_RESPONSE_ACCEPT,
+    GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
     NULL);
   gtk_file_chooser_set_do_overwrite_confirmation (
     GTK_FILE_CHOOSER (dialog), TRUE);
@@ -217,10 +232,8 @@ gtk_panda_fileentry_set_mode (GtkPandaFileentry *self, GtkFileChooserAction mode
   
   switch(mode) {
   case GTK_FILE_CHOOSER_ACTION_OPEN:
-    gtk_button_set_label(GTK_BUTTON(self->button), GTK_STOCK_OPEN);
-	break;
   case GTK_FILE_CHOOSER_ACTION_SAVE:
-    gtk_button_set_label(GTK_BUTTON(self->button), GTK_STOCK_SAVE);
+    gtk_button_set_label(GTK_BUTTON(self->button), GTK_STOCK_OPEN);
 	break;
   default:
     fprintf(stderr, "invalid mode:%d\n", mode);
