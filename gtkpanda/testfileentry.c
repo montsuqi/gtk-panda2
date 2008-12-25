@@ -34,13 +34,15 @@ int main( int   argc,
   fc1 = gtk_panda_fileentry_new();
   gtk_panda_fileentry_set_mode(GTK_PANDA_FILEENTRY(fc1),
     GTK_FILE_CHOOSER_ACTION_OPEN);
+  gtk_entry_set_text(GTK_ENTRY(GTK_PANDA_FILEENTRY(fc1)->entry), 
+    "/tmp/test.txt");
 
   fc2 = gtk_panda_fileentry_new();
   gtk_panda_fileentry_set_mode(GTK_PANDA_FILEENTRY(fc2),
     GTK_FILE_CHOOSER_ACTION_SAVE);
   sprintf(buf, "this is test.");
   gtk_entry_set_text(GTK_ENTRY(GTK_PANDA_FILEENTRY(fc2)->entry), 
-    "test.txt");
+    "/tmp/test.txt");
   gtk_panda_fileentry_set_data(GTK_PANDA_FILEENTRY(fc2), 
     strlen(buf), buf);
 

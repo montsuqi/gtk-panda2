@@ -134,26 +134,31 @@ button_click_cb(GtkButton *button, GtkPandaFileentry *self)
   GError *error = NULL;
   GtkWidget *dialog;
   char *filename;
+  const gchar *label;
+
+  switch(self->mode) {
+  case GTK_FILE_CHOOSER_ACTION_OPEN:
+	label = GTK_STOCK_OPEN;
+    break;
+  case GTK_FILE_CHOOSER_ACTION_SAVE:
+	label = GTK_STOCK_SAVE;
+    break;
+  default:
+	label = GTK_STOCK_STOP;
+	break;
+  }
   
-  dialog = gtk_file_chooser_dialog_new ("Open File",
+  dialog = gtk_file_chooser_dialog_new (_("Specify filename..."),
     (GtkWindow *)gtk_widget_get_toplevel(GTK_WIDGET(self)),
     self->mode,
     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-    GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+    label, GTK_RESPONSE_ACCEPT,
     NULL);
   gtk_file_chooser_set_do_overwrite_confirmation (
     GTK_FILE_CHOOSER (dialog), TRUE);
 
-  switch(self->mode) {
-  case GTK_FILE_CHOOSER_ACTION_OPEN:
-    break;
-  case GTK_FILE_CHOOSER_ACTION_SAVE:
-  	gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog),
-    	gtk_entry_get_text(GTK_ENTRY(self->entry)));
-    break;
-  default:
-    break;
-  }
+  gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog),
+    gtk_entry_get_text(GTK_ENTRY(self->entry)));
 
   if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
     filename = gtk_file_chooser_get_filename(
