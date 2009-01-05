@@ -110,10 +110,10 @@ main (int argc, char *argv[])
       "text", 2,
       NULL);
 
-  gtk_panda_clist_set_column_width (GTK_PANDA_CLIST (clist1), 0, 100);
-  gtk_panda_clist_set_column_width (GTK_PANDA_CLIST (clist1), 1, 200);
-  gtk_panda_clist_set_column_width (GTK_PANDA_CLIST (clist1), 2, 400);
   gtk_widget_show (clist1);
+  gtk_panda_clist_set_column_width (GTK_PANDA_CLIST (clist1), 0, 50);
+  gtk_panda_clist_set_column_width (GTK_PANDA_CLIST (clist1), 1, 100);
+  gtk_panda_clist_set_column_width (GTK_PANDA_CLIST (clist1), 2, 800);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), clist1);
 
 #if 1
