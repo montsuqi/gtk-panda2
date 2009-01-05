@@ -80,6 +80,14 @@ gtk_panda_combo_class_init (GtkPandaComboClass * klass)
 }
 
 static void
+set_focusable(GtkWidget *widget, gpointer data)
+{
+  if (GTK_IS_BUTTON(widget)) {
+    GTK_WIDGET_UNSET_FLAGS(widget, GTK_CAN_FOCUS);
+  }
+}
+
+static void
 gtk_panda_combo_init (GtkPandaCombo * combo)
 {
   GtkCellRenderer *renderer;
@@ -95,7 +103,9 @@ gtk_panda_combo_init (GtkPandaCombo * combo)
                                   "text", 0,
                                   NULL);
   gtk_combo_box_set_active (GTK_COMBO_BOX (combo), -1);
-  gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(combo), FALSE);
+
+  // for set focusable false to popup button
+  gtk_container_forall(GTK_CONTAINER(combo), set_focusable, NULL);
  
   combo->case_sensitive = 0;
   combo->value_in_list = 0;
