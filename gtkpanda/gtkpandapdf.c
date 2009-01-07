@@ -275,19 +275,22 @@ static double
 compute_zoom(GtkPandaPDF *self)
 {
   PopplerPage *page;
-  double doc_w, doc_h, isize;
+  double doc_w, doc_h, scroll_w, scroll_h;
   double zoom;
 
   page = poppler_document_get_page(self->doc, self->pageno);
+  scroll_h = (gtk_scrolled_window_get_vadjustment(
+                GTK_SCROLLED_WINDOW(self->scroll)))->page_size;
+  scroll_w = (gtk_scrolled_window_get_hadjustment(
+                GTK_SCROLLED_WINDOW(self->scroll)))->page_size;
   poppler_page_get_size(page, &doc_w, &doc_h);
   if (self->zoom == SCALE_ZOOM_FIT_PAGE) {
-    isize = (gtk_scrolled_window_get_vadjustment(
-              GTK_SCROLLED_WINDOW(self->scroll)))->page_size;
-    zoom = isize / doc_h;
+    double zoom_h, zoom_w;
+    zoom_h = scroll_h / doc_h;
+    zoom_w = scroll_w / doc_w;
+    zoom = zoom_h < zoom_w ? zoom_h : zoom_w;
   } else if (self->zoom == SCALE_ZOOM_FIT_WIDTH) {
-    isize = (gtk_scrolled_window_get_hadjustment(
-              GTK_SCROLLED_WINDOW(self->scroll)))->page_size;
-    zoom = isize / doc_w;
+    zoom = scroll_w / doc_w;
   } else {
     zoom = self->zoom;
   }

@@ -135,17 +135,12 @@ button_click_cb(GtkButton *button, GtkPandaFileentry *self)
   GtkWidget *dialog;
   char *filename;
   const gchar *label;
+  GtkWidget *mdialog;
 
-  switch(self->mode) {
-  case GTK_FILE_CHOOSER_ACTION_OPEN:
+  if (self->mode == GTK_FILE_CHOOSER_ACTION_OPEN) {
 	label = GTK_STOCK_OPEN;
-    break;
-  case GTK_FILE_CHOOSER_ACTION_SAVE:
+  } else {
 	label = GTK_STOCK_SAVE;
-    break;
-  default:
-	label = GTK_STOCK_STOP;
-	break;
   }
   
   dialog = gtk_file_chooser_dialog_new (_("Specify filename..."),
@@ -157,37 +152,44 @@ button_click_cb(GtkButton *button, GtkPandaFileentry *self)
   gtk_file_chooser_set_do_overwrite_confirmation (
     GTK_FILE_CHOOSER (dialog), TRUE);
 
-  gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog),
-    gtk_entry_get_text(GTK_ENTRY(self->entry)));
+  if (self->mode == GTK_FILE_CHOOSER_ACTION_OPEN) {
+    gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog),
+      gtk_entry_get_text(GTK_ENTRY(self->entry)));
+  } else {
+    gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), 
+      gtk_entry_get_text(GTK_ENTRY(self->entry)));
+  }
 
   if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
     filename = gtk_file_chooser_get_filename(
       GTK_FILE_CHOOSER (dialog));
-    switch(self->mode) {
-    case GTK_FILE_CHOOSER_ACTION_OPEN:
+    if (self->mode == GTK_FILE_CHOOSER_ACTION_OPEN) {
       gtk_entry_set_text(GTK_ENTRY(self->entry), filename);
-      break;
-    case GTK_FILE_CHOOSER_ACTION_SAVE:
-      if (self->size <= 0 || self->data == NULL) {
-        break;
+    } else {
+      if (self->size > 0 && self->data != NULL) {
+        gtk_entry_set_text(GTK_ENTRY(self->entry), filename);
+        if (g_file_set_contents(filename,
+          self->data, self->size, &error)) {
+          mdialog = gtk_message_dialog_new (GTK_WINDOW(dialog),
+                                    GTK_DIALOG_MODAL,
+                                    GTK_MESSAGE_INFO,
+                                    GTK_BUTTONS_CLOSE,
+                                    _("Succeeded in writing %s"),
+                                    filename);
+          gtk_dialog_run (GTK_DIALOG (mdialog));
+          gtk_widget_destroy (mdialog);
+        } else {
+          mdialog = gtk_message_dialog_new (GTK_WINDOW(dialog),
+                                    GTK_DIALOG_MODAL,
+                                    GTK_MESSAGE_ERROR,
+                                    GTK_BUTTONS_CLOSE,
+                                    "%s",
+                                    error->message);
+          gtk_dialog_run (GTK_DIALOG (mdialog));
+          gtk_widget_destroy (mdialog);
+          g_error_free(error);
+        }
       }
-      gtk_entry_set_text(GTK_ENTRY(self->entry), filename);
-      if (!g_file_set_contents(filename,
-        self->data, self->size, &error)) {
-        GtkWidget *mdialog;
-        mdialog = gtk_message_dialog_new (GTK_WINDOW(dialog),
-                                  GTK_DIALOG_MODAL,
-                                  GTK_MESSAGE_ERROR,
-                                  GTK_BUTTONS_CLOSE,
-                                  "%s",
-                                  error->message);
-        gtk_dialog_run (GTK_DIALOG (mdialog));
-        gtk_widget_destroy (mdialog);
-        g_error_free(error);
-      }
-      break;
-    default:
-      break;
     }
     g_free(filename);
 	g_signal_emit_by_name(G_OBJECT(self->entry), "activate", NULL);
