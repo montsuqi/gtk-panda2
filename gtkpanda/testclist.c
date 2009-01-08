@@ -116,7 +116,7 @@ main (int argc, char *argv[])
   gtk_panda_clist_set_column_width (GTK_PANDA_CLIST (clist1), 2, 800);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), clist1);
 
-#if 1
+#if 0
   gtk_panda_clist_set_selection_mode (GTK_PANDA_CLIST (clist1),
 				  GTK_SELECTION_MULTIPLE);
 #else

@@ -148,6 +148,7 @@ gtk_panda_clist_new (gint columns)
   }
   store = gtk_list_store_newv(columns, types);
   gtk_tree_view_set_model(GTK_TREE_VIEW(clist), GTK_TREE_MODEL(store));
+  gtk_tree_view_set_fixed_height_mode(GTK_TREE_VIEW(clist), FALSE);
   return clist;
 }
 
@@ -163,9 +164,8 @@ gtk_panda_clist_set_column_width (
   col = gtk_tree_view_get_column(GTK_TREE_VIEW(clist), column);
   g_return_if_fail(col != NULL);
   gtk_tree_view_column_set_sizing(col, 
-    GTK_TREE_VIEW_COLUMN_AUTOSIZE);
-  gtk_tree_view_column_set_min_width(col, width);
-  gtk_tree_view_column_set_max_width(col, -1);
+    GTK_TREE_VIEW_COLUMN_FIXED);
+  gtk_tree_view_column_set_fixed_width(col, width);
   gtk_tree_view_column_set_resizable(col, TRUE);
 }
 
@@ -341,28 +341,9 @@ static gboolean
 gtk_panda_clist_button_press (GtkWidget *widget,
   GdkEventButton *event)
 {
-  GtkTreeSelection *select;
-  GtkTreePath *path;
-  gboolean get_path_result;
-
-  get_path_result = gtk_tree_view_get_path_at_pos(
-    GTK_TREE_VIEW(widget),
-    event->x, 
-    event->y,
-    &path,
-    NULL, 
-    NULL, 
-    NULL);
-  if (get_path_result) {
-    select = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget));
-    if (gtk_tree_selection_path_is_selected(select, path)) {
-      gtk_tree_selection_unselect_path(select, path);
-    } else  {
-      gtk_tree_selection_select_path(select, path);
-    }
-    gtk_tree_path_free(path);
-  }
-  return TRUE;
+  event->state |= GDK_CONTROL_MASK;
+  ((GtkWidgetClass *)parent_class)->button_press_event(widget, event);
+  return FALSE;
 }
 
 static void 
