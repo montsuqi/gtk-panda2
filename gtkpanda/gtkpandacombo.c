@@ -340,8 +340,9 @@ gtk_panda_combo_entry_key_press(GtkEntry * entry,
     || ((event->state & GDK_MOD1_MASK) && ((event->keyval == 'p') 
        || (event->keyval == 'P')))) {
     /* select previous */
-    if (combo->use_arrows)
+    if (combo->use_arrows) {
       gtk_panda_combo_select_previous(combo);
+    }
     return TRUE;
 
   } else if ((event->keyval == GDK_Down)
@@ -349,8 +350,9 @@ gtk_panda_combo_entry_key_press(GtkEntry * entry,
     || ((event->state & GDK_MOD1_MASK) && ((event->keyval == 'n') 
        || (event->keyval == 'N')))) {
     /* select next */
-    if (combo->use_arrows)
+    if (combo->use_arrows) {
       gtk_panda_combo_select_next(combo);
+     }
     return TRUE;
 
   }
@@ -433,7 +435,7 @@ gtk_panda_combo_select_previous(GtkPandaCombo *combo)
   gchar *item;
   gchar *text;
   gint pos;
-  int i;
+  int i, p;
 
   g_signal_stop_emission_by_name (combo->entry, "key_press_event");
   editable = GTK_EDITABLE(combo->entry);
@@ -441,22 +443,33 @@ gtk_panda_combo_select_previous(GtkPandaCombo *combo)
 
   list = gtk_panda_combo_get_items(combo);
 
+  p = 0;
   for(i = 0; i < g_list_length(list); i++) {
     item = g_list_nth_data(list, i);
-    if (!strncmp(text, item, strlen(item))) {
-      if (i == 0) {
-        if (combo->use_arrows_always)
-          item = g_list_nth_data(list, g_list_length(list) - 1);
-        else
-          break;
-      } else {
-        item = g_list_nth_data(list, i - 1);
+    if (strlen(item) > 0) {
+      if (!strncmp(text, item, strlen(item))) {
+		p = i;
+        break;
+      } 
+    } else {
+      if (strlen(text) == 0) {
+        p = i;
+        break;
       }
-      gtk_editable_delete_text(editable, 0, -1);
-      pos = 0;
-      gtk_editable_insert_text(editable, item, strlen(item), &pos);
-      break;
-    } 
+    }
+  }
+  if (p == 0) {
+    if (combo->use_arrows_always)
+      item = g_list_nth_data(list, g_list_length(list) - 1);
+    else
+      item = NULL;
+  } else {
+    item = g_list_nth_data(list, p - 1);
+  }
+  if (item != NULL) {
+    gtk_editable_delete_text(editable, 0, -1);
+    pos = 0;
+    gtk_editable_insert_text(editable, item, strlen(item), &pos);
   }
 
   for(i = 0; i < g_list_length(list); i++)
@@ -473,7 +486,7 @@ gtk_panda_combo_select_next(GtkPandaCombo *combo)
   gchar *item;
   gchar *text;
   gint pos;
-  int i;
+  int i, p;
 
   g_signal_stop_emission_by_name (combo->entry, "key_press_event");
   editable = GTK_EDITABLE(combo->entry);
@@ -483,20 +496,51 @@ gtk_panda_combo_select_next(GtkPandaCombo *combo)
 
   for(i = 0; i < g_list_length(list); i++) {
     item = g_list_nth_data(list, i);
-    if (!strncmp(text, item, strlen(item))) {
-      if (i == g_list_length(list) - 1) {
-        if (combo->use_arrows_always)
-          item = g_list_nth_data(list, 0);
-        else
-          break;
-      } else {
-        item = g_list_nth_data(list, i + 1);
+	if (strlen(item) > 0) {
+      if (!strncmp(text, item, strlen(item))) {
+        if (i == g_list_length(list) - 1) {
+          if (combo->use_arrows_always)
+            item = g_list_nth_data(list, 0);
+          else
+            break;
+        } else {
+          item = g_list_nth_data(list, i + 1);
+        }
+        gtk_editable_delete_text(editable, 0, -1);
+        pos = 0;
+        gtk_editable_insert_text(editable, item, strlen(item), &pos);
+        break;
       }
-      gtk_editable_delete_text(editable, 0, -1);
-      pos = 0;
-      gtk_editable_insert_text(editable, item, strlen(item), &pos);
-      break;
     }
+  }
+
+  p = 0;
+  for(i = 0; i < g_list_length(list); i++) {
+    item = g_list_nth_data(list, i);
+    if (strlen(item) > 0) {
+      if (!strncmp(text, item, strlen(item))) {
+		p = i;
+        break;
+      } 
+    } else {
+      if (strlen(text) == 0) {
+        p = i;
+        break;
+      }
+    }
+  }
+  if (p == g_list_length(list) - 1) {
+    if (combo->use_arrows_always)
+      item = g_list_nth_data(list, 0);
+    else
+      item = NULL;
+  } else {
+    item = g_list_nth_data(list, p + 1);
+  }
+  if (item != NULL) {
+    gtk_editable_delete_text(editable, 0, -1);
+    pos = 0;
+    gtk_editable_insert_text(editable, item, strlen(item), &pos);
   }
 
   for(i = 0; i < g_list_length(list); i++)

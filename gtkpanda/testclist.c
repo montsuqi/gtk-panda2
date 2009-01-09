@@ -143,7 +143,7 @@ main (int argc, char *argv[])
 
   for (i = 0; i < TESTGTK_CLIST_COLUMNS; i++){
       texts[i] = text[i];
-      sprintf (text[i], "Column %d", i);
+      sprintf (text[i], "Column %d tooooooooooooooooooooooooooooooooo long", i);
   }
 
   for (i = 0; i < 10; i++){
