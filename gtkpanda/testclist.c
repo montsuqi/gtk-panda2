@@ -30,7 +30,7 @@ select_row(
 	int				column,
     gpointer    	user_data)
 {
-  fprintf(stderr, "select row %d\n", row);
+  fprintf(stderr, "---- select row %d\n", row);
   fprintf(stderr, "is row selected? : %d\n", 
     gtk_panda_clist_row_is_selected(clist, row));
   fprintf(stderr, "ncolumns:%d nrows:%d\n", 
@@ -45,7 +45,7 @@ unselect_row(
 	int				column,
     gpointer    	user_data)
 {
-  fprintf(stderr, "unselect row %d\n", row);
+  fprintf(stderr, "---- unselect row %d\n", row);
   fprintf(stderr, "is row selected? : %d\n", 
     gtk_panda_clist_row_is_selected(clist, row));
 }
@@ -116,7 +116,7 @@ main (int argc, char *argv[])
   gtk_panda_clist_set_column_width (GTK_PANDA_CLIST (clist1), 2, 800);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), clist1);
 
-#if 0
+#if 1
   gtk_panda_clist_set_selection_mode (GTK_PANDA_CLIST (clist1),
 				  GTK_SELECTION_MULTIPLE);
 #else

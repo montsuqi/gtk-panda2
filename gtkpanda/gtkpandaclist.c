@@ -101,8 +101,13 @@ gtk_panda_clist_init ( GtkPandaCList * clist)
   
   clist->prev_selection = NULL;
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(clist));
+#if 1
   g_signal_connect (G_OBJECT(selection), "changed",
     G_CALLBACK(selection_changed), (gpointer)clist);
+#endif
+  gtk_tree_view_set_enable_search(GTK_TREE_VIEW(clist), FALSE );
+  GTK_WIDGET_SET_FLAGS(GTK_WIDGET(clist), GTK_CAN_FOCUS);
+  GTK_WIDGET_SET_FLAGS(GTK_WIDGET(clist), GTK_HAS_GRAB);
 }
 
 GType
@@ -148,7 +153,6 @@ gtk_panda_clist_new (gint columns)
   }
   store = gtk_list_store_newv(columns, types);
   gtk_tree_view_set_model(GTK_TREE_VIEW(clist), GTK_TREE_MODEL(store));
-  gtk_tree_view_set_fixed_height_mode(GTK_TREE_VIEW(clist), FALSE);
   return clist;
 }
 
@@ -341,9 +345,41 @@ static gboolean
 gtk_panda_clist_button_press (GtkWidget *widget,
   GdkEventButton *event)
 {
-  event->state |= GDK_CONTROL_MASK;
-  ((GtkWidgetClass *)parent_class)->button_press_event(widget, event);
-  return FALSE;
+  GtkTreeSelection *select;
+  GtkTreePath *path;
+  gboolean get_path_result;
+  gint bx, by;
+
+  if (event->window != 
+    gtk_tree_view_get_bin_window(GTK_TREE_VIEW(widget))) {
+    bx = -1;
+    by = -1;
+  } else {
+    bx = (gint)event->x;
+    by = (gint)event->y;
+  }
+
+  get_path_result = gtk_tree_view_get_path_at_pos(
+    GTK_TREE_VIEW(widget),
+    bx, 
+    by,
+    &path,
+    NULL, 
+    NULL, 
+    NULL);
+
+  if (get_path_result) {
+    select = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget));
+    if (gtk_tree_selection_path_is_selected(select, path)) {
+      gtk_tree_selection_unselect_path(select, path);
+    } else  {
+      gtk_tree_selection_select_path(select, path);
+    }
+    gtk_tree_path_free(path);
+    return FALSE;
+  } else {
+    return ((GtkWidgetClass *)parent_class)->button_press_event(widget, event);
+  }
 }
 
 static void 
