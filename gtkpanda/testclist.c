@@ -3,6 +3,8 @@
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <gtk/gtk.h>
 #include "gtkpanda.h"
 
@@ -50,8 +52,20 @@ unselect_row(
     gtk_panda_clist_row_is_selected(clist, row));
 }
 
-
-#define TESTGTK_CLIST_COLUMNS 3
+static void
+clicked(
+  GtkWidget *widget,
+  GtkWidget *window)
+{
+  gboolean flag;
+  flag = GTK_WIDGET_SENSITIVE(window);
+  gtk_widget_set_sensitive(window, !flag);
+  if (!flag) {
+  gtk_widget_show(window);
+  } else {
+  gtk_widget_hide(window);
+  }
+}
 
 int
 main (int argc, char *argv[])
@@ -60,9 +74,11 @@ main (int argc, char *argv[])
   GtkWidget *vbox1;
   GtkWidget *scrolledwindow1;
   GtkWidget *clist1;
-  int i;
-  static char text[TESTGTK_CLIST_COLUMNS][50];
-  static char *texts[TESTGTK_CLIST_COLUMNS];
+  GtkWidget *button;
+
+  char **text;
+  char str[256];
+  int i, j;
 
   gtk_set_locale ();
   gtk_init (&argc, &argv);
@@ -72,9 +88,11 @@ main (int argc, char *argv[])
   gtk_widget_show (window1);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
+#if 0
   gtk_widget_ref (vbox1);
   gtk_object_set_data_full (GTK_OBJECT (window1), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
+#endif
   gtk_widget_show (vbox1);
   gtk_container_add (GTK_CONTAINER (window1), vbox1);
 
@@ -88,7 +106,8 @@ main (int argc, char *argv[])
   gtk_widget_show (scrolledwindow1);
   gtk_box_pack_start (GTK_BOX (vbox1), scrolledwindow1, TRUE, TRUE, 0);
 
-  clist1 = gtk_panda_clist_new (TESTGTK_CLIST_COLUMNS);
+#define COLUMNS 3
+  clist1 = gtk_panda_clist_new (COLUMNS);
   gtk_panda_clist_clear(GTK_PANDA_CLIST(clist1));
 
   gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (clist1),
@@ -129,27 +148,26 @@ main (int argc, char *argv[])
   g_signal_connect (G_OBJECT(clist1), "unselect_row",
       G_CALLBACK(unselect_row), clist1);
 
-  for (i = 0; i < TESTGTK_CLIST_COLUMNS; i++){
-      texts[i] = text[i];
-      sprintf (text[i], "Column %d", i);
-  }
-
-  for (i = 0; i < 100; i++){
-      sprintf (text[0], "CListRow %d", i);
-      gtk_panda_clist_append (GTK_PANDA_CLIST (clist1), texts);
-  }
-
   gtk_panda_clist_clear(GTK_PANDA_CLIST(clist1));
-
-  for (i = 0; i < TESTGTK_CLIST_COLUMNS; i++){
-      texts[i] = text[i];
-      sprintf (text[i], "Column %d tooooooooooooooooooooooooooooooooo long", i);
+  text = malloc(sizeof(char *)*COLUMNS);
+  for (i=0; i<50; i++) {
+  for (j=0; j<COLUMNS; j++) {
+    sprintf(str, "cel_%d_%d", i, j);
+    text[j] = strdup(str);
+  }
+  gtk_panda_clist_append(GTK_PANDA_CLIST(clist1), text);
   }
 
-  for (i = 0; i < 10; i++){
-      sprintf (text[0], "CListRow %d", i);
-      gtk_panda_clist_append (GTK_PANDA_CLIST (clist1), texts);
-  }
+  button = gtk_button_new_with_label("toggle sensitive");
+  gtk_box_pack_start (GTK_BOX (vbox1), button, FALSE, FALSE, 0);
+#if 0
+  g_signal_connect (G_OBJECT(button), "clicked",
+      G_CALLBACK(clicked), scrolledwindow1);
+#else
+  g_signal_connect (G_OBJECT(button), "clicked",
+      G_CALLBACK(clicked), window1);
+#endif
+  gtk_widget_show_all(window1);
 
   gtk_main ();
   return 0;
