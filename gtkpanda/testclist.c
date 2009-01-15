@@ -52,12 +52,14 @@ unselect_row(
     gtk_panda_clist_row_is_selected(clist, row));
 }
 
+#if 0
 static void
 clicked(
   GtkWidget *widget,
   GtkWidget *window)
 {
   gboolean flag;
+
   flag = GTK_WIDGET_SENSITIVE(window);
   gtk_widget_set_sensitive(window, !flag);
   if (!flag) {
@@ -66,6 +68,17 @@ clicked(
   gtk_widget_hide(window);
   }
 }
+#else
+static void
+clicked(
+  GtkWidget *widget,
+  GtkPandaCList *clist)
+{
+  int i;
+  for(i =0 ;i< 1; i++)
+    gtk_panda_clist_clear(clist);
+}
+#endif
 
 int
 main (int argc, char *argv[])
@@ -110,25 +123,6 @@ main (int argc, char *argv[])
   clist1 = gtk_panda_clist_new (COLUMNS);
   gtk_panda_clist_clear(GTK_PANDA_CLIST(clist1));
 
-  gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (clist1),
-      -1,
-      "label2",
-      gtk_cell_renderer_text_new (),
-      "text", 0,
-      NULL);
-  gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (clist1),
-      -1,
-      "label3",
-      gtk_cell_renderer_text_new (),
-      "text", 1,
-      NULL);
-  gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (clist1),
-      -1,
-      "label4",
-      gtk_cell_renderer_text_new (),
-      "text", 2,
-      NULL);
-
   gtk_widget_show (clist1);
   gtk_panda_clist_set_column_width (GTK_PANDA_CLIST (clist1), 0, 50);
   gtk_panda_clist_set_column_width (GTK_PANDA_CLIST (clist1), 1, 100);
@@ -165,7 +159,7 @@ main (int argc, char *argv[])
       G_CALLBACK(clicked), scrolledwindow1);
 #else
   g_signal_connect (G_OBJECT(button), "clicked",
-      G_CALLBACK(clicked), window1);
+      G_CALLBACK(clicked), clist1);
 #endif
   gtk_widget_show_all(window1);
 
