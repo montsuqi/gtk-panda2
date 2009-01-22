@@ -765,14 +765,14 @@ gtk_panda_ps_set (GtkPandaPS *pps, int size, char *psdata)
     g_error_free(error);
     return;
   } 
-  if (reset_size){
-    z = gtk_gs_zoom_to_fit (GTK_GS (pps->gs), TRUE);
+
+  gtk_gs_load (GTK_GS (pps->gs), psfile);
+  if (reset_size) {
+    gtk_panda_ps_zoom_fit_width(pps);
     reset_size = FALSE;
   } else {
     z = gtk_gs_get_zoom (GTK_GS (pps->gs));
+    gtk_gs_set_page_size(GTK_GS (pps->gs), -1, 0);
+  	zoom_set(pps, z);
   }
-
-  gtk_gs_load (GTK_GS (pps->gs), psfile);
-  gtk_gs_set_page_size(GTK_GS (pps->gs), -1, 0);
-  zoom_set(pps, z);
 }

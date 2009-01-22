@@ -29,7 +29,7 @@ create_window (void)
 {
   GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_policy (GTK_WINDOW (window), TRUE, TRUE, FALSE);
-  gtk_window_set_default_size(GTK_WINDOW (window), 200, 200);
+  gtk_window_set_default_size(GTK_WINDOW (window), 400, 300);
   pps = gtk_panda_ps_new ();
   gtk_widget_show (pps);
   gtk_container_add (GTK_CONTAINER (window), pps);
