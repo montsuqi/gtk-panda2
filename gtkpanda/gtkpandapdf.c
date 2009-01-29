@@ -399,73 +399,91 @@ draw_page(GtkPrintOperation *print,
   gint pageno, 
   GtkPandaPDF *self)
 {
-    PopplerPage *page;
-    GdkPixbuf *pixbuf;
-    gdouble doc_w, doc_h;
-    cairo_t *cr;
-    int w, h;
+  PopplerPage *page;
+  gdouble doc_w, doc_h;
+  cairo_t *cr;
+  int w, h;
 
-    page = poppler_document_get_page(self->doc, pageno);
-    if (page == NULL) return;
-    poppler_page_get_size(page, &doc_w, &doc_h);
-    w = (int)(doc_w); 
-    h = (int)(doc_h);
-    pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 8, w, h);
-    poppler_page_render_to_pixbuf(page, 0, 0, w, h, 1.0, 0, pixbuf);
+  page = poppler_document_get_page(self->doc, pageno);
+  if (page == NULL) return;
+  poppler_page_get_size(page, &doc_w, &doc_h);
+  w = (int)(doc_w); 
+  h = (int)(doc_h);
 
-    cr = gtk_print_context_get_cairo_context(context);
+  cr = gtk_print_context_get_cairo_context(context);
 #if 0
-    /* may be need poppler >= 0.8 */
-    poppler_page_render_for_printing(page, cr):
+  /* may be need poppler >= 0.8 */
+  poppler_page_render_for_printing(page, cr):
 #else
-    cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 0.0);
-    poppler_page_render(page, cr);
+  cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 0.0);
+  poppler_page_render(page, cr);
 #endif
-    g_object_unref(page);
-    g_object_unref(pixbuf);
+  g_object_unref(page);
+}
+
+static void
+arrange_orientation(GtkPandaPDF *self, GtkPageSetup *ps)
+{
+  PopplerPage *page;
+  gdouble doc_w, doc_h;
+  int w, h;
+
+  page = poppler_document_get_page(self->doc, 0);
+  if (page == NULL) return;
+  poppler_page_get_size(page, &doc_w, &doc_h);
+  w = (int)(doc_w); 
+  h = (int)(doc_h);
+
+  if (w > h) {
+    gtk_page_setup_set_orientation(ps, GTK_PAGE_ORIENTATION_LANDSCAPE);
+  } else {
+    gtk_page_setup_set_orientation(ps, GTK_PAGE_ORIENTATION_PORTRAIT);
+  }
+  g_object_unref(page);
 }
 
 void
 gtk_panda_pdf_print(GtkPandaPDF *self)
 {
-    GtkWidget *main_window = NULL;
-    GtkPrintOperation *print;
-    static GtkPrintSettings *settings = NULL;
-    GtkPageSetup *page_setup;
-    GtkPrintOperationResult r;
+  GtkWidget *main_window = NULL;
+  GtkPrintOperation *print;
+  static GtkPrintSettings *settings = NULL;
+  GtkPageSetup *page_setup;
+  GtkPrintOperationResult r;
 
-    if (self->doc == NULL) return;
+  if (self->doc == NULL) return;
 
-    print = gtk_print_operation_new();
-    g_assert(print);
-    g_signal_connect(print, "draw_page", 
-      G_CALLBACK(draw_page), (gpointer) self);  
-    g_signal_connect(print, "begin_print", 
-      G_CALLBACK(begin_print), (gpointer) self);
+  print = gtk_print_operation_new();
+  g_assert(print);
+  g_signal_connect(print, "draw_page", 
+    G_CALLBACK(draw_page), (gpointer) self);  
+  g_signal_connect(print, "begin_print", 
+    G_CALLBACK(begin_print), (gpointer) self);
 
-    page_setup = gtk_print_operation_get_default_page_setup(print);
-    if (page_setup == NULL)
-      page_setup = gtk_page_setup_new();
-    gtk_page_setup_set_top_margin(page_setup, 0.0, GTK_UNIT_MM);    
-    gtk_page_setup_set_bottom_margin(page_setup, 0.0, GTK_UNIT_MM);    
-    gtk_page_setup_set_left_margin(page_setup, 0.0, GTK_UNIT_MM);    
-    gtk_page_setup_set_right_margin(page_setup, 0.0, GTK_UNIT_MM);    
-    gtk_print_operation_set_default_page_setup(print, page_setup);
+  page_setup = gtk_print_operation_get_default_page_setup(print);
+  if (page_setup == NULL)
+    page_setup = gtk_page_setup_new();
+  gtk_page_setup_set_top_margin(page_setup, 0.0, GTK_UNIT_MM);    
+  gtk_page_setup_set_bottom_margin(page_setup, 0.0, GTK_UNIT_MM);    
+  gtk_page_setup_set_left_margin(page_setup, 0.0, GTK_UNIT_MM);    
+  gtk_page_setup_set_right_margin(page_setup, 0.0, GTK_UNIT_MM);    
+  arrange_orientation(self, page_setup);
+  gtk_print_operation_set_default_page_setup(print, page_setup);
 
-    if (settings) gtk_print_operation_set_print_settings(print, settings);
-    gtk_print_operation_set_job_name(print, "gtk_panda_pdf_print");
-    gtk_print_operation_set_n_pages(print , 
-      poppler_document_get_n_pages(self->doc));
-    r = gtk_print_operation_run(print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
-                          GTK_WINDOW(main_window), NULL);
+  if (settings) gtk_print_operation_set_print_settings(print, settings);
+  gtk_print_operation_set_job_name(print, "gtk_panda_pdf_print");
+  gtk_print_operation_set_n_pages(print , 
+    poppler_document_get_n_pages(self->doc));
+  r = gtk_print_operation_run(print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
+                        GTK_WINDOW(main_window), NULL);
 
-    if (r == GTK_PRINT_OPERATION_RESULT_APPLY)
-    {   
-        if (settings)
-            g_object_unref(settings);
-        settings = g_object_ref(gtk_print_operation_get_print_settings(print));
-    }
-    g_object_unref(print);
+  if (r == GTK_PRINT_OPERATION_RESULT_APPLY)
+  {   
+      if (settings)
+          g_object_unref(settings);
+      settings = g_object_ref(gtk_print_operation_get_print_settings(print));
+  }
+  g_object_unref(print);
 }
 
 void
