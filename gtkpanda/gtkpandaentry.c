@@ -24,10 +24,9 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-//#define USE_XIM
-
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <glib-object.h>
@@ -36,6 +35,7 @@
 #include <gtk/gtksignal.h>
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkkeysyms.h>
+#include <gdk/gdkx.h>
 #include <X11/Xlib.h>
 
 #include "gtkpandaentry.h"
@@ -43,6 +43,7 @@
 static void gtk_panda_entry_class_init    (GtkPandaEntryClass *klass);
 static void gtk_panda_entry_init          (GtkPandaEntry     *entry);
 
+static void im_state_control              (GtkWidget         *widget);
 static void gtk_panda_entry_hide          (GtkWidget         *widget);
 static gint gtk_panda_entry_focus_in      (GtkWidget         *widget,
 					   GdkEventFocus     *event);
@@ -104,12 +105,17 @@ gtk_panda_entry_class_init (GtkPandaEntryClass *class)
 static void
 gtk_panda_entry_init (GtkPandaEntry *entry)
 {
-  entry->input_mode = GTK_PANDA_ENTRY_XIM_MODE;
-  entry->xim_enabled = FALSE;
+  entry->input_mode = GTK_PANDA_ENTRY_IM_MODE;
+  entry->im_enabled = FALSE;
   g_signal_connect(entry, "key_press_event",
     G_CALLBACK(gtk_panda_entry_key_press), entry);
   g_signal_connect (entry, "insert_text",
     G_CALLBACK(gtk_panda_entry_insert_text), entry);
+  if (!strcmp("xim", getenv("GTK_IM_MODULE"))) {
+    entry->xim = TRUE;
+  } else {
+    entry->xim = FALSE;
+  }
 }
 
 GtkWidget*
@@ -119,6 +125,56 @@ gtk_panda_entry_new (void)
 
   entry = g_object_new (GTK_PANDA_TYPE_ENTRY, NULL);
   return entry;
+}
+
+static void
+im_state_toggle(GtkPandaEntry *entry)
+{
+  GdkEvent *kevent;
+
+  kevent = gdk_event_new(GDK_KEY_PRESS);
+  kevent->key.window = gtk_widget_get_parent_window(GTK_WIDGET(entry));
+  kevent->key.send_event = 0;
+  kevent->key.time = gdk_x11_get_server_time(kevent->key.window);
+  kevent->key.state = 16;
+  kevent->key.length = 0;
+  kevent->key.string = "";
+  kevent->key.keyval = GDK_Zenkaku_Hankaku;
+  gboolean result;
+  result = gtk_im_context_filter_keypress(GTK_ENTRY(entry)->im_context, 
+   (GdkEventKey *)kevent);
+  //fprintf(stderr,"<========= result:%d\n",result);
+}
+
+static void
+im_state_control(GtkWidget *widget)
+{
+  GtkPandaEntry *entry;
+  char *state_str;
+  gboolean enabled;
+
+  entry = GTK_PANDA_ENTRY(widget);
+
+  gtk_im_context_focus_in(GTK_ENTRY(widget)->im_context); 
+  gtk_im_context_focus_out(GTK_ENTRY(widget)->im_context); 
+  if ((state_str = getenv("__IM_STATE")) == NULL) {
+    return;
+  }
+  if (!strcmp(state_str, "ON")) {
+    enabled = TRUE;
+  } else {
+    enabled = FALSE;
+  }
+  if (entry->input_mode == GTK_PANDA_ENTRY_IM_MODE) {
+	if ((!enabled &&  entry->im_enabled) ||
+        ( enabled && !entry->im_enabled)) {
+      im_state_toggle(entry);
+    }
+  } else {
+	if (enabled) {
+      im_state_toggle(entry);
+    }
+  }
 }
 
 static void
@@ -158,8 +214,10 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
   entry = GTK_ENTRY (widget);
   editable = GTK_EDITABLE (widget);
 
+  im_state_control(widget);
+
 #ifdef USE_XIM
-  if ((GTK_PANDA_ENTRY (widget)->input_mode == GTK_PANDA_ENTRY_XIM_MODE
+  if ((GTK_PANDA_ENTRY (widget)->input_mode == GTK_PANDA_ENTRY_IM_MODE
        || GTK_PANDA_ENTRY (widget)->input_mode == GTK_PANDA_ENTRY_KANA_MODE)
       && editable->ic == NULL
       && gdk_im_ready ()
@@ -236,7 +294,7 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
     (* GTK_WIDGET_CLASS (parent_class)->focus_in_event) (widget, event);
 
 #ifdef USE_XIM
-  if (GTK_PANDA_ENTRY (widget)->xim_enabled && gdk_xim_ic && gdk_xim_ic->xic)
+  if (GTK_PANDA_ENTRY (widget)->im_enabled && gdk_xim_ic && gdk_xim_ic->xic)
     {
       XVaNestedList *preedit_attr =
 	XVaCreateNestedList (0, XNPreeditState, XIMPreeditEnable, NULL);
@@ -244,7 +302,6 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
       XFree (preedit_attr);
     }
 #endif
-  // FIXME can't set position
   gtk_editable_set_position(GTK_EDITABLE(widget), -1);
   return FALSE;
 }
@@ -494,7 +551,7 @@ gtk_panda_entry_set_input_mode (GtkPandaEntry *entry,
 }
 
 void
-gtk_panda_entry_set_xim_enabled (GtkPandaEntry *entry, gboolean flag)
+gtk_panda_entry_set_im_enabled (GtkPandaEntry *entry, gboolean flag)
 {
-  entry->xim_enabled = flag;
+  entry->im_enabled = flag;
 }
