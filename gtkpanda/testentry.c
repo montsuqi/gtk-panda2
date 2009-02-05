@@ -88,7 +88,6 @@ static gboolean key_press(GtkWidget *w, GdkEventKey *e, gpointer data)
   fprintf(stderr, "string:%s\n", e->string);
   fprintf(stderr, "hardware_keycode:%d\n", e->hardware_keycode);
   fprintf(stderr, "group:%d\n", e->group);
-  fprintf(stderr, "is_modifier:%d\n", e->is_modifier);
   return FALSE;
 }
 

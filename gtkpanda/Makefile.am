@@ -17,11 +17,12 @@ endif
 gtkpanda_public_h_sources = \
 	debug.h 				\
 	numeric.h 				\
+	gtkimcontextxim.h		\
+	gtknumberentry.h		\
 	gtkpanda.h 				\
 	gtkpandaclist.h			\
 	gtkpandacombo.h			\
 	gtkpandafileentry.h		\
-	gtknumberentry.h		\
 	gtkpandaentry.h 		\
 	gtkpandahtml.h 			\
 	gtkpandatext.h			\
@@ -51,7 +52,10 @@ gtkpanda_c_sources = 		\
 
 gtkpanda_private_h_sources =
 
-INCLUDES = $(GTK_PANDA_CFLAGS) $(POPPLER_CFLAGS) -I$(top_srcdir)
+INCLUDES = $(GTK_PANDA_CFLAGS) \
+	$(POPPLER_CFLAGS) \
+	-I$(top_srcdir)
+
 AM_CPPFLAGS = -g -DLOCALEDIR=\"$(localedir)\"
 
 libgtkpandaincludedir = $(includedir)/gtkpanda-2.0/gtkpanda

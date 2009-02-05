@@ -38,7 +38,9 @@
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
 
+#include "config.h"
 #include "gtkpandaentry.h"
+#include "gtkimcontextxim.h"
 
 static void gtk_panda_entry_class_init    (GtkPandaEntryClass *klass);
 static void gtk_panda_entry_init          (GtkPandaEntry     *entry);
@@ -111,11 +113,6 @@ gtk_panda_entry_init (GtkPandaEntry *entry)
     G_CALLBACK(gtk_panda_entry_key_press), entry);
   g_signal_connect (entry, "insert_text",
     G_CALLBACK(gtk_panda_entry_insert_text), entry);
-  if (!strcmp("xim", getenv("GTK_IM_MODULE"))) {
-    entry->xim = TRUE;
-  } else {
-    entry->xim = FALSE;
-  }
 }
 
 GtkWidget*
@@ -128,7 +125,7 @@ gtk_panda_entry_new (void)
 }
 
 static void
-im_state_toggle(GtkPandaEntry *entry)
+emit_toggle_key(GtkPandaEntry *entry)
 {
   GdkEvent *kevent;
 
@@ -168,11 +165,11 @@ im_state_control(GtkWidget *widget)
   if (entry->input_mode == GTK_PANDA_ENTRY_IM_MODE) {
 	if ((!enabled &&  entry->im_enabled) ||
         ( enabled && !entry->im_enabled)) {
-      im_state_toggle(entry);
+      emit_toggle_key(entry);
     }
   } else {
 	if (enabled) {
-      im_state_toggle(entry);
+      emit_toggle_key(entry);
     }
   }
 }
@@ -185,19 +182,6 @@ gtk_panda_entry_hide (GtkWidget *widget)
 
   if (GTK_WIDGET_CLASS (parent_class)->hide)
     (* GTK_WIDGET_CLASS (parent_class)->hide) (widget);
-
-#ifdef USE_XIM
-  if (GTK_EDITABLE (widget)->ic)
-    {
-      gdk_ic_destroy (GTK_EDITABLE (widget)->ic);
-      GTK_EDITABLE (widget)->ic = NULL;
-    }
-  if (GTK_EDITABLE (widget)->ic_attr)
-    {
-      gdk_ic_attr_destroy (GTK_EDITABLE (widget)->ic_attr);
-      GTK_EDITABLE (widget)->ic_attr = NULL;
-    }
-#endif
 }
 
 static gint
@@ -205,6 +189,7 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
 			  GdkEventFocus *event)
 {
   GtkEntry *entry;
+  GtkPandaEntry *pentry;
   GtkEditable *editable;
 
   g_return_val_if_fail (widget != NULL, FALSE);
@@ -212,96 +197,47 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
   g_return_val_if_fail (event != NULL, FALSE);
 
   entry = GTK_ENTRY (widget);
+  pentry = GTK_PANDA_ENTRY (widget);
   editable = GTK_EDITABLE (widget);
 
-  im_state_control(widget);
-
-#ifdef USE_XIM
-  if ((GTK_PANDA_ENTRY (widget)->input_mode == GTK_PANDA_ENTRY_IM_MODE
-       || GTK_PANDA_ENTRY (widget)->input_mode == GTK_PANDA_ENTRY_KANA_MODE)
-      && editable->ic == NULL
-      && gdk_im_ready ()
-      && (editable->ic_attr = gdk_ic_attr_new ()) != NULL)
-    {
-      gint width, height;
-      GdkEventMask mask;
-      GdkColormap *colormap;
-      GdkICAttr *attr = editable->ic_attr;
-      GdkICAttributesType attrmask = GDK_IC_ALL_REQ;
-      GdkIMStyle style;
-      GdkIMStyle supported_style = GDK_IM_PREEDIT_NONE |
-				   GDK_IM_PREEDIT_NOTHING |
-			           GDK_IM_PREEDIT_POSITION |
-			           GDK_IM_STATUS_NONE |
-				   GDK_IM_STATUS_NOTHING;
-
-      if (widget->style && widget->style->font->type != GDK_FONT_FONTSET)
-	supported_style &= ~GDK_IM_PREEDIT_POSITION;
-
-      attr->style = style = gdk_im_decide_style (supported_style);
-      attr->client_window = entry->text_area;
-
-      if ((colormap = gtk_widget_get_colormap (widget)) !=
-	    gtk_widget_get_default_colormap ())
-	{
-	  attrmask |= GDK_IC_PREEDIT_COLORMAP;
-	  attr->preedit_colormap = colormap;
-	}
-      attrmask |= GDK_IC_PREEDIT_FOREGROUND;
-      attrmask |= GDK_IC_PREEDIT_BACKGROUND;
-      attr->preedit_foreground = widget->style->fg[GTK_STATE_NORMAL];
-      attr->preedit_background = widget->style->base[GTK_STATE_NORMAL];
-
-      switch (style & GDK_IM_PREEDIT_MASK)
-	{
-	case GDK_IM_PREEDIT_POSITION:
-	  if (widget->style && widget->style->font->type != GDK_FONT_FONTSET)
-	    {
-	      g_warning (_("over-the-spot style requires fontset"));
-	      break;
-	    }
-
-	  gdk_window_get_size (entry->text_area, &width, &height);
-
-	  attrmask |= GDK_IC_PREEDIT_POSITION_REQ;
-	  attr->spot_location.x = 0;
-	  attr->spot_location.y = height;
-	  attr->preedit_area.x = 0;
-	  attr->preedit_area.y = 0;
-	  attr->preedit_area.width = width;
-	  attr->preedit_area.height = height;
-	  attr->preedit_fontset = widget->style->font;
-
-	  break;
-	}
-      editable->ic = gdk_ic_new (attr, attrmask);
-     
-      if (editable->ic == NULL)
-	g_warning (_("Can't create input context."));
-      else
-	{
-	  mask = gdk_window_get_events (entry->text_area);
-	  mask |= gdk_ic_get_events (editable->ic);
-	  gdk_window_set_events (entry->text_area, mask);
-
-	  if (GTK_WIDGET_HAS_FOCUS(widget))
-	    gdk_im_begin (editable->ic, entry->text_area);
-	}
-    }
+#if 0
+  if (!pentry->xim) {
+    im_state_control(widget);
+  }
 #endif
 
-  if (GTK_WIDGET_CLASS (parent_class)->focus_in_event)
-    (* GTK_WIDGET_CLASS (parent_class)->focus_in_event) (widget, event);
+  if (GTK_WIDGET_CLASS (parent_class)->focus_in_event) {
+    (* GTK_WIDGET_CLASS (parent_class)->focus_in_event)
+      (widget, event);
+  }
 
-#ifdef USE_XIM
-  if (GTK_PANDA_ENTRY (widget)->im_enabled && gdk_xim_ic && gdk_xim_ic->xic)
+    GtkIMMulticontext *mim;
+    GtkIMContextXIM *xim;
+
+    mim = GTK_IM_MULTICONTEXT(entry->im_context);
+    if (!strcmp("xim", mim->context_id)) {
+    xim = (GtkIMContextXIM *)mim->slave;
+    if (pentry->input_mode == GTK_PANDA_ENTRY_IM_MODE &&
+        pentry->im_enabled ) 
     {
       XVaNestedList *preedit_attr =
-	XVaCreateNestedList (0, XNPreeditState, XIMPreeditEnable, NULL);
-      XSetICValues (gdk_xim_ic->xic, XNPreeditAttributes, preedit_attr, NULL);
-      XFree (preedit_attr);
+        XVaCreateNestedList (0, 
+          XNPreeditState, XIMPreeditEnable, 
+          NULL);
+      XSetICValues (xim->ic, 
+        XNPreeditAttributes, preedit_attr, NULL);
+      XFree(preedit_attr);
+    } else {
+      XVaNestedList *preedit_attr =
+        XVaCreateNestedList (0, 
+          XNPreeditState, XIMPreeditDisable, 
+          NULL);
+      XSetICValues (xim->ic, 
+        XNPreeditAttributes, preedit_attr, NULL);
+      XFree(preedit_attr);
     }
-#endif
+  }
+
   gtk_editable_set_position(GTK_EDITABLE(widget), -1);
   return FALSE;
 }

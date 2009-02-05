@@ -302,6 +302,9 @@
 #undef LSTAT_FOLLOWS_SLASHED_SYMLINK
 
 /* "" */
+#undef OLD_GTK
+
+/* "" */
 #undef OPEN_BROWSER_COMMAND
 
 /* Name of package */
