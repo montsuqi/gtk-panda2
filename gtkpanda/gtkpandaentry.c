@@ -45,7 +45,6 @@
 static void gtk_panda_entry_class_init    (GtkPandaEntryClass *klass);
 static void gtk_panda_entry_init          (GtkPandaEntry     *entry);
 
-static void im_state_control              (GtkWidget         *widget);
 static void gtk_panda_entry_hide          (GtkWidget         *widget);
 static gint gtk_panda_entry_focus_in      (GtkWidget         *widget,
 					   GdkEventFocus     *event);
@@ -144,37 +143,6 @@ emit_toggle_key(GtkPandaEntry *entry)
 }
 
 static void
-im_state_control(GtkWidget *widget)
-{
-  GtkPandaEntry *entry;
-  char *state_str;
-  gboolean enabled;
-
-  entry = GTK_PANDA_ENTRY(widget);
-
-  gtk_im_context_focus_in(GTK_ENTRY(widget)->im_context); 
-  gtk_im_context_focus_out(GTK_ENTRY(widget)->im_context); 
-  if ((state_str = getenv("__IM_STATE")) == NULL) {
-    return;
-  }
-  if (!strcmp(state_str, "ON")) {
-    enabled = TRUE;
-  } else {
-    enabled = FALSE;
-  }
-  if (entry->input_mode == GTK_PANDA_ENTRY_IM_MODE) {
-	if ((!enabled &&  entry->im_enabled) ||
-        ( enabled && !entry->im_enabled)) {
-      emit_toggle_key(entry);
-    }
-  } else {
-	if (enabled) {
-      emit_toggle_key(entry);
-    }
-  }
-}
-
-static void
 gtk_panda_entry_hide (GtkWidget *widget)
 {
   g_return_if_fail (widget != NULL);
@@ -191,6 +159,7 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
   GtkEntry *entry;
   GtkPandaEntry *pentry;
   GtkEditable *editable;
+  GtkIMMulticontext *mim;
 
   g_return_val_if_fail (widget != NULL, FALSE);
   g_return_val_if_fail (GTK_IS_ENTRY (widget), FALSE);
@@ -199,23 +168,36 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
   entry = GTK_ENTRY (widget);
   pentry = GTK_PANDA_ENTRY (widget);
   editable = GTK_EDITABLE (widget);
+  mim = GTK_IM_MULTICONTEXT(entry->im_context);
 
-#if 0
-  if (!pentry->xim) {
-    im_state_control(widget);
+  if (!strcmp("scim-bridge", mim->context_id)) {
+    GtkIMContext *im;
+    gboolean *enabled;
+
+    im = mim->slave;
+    enabled = (gboolean *)g_object_get_data(G_OBJECT(im), "im-state");
+    if (enabled != NULL) {
+      if (pentry->input_mode == GTK_PANDA_ENTRY_IM_MODE) {
+        if ((!*enabled &&  pentry->im_enabled) ||
+            ( *enabled && !pentry->im_enabled)) {
+          emit_toggle_key(pentry);
+        }
+      } else {
+        if (*enabled) {
+          emit_toggle_key(pentry);
+        }
+      }
+    }
   }
-#endif
 
   if (GTK_WIDGET_CLASS (parent_class)->focus_in_event) {
     (* GTK_WIDGET_CLASS (parent_class)->focus_in_event)
       (widget, event);
   }
 
-    GtkIMMulticontext *mim;
+  if (!strcmp("xim", mim->context_id)) {
     GtkIMContextXIM *xim;
 
-    mim = GTK_IM_MULTICONTEXT(entry->im_context);
-    if (!strcmp("xim", mim->context_id)) {
     xim = (GtkIMContextXIM *)mim->slave;
     if (pentry->input_mode == GTK_PANDA_ENTRY_IM_MODE &&
         pentry->im_enabled ) 
