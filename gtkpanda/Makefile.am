@@ -17,7 +17,6 @@ endif
 gtkpanda_public_h_sources = \
 	debug.h 				\
 	numeric.h 				\
-	gtkimcontextxim.h		\
 	gtknumberentry.h		\
 	gtkpanda.h 				\
 	gtkpandaclist.h			\
@@ -30,6 +29,7 @@ gtkpanda_public_h_sources = \
 	gsio.h					\
 	gtkgs.h					\
 	gtkpandaps.h			\
+	imcontrol.h				\
 	ps.h					\
 	$(gtkpandapdf_h)
 
@@ -47,6 +47,7 @@ gtkpanda_c_sources = 		\
 	gsio.c					\
 	gtkgs.c					\
 	gtkpandaps.c			\
+	imcontrol.c				\
 	ps.c					\
 	$(gtkpandapdf_c)
 

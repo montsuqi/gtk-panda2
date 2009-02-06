@@ -34,8 +34,10 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
 
+#include "config.h"
 #include "gtkpandaintl.h"
 #include "gtkpandatext.h"
+#include "imcontrol.h"
 
 static void gtk_panda_text_class_init (GtkPandaTextClass *klass);
 static void gtk_panda_text_init (GtkPandaText *text);
@@ -96,7 +98,7 @@ gtk_panda_text_init (GtkPandaText * text)
 {
   GtkTextBuffer *buffer;
 
-  text->xim_enabled = FALSE;
+  text->im_enabled = FALSE;
   buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 
   gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_CHAR);
@@ -160,24 +162,23 @@ gtk_panda_text_focus_in (GtkWidget     *widget,
              GdkEventFocus *event)
 {
   GtkTextView *text;
+  GtkPandaText *ptext;
+  GtkIMMulticontext *mim;
 
   g_return_val_if_fail (widget != NULL, FALSE);
   g_return_val_if_fail (GTK_IS_TEXT_VIEW (widget), FALSE);
   g_return_val_if_fail (event != NULL, FALSE);
 
   text = GTK_TEXT_VIEW (widget);
+  ptext = GTK_PANDA_TEXT(widget);
+  mim = GTK_IM_MULTICONTEXT(text->im_context);
+
+  set_im_state_pre_focus(widget, mim, ptext->im_enabled);
 
   if (GTK_WIDGET_CLASS (parent_class)->focus_in_event)
     (* GTK_WIDGET_CLASS (parent_class)->focus_in_event) (widget, event);
 
-#ifdef USE_XIM
-  if (GTK_PANDA_TEXT (widget)->xim_enabled && gdk_xim_ic && gdk_xim_ic->xic)
-    {
-      XVaNestedList *preedit_attr =
-    XVaCreateNestedList (0, XNPreeditState, XIMPreeditEnable, NULL);
-      XSetICValues (gdk_xim_ic->xic, XNPreeditAttributes, preedit_attr, NULL);      XFree (preedit_attr);
-    }
-#endif
+  set_im_state_post_focus(widget, mim, ptext->im_enabled);
 
   return FALSE;
 }
@@ -185,9 +186,9 @@ gtk_panda_text_focus_in (GtkWidget     *widget,
 // public API
 
 void 
-gtk_panda_text_set_xim_enabled (
+gtk_panda_text_set_im_enabled (
   GtkPandaText *text, 
   gboolean flag)
 {
-  text->xim_enabled = flag;
+  text->im_enabled = flag;
 }
