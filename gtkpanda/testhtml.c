@@ -47,7 +47,7 @@ create_window1 (char *uri)
   html2 = gtk_panda_html_new ();
   
   gtk_panda_html_set_uri (GTK_PANDA_HTML (html2), 
-    "http://www.orca.med.or.jp/info/");
+    "about:config");
   gtk_table_attach_defaults (GTK_TABLE (table1), html2, 0, 1, 1, 2);
 
   gtk_window_set_default_size(GTK_WINDOW(window1), 300, 400);

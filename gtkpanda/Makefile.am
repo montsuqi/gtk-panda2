@@ -41,7 +41,6 @@ gtkpanda_c_sources = 		\
 	gtkpandafileentry.c		\
 	gtknumberentry.c 		\
 	gtkpandaentry.c 		\
-	gtkpandahtml.c			\
 	gtkpandatext.c			\
 	gtkpandatimer.c			\
 	gsio.c					\
@@ -50,6 +49,9 @@ gtkpanda_c_sources = 		\
 	imcontrol.c				\
 	ps.c					\
 	$(gtkpandapdf_c)
+
+gtkpanda_cpp_sources = 		\
+	gtkpandahtml.cpp
 
 gtkpanda_private_h_sources =
 
@@ -65,6 +67,7 @@ libgtkpandainclude_HEADERS = $(gtkpanda_public_h_sources)
 lib_LTLIBRARIES = libgtkpanda-2.0.la
 libgtkpanda_2_0_la_SOURCES =		\
 	$(gtkpanda_c_sources)			\
+	$(gtkpanda_cpp_sources)			\
 	$(gtkpanda_public_h_sources)
 libgtkpanda_2_0_la_LDFLAGS = 			\
 	-version-info  $(LTVERSION) 		\

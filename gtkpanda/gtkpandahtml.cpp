@@ -31,6 +31,15 @@
 #include <unistd.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
+
+#define MOZILLA_CLIENT
+
+#include <nsCOMPtr.h>
+#include <nsIPrefService.h>
+#define MOZILLA_INTERNAL_API
+#include <nsIServiceManager.h>
+#undef MOZILLA_INTERNAL_API
+
 #include "gtkpandaintl.h"
 #include "gtkpandahtml.h"
 
@@ -43,8 +52,9 @@ enum
 static GtkMozEmbedClass *parent_class = NULL;
 static guint signals [LAST_SIGNAL] = { 0 };
 
-static void gtk_panda_html_class_init    (GtkPandaHTMLClass *klass);
-static void gtk_panda_html_init          (GtkPandaHTML     *html);
+static void gtk_panda_html_class_init(GtkPandaHTMLClass *klass);
+static void gtk_panda_html_init(GtkPandaHTML     *html);
+static void gtk_panda_html_set_proxy(void);
 static gboolean gtk_panda_html_open_uri(GtkMozEmbed *embed,
   const char *uri, gpointer data);
 static void gtk_panda_html_new_window(GtkMozEmbed *embed,
@@ -77,23 +87,23 @@ gtk_panda_html_get_type (void)
       type = g_type_register_static( GTK_TYPE_MOZ_EMBED,
                                      "GtkPandaHTML",
                                      &info,
-                                     0);
+                                     (GTypeFlags)0);
     }
 
   return type;
 }
 
-static void
-gtk_panda_html_class_init (GtkPandaHTMLClass *class)
+static void 
+gtk_panda_html_class_init (GtkPandaHTMLClass *klass)
 {
   GObjectClass *object_class;
   GtkObjectClass *gtk_object_class;
   GtkWidgetClass *widget_class;
 
-  object_class = G_OBJECT_CLASS(class);
-  gtk_object_class = (GtkObjectClass*) class;
-  widget_class = (GtkWidgetClass*) class;
-  parent_class = gtk_type_class (GTK_TYPE_MOZ_EMBED);
+  object_class = G_OBJECT_CLASS(klass);
+  gtk_object_class = (GtkObjectClass*) klass;
+  widget_class = (GtkWidgetClass*) klass;
+  parent_class = (GtkMozEmbedClass *)gtk_type_class (GTK_TYPE_MOZ_EMBED);
 
   signals[ACTIVATE] =
   g_signal_new ("activate",
@@ -109,6 +119,7 @@ gtk_panda_html_class_init (GtkPandaHTMLClass *class)
 static void
 gtk_panda_html_init (GtkPandaHTML *html)
 {
+  gtk_panda_html_set_proxy();
   g_signal_connect(GTK_MOZ_EMBED(html), "open-uri",
     G_CALLBACK(gtk_panda_html_open_uri), NULL);
   g_signal_connect(GTK_MOZ_EMBED(html), "new-window",
@@ -123,6 +134,90 @@ GtkWidget*
 gtk_panda_html_new (void)
 {
   return GTK_WIDGET (g_object_new (GTK_PANDA_TYPE_HTML, NULL));
+}
+
+gboolean
+mozilla_prefs_set_string(const char *preference_name, 
+  const char *new_value)
+{
+	g_return_val_if_fail(preference_name != NULL, FALSE);
+	if (!new_value) return FALSE;
+
+	nsCOMPtr<nsIPrefService> prefService = 
+				do_GetService(NS_PREFSERVICE_CONTRACTID);
+	nsCOMPtr<nsIPrefBranch> pref;
+	prefService->GetBranch("", getter_AddRefs(pref));
+
+	if (pref)
+	{
+		nsresult rv = pref->SetCharPref(preference_name, new_value);
+		return NS_SUCCEEDED(rv) ? TRUE : FALSE;
+	}
+	return FALSE;
+}
+
+
+gboolean
+mozilla_prefs_set_int (const char *preference_name, 
+  int new_int_value)
+{
+	g_return_val_if_fail(preference_name != NULL, FALSE);
+
+	nsCOMPtr<nsIPrefService> prefService = 
+				do_GetService(NS_PREFSERVICE_CONTRACTID);
+	nsCOMPtr<nsIPrefBranch> pref;
+	prefService->GetBranch("", getter_AddRefs(pref));
+
+	if (pref)
+	{
+		nsresult rv = pref->SetIntPref(preference_name, new_int_value);
+		return NS_SUCCEEDED(rv) ? TRUE : FALSE;
+	}
+
+	return FALSE;
+}
+
+
+void
+mozilla_prefs_set_use_proxy (gboolean use)
+{
+	if (use)
+		mozilla_prefs_set_int("network.proxy.type", 1);
+	else
+		mozilla_prefs_set_int("network.proxy.type", 0);
+}
+
+static void
+gtk_panda_html_set_proxy(void)
+{
+  char *env;
+  char *head;
+  char *tail;
+  char *p;
+  char *host;
+  char *port;
+
+  if ((env = head = getenv("http_proxy")) != NULL) {
+    tail = strstr(head, "://");
+    if (tail == NULL) return;
+    head = tail + 3;
+    tail = strstr(head, ":");
+    if (tail == NULL) {
+      tail = strstr(head, "/");
+      if (tail != NULL) *tail = '\0';
+      host = strdup(head);
+      port = strdup("80");
+    } else {
+      host = strndup(head, tail - head);
+      head = tail + 1;
+      port = strdup(head);
+    }
+    mozilla_prefs_set_int("network.proxy.type", 1);
+    mozilla_prefs_set_int("network.proxy.http_port", atoi(port));
+    mozilla_prefs_set_string("network.proxy.http", host);
+    free(host);
+    free(port);
+  }
 }
 
 static gboolean
@@ -150,7 +245,7 @@ gtk_panda_html_new_window(GtkMozEmbed *embed,
   *retval = NULL;
   if ((pid = fork()) == 0) {
     if (strlen(OPEN_BROWSER_COMMAND) > 0) {
-      argv[0] = OPEN_BROWSER_COMMAND;
+      argv[0] = (char *)OPEN_BROWSER_COMMAND;
       argv[1] = gtk_moz_embed_get_link_message(embed);
       argv[2] = NULL;
       execve(argv[0], argv, environ);
