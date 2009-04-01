@@ -713,6 +713,7 @@ gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
     self->size = 0;
     self->data = NULL;
   }
+  if (data == NULL || size <= 0) return;
   self->data = g_memdup(data, size);
   self->size = size;
   self->doc = poppler_document_new_from_data(self->data, self->size, 
