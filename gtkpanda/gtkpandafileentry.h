@@ -56,12 +56,14 @@ struct _GtkPandaFileentry
   GtkFileChooserAction mode;
   int size;
   char *data;
+  char *folder;
 };
 
 struct _GtkPandaFileentryClass
 {
   GtkHBoxClass parent_class;
   void (*browse_clicked) (GtkPandaFileentry *fe);
+  void (*done_action) (GtkPandaFileentry *fe);
 };
 
 extern GType gtk_panda_fileentry_get_type (void);
@@ -69,6 +71,7 @@ extern GtkWidget *gtk_panda_fileentry_new (void);
 extern void gtk_panda_fileentry_set_mode (GtkPandaFileentry *fe, GtkFileChooserAction mode);
 extern GtkFileChooserAction gtk_panda_fileentry_get_mode (GtkPandaFileentry *fe);
 extern void gtk_panda_fileentry_set_data (GtkPandaFileentry *fe, int size, char *buff);
+extern void gtk_panda_fileentry_set_folder (GtkPandaFileentry *fe, char *folder);
 
 #ifdef __cplusplus
 }

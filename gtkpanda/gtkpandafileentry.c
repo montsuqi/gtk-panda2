@@ -52,6 +52,7 @@ static GtkHBoxClass *parent_class = NULL;
 enum
 {
   BROWSE_CLICKED,
+  DONE_ACTION,
   LAST_SIGNAL
 };
 
@@ -89,9 +90,8 @@ gtk_panda_fileentry_get_type (void)
 static void
 gtk_panda_fileentry_class_init (GtkPandaFileentryClass *klass)
 {
-  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-  GtkObjectClass *gtk_object_class;
   GtkWidgetClass *widget_class;
+  GtkObjectClass *gtk_object_class;
 
   gtk_object_class = (GtkObjectClass *) klass;
   widget_class = (GtkWidgetClass *) klass;
@@ -102,9 +102,18 @@ gtk_panda_fileentry_class_init (GtkPandaFileentryClass *klass)
 
   signals[BROWSE_CLICKED] =
   g_signal_new ("browse_clicked",
-        G_OBJECT_CLASS_TYPE (gobject_class),
+        G_OBJECT_CLASS_TYPE (klass),
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaFileentryClass, browse_clicked),
+        NULL, NULL,
+        g_cclosure_marshal_VOID__VOID,
+        G_TYPE_NONE, 0);
+
+  signals[DONE_ACTION] =
+  g_signal_new ("done_action",
+        G_OBJECT_CLASS_TYPE (klass),
+        G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+        G_STRUCT_OFFSET (GtkPandaFileentryClass, done_action),
         NULL, NULL,
         g_cclosure_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
@@ -151,6 +160,9 @@ button_click_cb(GtkButton *button, GtkPandaFileentry *self)
     NULL);
   gtk_file_chooser_set_do_overwrite_confirmation (
     GTK_FILE_CHOOSER (dialog), TRUE);
+  if (self->folder != NULL) {
+    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER (dialog), self->folder);
+  }
 
   if (self->mode == GTK_FILE_CHOOSER_ACTION_OPEN) {
     gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog),
@@ -193,6 +205,7 @@ button_click_cb(GtkButton *button, GtkPandaFileentry *self)
     }
     g_free(filename);
 	g_signal_emit_by_name(G_OBJECT(self->entry), "activate", NULL);
+	g_signal_emit(G_OBJECT(self), signals[DONE_ACTION], 0);
   }
   gtk_widget_destroy (dialog);
 }
@@ -207,6 +220,7 @@ gtk_panda_fileentry_init (GtkPandaFileentry *self)
   self->mode = GTK_FILE_CHOOSER_ACTION_OPEN;
   self->size = 0;
   self->data = NULL;
+  self->folder = NULL;
 
   g_signal_connect(G_OBJECT(self->entry), "activate",
     G_CALLBACK(entry_activate_cb), self);
@@ -274,6 +288,20 @@ gtk_panda_fileentry_set_data (GtkPandaFileentry *self,
     self->data = NULL;
   }
 }
+
+void
+gtk_panda_fileentry_set_folder (GtkPandaFileentry *self, 
+  char *str)
+{
+  if (self->folder != NULL) {
+    g_free(self->folder);
+  }
+
+  if (str != NULL) {
+    self->folder = g_strdup(str);
+  }
+}
+
 
 void
 gtk_panda_fileentry_get (GtkPandaFileentry * self,
