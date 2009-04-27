@@ -143,6 +143,7 @@ button_click_cb(GtkButton *button, GtkPandaFileentry *self)
   GError *error = NULL;
   GtkWidget *dialog;
   char *filename;
+  char *basename;
   const gchar *label;
   GtkWidget *mdialog;
 
@@ -160,17 +161,17 @@ button_click_cb(GtkButton *button, GtkPandaFileentry *self)
     NULL);
   gtk_file_chooser_set_do_overwrite_confirmation (
     GTK_FILE_CHOOSER (dialog), TRUE);
-  if (self->folder != NULL) {
-    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER (dialog), self->folder);
-  }
 
+  gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER (dialog), self->folder);
+  basename = g_path_get_basename(gtk_entry_get_text(GTK_ENTRY(self->entry)));
   if (self->mode == GTK_FILE_CHOOSER_ACTION_OPEN) {
-    gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog),
-      gtk_entry_get_text(GTK_ENTRY(self->entry)));
+    filename = g_build_filename(self->folder, basename, NULL);
+    gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (dialog), filename);
+	g_free(filename);
   } else {
-    gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), 
-      gtk_entry_get_text(GTK_ENTRY(self->entry)));
+    gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), basename);
   }
+  g_free(basename);
 
   if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
     filename = gtk_file_chooser_get_filename(
@@ -203,9 +204,12 @@ button_click_cb(GtkButton *button, GtkPandaFileentry *self)
         }
       }
     }
+	if (self->folder != NULL)
+		free(self->folder);
+    self->folder = g_path_get_dirname(filename);
+    g_signal_emit_by_name(G_OBJECT(self->entry), "activate", NULL);
+    g_signal_emit(G_OBJECT(self), signals[DONE_ACTION], 0);
     g_free(filename);
-	g_signal_emit_by_name(G_OBJECT(self->entry), "activate", NULL);
-	g_signal_emit(G_OBJECT(self), signals[DONE_ACTION], 0);
   }
   gtk_widget_destroy (dialog);
 }
