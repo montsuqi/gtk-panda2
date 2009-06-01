@@ -744,6 +744,7 @@ gtk_panda_ps_set (GtkPandaPS *pps, int size, char *psdata)
 {
   GError *error = NULL;
   static gboolean reset_size = TRUE;
+  gboolean loaded;
   float z;
 
 //  update_printer_list(pps->printer);
@@ -766,13 +767,15 @@ gtk_panda_ps_set (GtkPandaPS *pps, int size, char *psdata)
     return;
   } 
 
-  gtk_gs_load (GTK_GS (pps->gs), psfile);
-  if (reset_size) {
-    gtk_panda_ps_zoom_fit_width(pps);
-    reset_size = FALSE;
-  } else {
-    z = gtk_gs_get_zoom (GTK_GS (pps->gs));
-    gtk_gs_set_page_size(GTK_GS (pps->gs), -1, 0);
-  	zoom_set(pps, z);
+  loaded = gtk_gs_load (GTK_GS (pps->gs), psfile);
+  if (loaded) {
+    if (reset_size) {
+      gtk_panda_ps_zoom_fit_width(pps);
+      reset_size = FALSE;
+    } else {
+      z = gtk_gs_get_zoom (GTK_GS (pps->gs));
+      gtk_gs_set_page_size(GTK_GS (pps->gs), -1, 0);
+      zoom_set(pps, z);
+    }
   }
 }

@@ -62,6 +62,7 @@ GType gtk_panda_timer_get_type (void);
 GtkWidget* gtk_panda_timer_new (void);
 void gtk_panda_timer_set (GtkPandaTimer *timer, guint32 duration);
 void gtk_panda_timer_reset (GtkPandaTimer *timer);
+void gtk_panda_timer_stop (GtkPandaTimer *timer);
 
 #ifdef __cplusplus
 }

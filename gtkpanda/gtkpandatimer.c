@@ -131,6 +131,14 @@ timeout_handler(gpointer object)
 }
 
 void
+gtk_panda_timer_stop (GtkPandaTimer *timer)
+{
+  if (timer->tag != 0) {
+    g_source_remove (timer->tag);
+    timer->tag = 0; 
+  }
+}
+void
 gtk_panda_timer_reset (GtkPandaTimer *timer)
 {
   if (timer->tag != 0)
