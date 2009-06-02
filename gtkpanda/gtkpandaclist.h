@@ -49,6 +49,7 @@ struct _GtkPandaCList {
   GtkTreeView tree;
 
   GList *prev_selection;
+  gboolean show_titles;
 };
 
 struct _GtkPandaCListClass {
@@ -92,6 +93,8 @@ void gtk_panda_clist_select_row (GtkPandaCList *clist,
 void gtk_panda_clist_unselect_row (GtkPandaCList *clist,
   gint      row,
   gint      column);
+void gtk_panda_clist_titles_show (GtkPandaCList *clist);
+void gtk_panda_clist_titles_hide (GtkPandaCList *clist);
 
 #ifdef __cplusplus
 }

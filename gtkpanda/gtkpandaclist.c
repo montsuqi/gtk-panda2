@@ -1,5 +1,4 @@
-/* gtkpandaclist - clist widget for gtk+
- * Copyright 1997 Paolo Molaro
+ /* Copyright 1997 Paolo Molaro
  * Copyright 2001 AXE, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -158,6 +157,7 @@ gtk_panda_clist_new (gint columns)
   store = gtk_list_store_newv(columns, types);
   gtk_tree_view_set_model(GTK_TREE_VIEW(clist), GTK_TREE_MODEL(store));
   //g_object_unref (store);
+  GTK_PANDA_CLIST(clist)->show_titles = FALSE;
   return clist;
 }
 
@@ -346,6 +346,20 @@ gtk_panda_clist_unselect_row (
   select = gtk_tree_view_get_selection(GTK_TREE_VIEW(clist));
   path = gtk_tree_path_new_from_indices(row, -1);
   gtk_tree_selection_unselect_path(select, path);
+}
+
+void 
+gtk_panda_clist_titles_show (
+  GtkPandaCList *clist)
+{
+	clist->show_titles = TRUE;
+}
+
+void 
+gtk_panda_clist_titles_hide (
+  GtkPandaCList *clist)
+{
+	clist->show_titles = FALSE;
 }
 
 static gboolean
