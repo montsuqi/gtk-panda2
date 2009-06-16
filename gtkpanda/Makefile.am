@@ -2,7 +2,7 @@
 
 AUTOMAKE_OPTIONS = 1.4
 
-LTVERSION = 1:0:0
+LTVERSION = 2:0:1
 
 if PDF
 gtkpandapdf_c = gtkpandapdf.c

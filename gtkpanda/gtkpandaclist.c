@@ -300,7 +300,7 @@ gtk_panda_clist_row_is_visible (GtkPandaCList *clist,
   ret = GTK_VISIBILITY_NONE;
   if (gtk_tree_view_get_visible_range(GTK_TREE_VIEW(clist), &start, &end)) {
     indices = gtk_tree_path_get_indices(start);
-    if (indices[0] <= row)
+    if (indices != NULL && indices[0] <= row)
       ret = GTK_VISIBILITY_FULL;
   }
   gtk_tree_path_free(start);
