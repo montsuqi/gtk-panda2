@@ -10,6 +10,7 @@ AC_CANONICAL_HOST
 AM_MAINTAINER_MODE
 
 # Checks for programs.
+AC_PROG_CXX
 AC_PROG_CC
 if test "$GCC" = "yes"; then
 #       CFLAGS="$CFLAGS -O4 -Wall -Wunused -Wredundant-decls -funsigned-char"
