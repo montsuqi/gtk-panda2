@@ -19,11 +19,18 @@
  */
 
 #include "gtkpandaintl.h"
+#include "glib.h"
+#include "gtkmozembed.h"
 
 void
 gtk_panda_init (int *argc, char ***argv)
 {
+  char *profile_path;
 #ifdef ENABLE_NLS
-    bindtextdomain("gtkpanda2", LOCALEDIR);
+  bindtextdomain("gtkpanda2", LOCALEDIR);
 #endif
+  profile_path = g_build_filename(g_get_home_dir(),
+    ".gtkpanda2/mozilla", NULL);
+  gtk_moz_embed_set_profile_path(profile_path, "gtkpanda2");
+  g_free(profile_path);
 }

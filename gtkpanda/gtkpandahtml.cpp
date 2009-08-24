@@ -225,10 +225,9 @@ gtk_panda_html_open_uri(GtkMozEmbed *embed,
   const char *uri,
   gpointer data)
 {
-  const char *scheme = "https";
-  if (!strncmp(scheme, uri, strlen(scheme))) {
-     return TRUE;
-  }
+  gtk_moz_embed_set_chrome_mask(embed, 
+    GTK_MOZ_EMBED_FLAG_ALLCHROME
+    );
   return FALSE;
 }
 
