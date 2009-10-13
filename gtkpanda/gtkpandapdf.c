@@ -704,6 +704,7 @@ gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
 {
   GError *error = NULL;
 
+  gtk_widget_hide(GTK_WIDGET(self->image));
   if (self->doc) {
     g_object_unref(self->doc);
     self->doc = NULL;
@@ -724,6 +725,7 @@ gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
     g_error_free (error);
     return;
   }
+  gtk_widget_show(GTK_WIDGET(self->image));
   self->pageno = 0;
   render_page(self);
 }
