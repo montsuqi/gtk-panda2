@@ -289,8 +289,10 @@ compute_zoom(GtkPandaPDF *self)
     zoom_h = scroll_h / doc_h;
     zoom_w = scroll_w / doc_w;
     zoom = zoom_h < zoom_w ? zoom_h : zoom_w;
+	if (zoom < 0.2) zoom = 1.0;
   } else if (self->zoom == SCALE_ZOOM_FIT_WIDTH) {
     zoom = scroll_w / doc_w;
+	if (zoom < 0.2) zoom = 1.0;
   } else {
     zoom = self->zoom;
   }
@@ -715,6 +717,7 @@ gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
     self->data = NULL;
   }
   if (data == NULL || size <= 0) return;
+  gtk_widget_show(GTK_WIDGET(self->image));
   self->data = g_memdup(data, size);
   self->size = size;
   self->doc = poppler_document_new_from_data(self->data, self->size, 
@@ -725,7 +728,6 @@ gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
     g_error_free (error);
     return;
   }
-  gtk_widget_show(GTK_WIDGET(self->image));
   self->pageno = 0;
   render_page(self);
 }
