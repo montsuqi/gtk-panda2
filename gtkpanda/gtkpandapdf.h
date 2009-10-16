@@ -60,6 +60,9 @@ struct _GtkPandaPDF
   double zoom;
   int pageno;
   int size;
+  gboolean pan;
+  gint bx;
+  gint by;
   char *data;
 };
 

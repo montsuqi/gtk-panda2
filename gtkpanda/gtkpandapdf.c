@@ -337,6 +337,7 @@ render_page(GtkPandaPDF *self)
   self->pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 
     (int)(doc_w * zoom),
     (int)(doc_h * zoom));
+
   poppler_page_render_to_pixbuf(page, 0, 0, 
     (int)(doc_w), (int)(doc_h), zoom, 0, self->pixbuf);
   gtk_image_set_from_pixbuf(GTK_IMAGE(self->image), self->pixbuf);
@@ -607,11 +608,58 @@ print_clicked_cb (GtkButton *button, GtkPandaPDF *self)
 }
 
 static void
+button_press_cb (GtkWidget *widget, GdkEventButton *ev, gpointer data)
+{
+  GtkPandaPDF *self;
+  gint x;
+  gint y;
+
+  self = GTK_PANDA_PDF(data);
+  if (ev->button == 1) {
+    self->pan = TRUE;
+    gdk_window_get_pointer(gtk_widget_get_root_window(widget), &x, &y, NULL);
+    self->bx = x;
+    self->by = y;
+  }
+}
+
+static void
+button_release_cb (GtkWidget *widget, GdkEventButton *ev, gpointer data)
+{
+  GtkPandaPDF *self;
+
+  self = GTK_PANDA_PDF(data);
+  self->pan = FALSE;
+}
+
+static void
+motion_cb (GtkWidget *widget, GdkEventButton *ev, gpointer data)
+{
+  GtkPandaPDF *self;
+  GtkWidget *hsb;
+  GtkWidget *vsb;
+  gint x;
+  gint y;
+
+  self = GTK_PANDA_PDF(data);
+  if (self->pan) {
+     gdk_window_get_pointer(gtk_widget_get_root_window(widget), &x, &y, NULL);
+     hsb = gtk_scrolled_window_get_hscrollbar(GTK_SCROLLED_WINDOW(self->scroll));
+     vsb = gtk_scrolled_window_get_vscrollbar(GTK_SCROLLED_WINDOW(self->scroll));
+     gtk_range_set_value(GTK_RANGE(hsb), gtk_range_get_value(GTK_RANGE(hsb)) + self->bx - x);
+     gtk_range_set_value(GTK_RANGE(vsb), gtk_range_get_value(GTK_RANGE(vsb)) + self->by - y);
+     self->bx = x;
+     self->by = y;
+  }
+}
+
+static void
 gtk_panda_pdf_init (GtkPandaPDF *self)
 {
   GtkWidget *hbox;
   GtkWidget *print_button;
   GtkWidget *save_button;
+  GtkWidget *child;
   GtkCellRenderer *renderer;
   GtkListStore    *store;
   GtkTreeIter      iter;
@@ -620,16 +668,31 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   self->zoom = SCALE_ZOOM_FIT_WIDTH;
 
   self->image = gtk_image_new();
+
   self->scroll = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(self->scroll), 
     GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(self->scroll), 
     self->image);
+  child = gtk_bin_get_child(GTK_BIN(self->scroll));
+  gtk_widget_set_events(child,
+    GDK_BUTTON_PRESS_MASK
+    | GDK_BUTTON_RELEASE_MASK
+    | GDK_POINTER_MOTION_MASK
+    | GDK_ENTER_NOTIFY_MASK
+    | GDK_LEAVE_NOTIFY_MASK);
+  g_signal_connect (GTK_OBJECT (child), "button_press_event",
+		      G_CALLBACK (button_press_cb), self);
+  g_signal_connect (GTK_OBJECT (child), "button_release_event",
+		      G_CALLBACK (button_release_cb), self);
+  g_signal_connect (GTK_OBJECT (child), "motion_notify_event",
+		      G_CALLBACK (motion_cb), self);
 
   self->pixbuf = NULL;
   self->doc = NULL;
   self->data = NULL;
   self->size = 0;
+  self->pan = FALSE;
 
   /* save button */
   save_button = gtk_button_new_from_stock(GTK_STOCK_SAVE);
