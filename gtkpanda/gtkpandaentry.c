@@ -404,6 +404,8 @@ gtk_panda_entry_insert_text (GtkEditable *editable,
      gtk_panda_entry_insert_text, editable);
    g_signal_stop_emission_by_name (editable, "insert_text"); 
 
+   gtk_editable_set_position(editable, -1);
+
    g_free(prefix);
 }
 
