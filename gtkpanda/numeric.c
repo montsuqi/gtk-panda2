@@ -385,19 +385,10 @@ NumericUMinus(
 	res = (Numeric) xmalloc(num->varlen);
 	memcpy(res, num, num->varlen);
 
-	/* ----------
-	 * The packed format is known to be totally zero digit trimmed
-	 * always. So we can identify a ZERO by the fact that there
-	 * are no digits at all.  Do nothing to a zero.
-	 * ----------
-	 */
-	if		(num->varlen != NUMERIC_HDRSZ)	{
-		/* Else, flip the sign */
-		if (NUMERIC_SIGN(num) == NUMERIC_POS)
-			res->n_sign_dscale = NUMERIC_NEG | NUMERIC_DSCALE(num);
-		else
-			res->n_sign_dscale = NUMERIC_POS | NUMERIC_DSCALE(num);
-	}
+	if (NUMERIC_SIGN(num) == NUMERIC_POS)
+		res->n_sign_dscale = NUMERIC_NEG | NUMERIC_DSCALE(num);
+	else
+		res->n_sign_dscale = NUMERIC_POS | NUMERIC_DSCALE(num);
 
 	return res;
 }
