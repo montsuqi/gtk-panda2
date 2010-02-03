@@ -58,6 +58,7 @@ static void gtk_panda_entry_insert_text   (GtkEditable       *editable,
 					   gint              *position);
 
 static GtkWidgetClass *parent_class = NULL;
+static gboolean force_im_disable = FALSE;
 
 GType
 gtk_panda_entry_get_type (void)
@@ -112,6 +113,9 @@ gtk_panda_entry_init (GtkPandaEntry *entry)
     G_CALLBACK(gtk_panda_entry_key_press), entry);
   g_signal_connect (entry, "insert_text",
     G_CALLBACK(gtk_panda_entry_insert_text), entry);
+  if (getenv("GTK_PANDA_ENTRY_FORCE_IM_DISABLE") != NULL) {
+    force_im_disable = TRUE;
+  }
 }
 
 GtkWidget*
@@ -421,5 +425,9 @@ gtk_panda_entry_set_input_mode (GtkPandaEntry *entry,
 void
 gtk_panda_entry_set_im_enabled (GtkPandaEntry *entry, gboolean flag)
 {
-  entry->im_enabled = flag;
+  if (force_im_disable) {
+    entry->im_enabled = FALSE;
+  } else {
+    entry->im_enabled = flag;
+  }
 }
