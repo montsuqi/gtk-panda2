@@ -76,7 +76,7 @@ set_im_state_post_focus(
 
   if (!strcmp("xim", mim->context_id)) {
     xim = (GtkIMContextXIM *)mim->slave;
-    if (xim == NULL) {
+    if (xim == NULL || xim->ic == NULL) {
       return;
     }
     if (enabled)
