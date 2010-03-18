@@ -26,6 +26,7 @@ gtkpanda_public_h_sources = \
 	gtkpandahtml.h 			\
 	gtkpandatext.h			\
 	gtkpandatimer.h			\
+	gtkpandadownload.h		\
 	gsio.h					\
 	gtkgs.h					\
 	gtkpandaps.h			\
@@ -43,6 +44,7 @@ gtkpanda_c_sources = 		\
 	gtkpandaentry.c 		\
 	gtkpandatext.c			\
 	gtkpandatimer.c			\
+	gtkpandadownload.c		\
 	gsio.c					\
 	gtkgs.c					\
 	gtkpandaps.c			\

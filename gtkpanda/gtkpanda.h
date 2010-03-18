@@ -33,6 +33,7 @@
 #include <gtkpanda/gtkpandaps.h>
 #include <gtkpanda/gtkpandatext.h>
 #include <gtkpanda/gtkpandatimer.h>
+#include <gtkpanda/gtkpandadownload.h>
 #ifdef USE_PDF
 #	include <gtkpanda/gtkpandapdf.h>
 #endif
