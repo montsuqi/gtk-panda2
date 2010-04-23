@@ -119,7 +119,7 @@ gtk_panda_html_class_init (GtkPandaHTMLClass *klass)
 static void
 gtk_panda_html_init (GtkPandaHTML *html)
 {
-//  gtk_panda_html_set_proxy();
+  gtk_panda_html_set_proxy();
   g_signal_connect(GTK_MOZ_EMBED(html), "open-uri",
     G_CALLBACK(gtk_panda_html_open_uri), NULL);
   g_signal_connect(GTK_MOZ_EMBED(html), "new-window",
@@ -136,7 +136,6 @@ gtk_panda_html_new (void)
   return GTK_WIDGET (g_object_new (GTK_PANDA_TYPE_HTML, NULL));
 }
 
-#if 0
 gboolean
 mozilla_prefs_set_string(const char *preference_name, 
   const char *new_value)
@@ -220,7 +219,6 @@ gtk_panda_html_set_proxy(void)
     free(port);
   }
 }
-#endif
 
 static gboolean
 gtk_panda_html_open_uri(GtkMozEmbed *embed,
