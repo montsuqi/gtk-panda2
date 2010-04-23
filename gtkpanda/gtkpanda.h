@@ -30,13 +30,10 @@
 #include <gtkpanda/gtkpandaentry.h>
 #include <gtkpanda/gtkpandafileentry.h>
 #include <gtkpanda/gtkpandahtml.h>
-#include <gtkpanda/gtkpandaps.h>
 #include <gtkpanda/gtkpandatext.h>
 #include <gtkpanda/gtkpandatimer.h>
 #include <gtkpanda/gtkpandadownload.h>
-#ifdef USE_PDF
-#	include <gtkpanda/gtkpandapdf.h>
-#endif
+#include <gtkpanda/gtkpandapdf.h>
 
 void gtk_panda_init (int *argc, char ***argv);
 

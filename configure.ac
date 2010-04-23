@@ -89,17 +89,10 @@ PKG_CHECK_MODULES(CHECK_GTK_VER, gtk+-2.0 >= 2.10.0,
 dnl ***************************************************************************
 dnl enable pdf
 dnl ***************************************************************************
-AC_CHECK_LIB(poppler-glib, poppler_document_new_from_data,
-	enable_pdf=1,
-	enable_pdf=0)
-AM_CONDITIONAL(PDF, test $enable_pdf = 1)
-if test $enable_pdf = 1 ; then
-	PKG_CHECK_MODULES(POPPLER,
-	[
-		poppler-glib >= $POPPLER_REQUIRED
-	])
-	AC_DEFINE(USE_PDF, 1, "")
-fi
+PKG_CHECK_MODULES(POPPLER,
+[
+	poppler-glib >= $POPPLER_REQUIRED
+])
 
 dnl ***************************************************************************
 dnl enable testcode

@@ -4,16 +4,6 @@ AUTOMAKE_OPTIONS = 1.4
 
 LTVERSION = 2:0:1
 
-if PDF
-gtkpandapdf_c = gtkpandapdf.c
-gtkpandapdf_h = gtkpandapdf.h
-testpdf = testpdf
-else
-gtkpandapdf_c =
-gtkpandapdf_h = 
-testpdf =
-endif
-
 gtkpanda_public_h_sources = \
 	debug.h 				\
 	numeric.h 				\
@@ -27,12 +17,8 @@ gtkpanda_public_h_sources = \
 	gtkpandatext.h			\
 	gtkpandatimer.h			\
 	gtkpandadownload.h		\
-	gsio.h					\
-	gtkgs.h					\
-	gtkpandaps.h			\
 	imcontrol.h				\
-	ps.h					\
-	$(gtkpandapdf_h)
+	gtkpandapdf.h
 
 gtkpanda_c_sources = 		\
 	numeric.c 				\
@@ -45,12 +31,8 @@ gtkpanda_c_sources = 		\
 	gtkpandatext.c			\
 	gtkpandatimer.c			\
 	gtkpandadownload.c		\
-	gsio.c					\
-	gtkgs.c					\
-	gtkpandaps.c			\
 	imcontrol.c				\
-	ps.c					\
-	$(gtkpandapdf_c)
+	gtkpandapdf.c
 
 gtkpanda_cpp_sources = 		\
 	gtkpandahtml.cpp
@@ -94,8 +76,7 @@ noinst_PROGRAMS = 	\
 	testhtml		\
 	testtext		\
 	testtimer		\
-	testps			\
-	$(testpdf)
+	testpdf
 
 DEPS = \
 	libgtkpanda-2.0.la
@@ -122,16 +103,11 @@ testentry_LDADD = $(LDADDS)
 testhtml_DEPENDENCIES = $(DEPS)
 testhtml_LDADD = $(LDADDS)
 
-testps_DEPENDENCIES = $(DEPS)
-testps_LDADD = $(LDADDS)
-
 testtext_DEPENDENCIES = $(DEPS)
 testtext_LDADD = $(LDADDS)
 
 testtimer_DEPENDENCIES = $(DEPS)
 testtimer_LDADD = $(LDADDS)
 
-if PDF 
 testpdf_DEPENDENCIES = $(DEPS)
 testpdf_LDADD = $(LDADDS)
-endif
