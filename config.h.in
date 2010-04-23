@@ -12,9 +12,6 @@
    language is requested. */
 #undef ENABLE_NLS
 
-/* Path to the 'gs' executable. */
-#undef GS_PATH
-
 /* Define to 1 if you have `alloca', as a function or macro. */
 #undef HAVE_ALLOCA
 
@@ -290,12 +287,6 @@
 
 /* Define if integer division by zero raises signal SIGFPE. */
 #undef INTDIV0_RAISES_SIGFPE
-
-/* "" */
-#undef LPR_PATH
-
-/* "" */
-#undef LPSTAT_PATH
 
 /* Define to 1 if `lstat' dereferences a symlink specified with a trailing
    slash. */

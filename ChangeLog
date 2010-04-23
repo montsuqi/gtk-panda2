@@ -1,6 +1,7 @@
 2010-04-22 yusuke mihara <mihara@netlab.jp>
 
 	* gtkpandapsを削除
+	* xulrunner-1.9に依存
 
 2010-02-18 yusuke mihara <mihara@netlab.jp>
 

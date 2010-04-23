@@ -87,8 +87,10 @@ create_window1 (char *uri)
   gtk_panda_html_set_uri (GTK_PANDA_HTML (html1), uri);
   gtk_box_pack_start(GTK_BOX(vbox),html1,TRUE,TRUE,0);
 
+#if 0
   gtk_moz_embed_set_chrome_mask(GTK_MOZ_EMBED(html1),
             GTK_MOZ_EMBED_FLAG_ALLCHROME);
+#endif
 
   gtk_window_set_default_size(GTK_WINDOW(window1), 300, 400);
   gtk_widget_show_all(window1);
@@ -110,7 +112,7 @@ main (int argc, char **argv)
   gtk_set_locale ();
   gtk_init (&argc, &argv);
 
-  gtk_moz_embed_set_profile_path("/tmp/html_profile_path", "test");
+  gtk_panda_init(&argc,&argv);
 
   window = create_window1 (argv[1]);
   gtk_signal_connect (GTK_OBJECT (window), "destroy",

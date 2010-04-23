@@ -21,18 +21,6 @@ AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 AC_PATH_PROG(GNOME_MOZ_REMOTE_PROG, gnome-moz-remote, /usr/bin/firefox)
 AC_DEFINE_UNQUOTED(OPEN_BROWSER_COMMAND, "$GNOME_MOZ_REMOTE_PROG", "")
-AC_PATH_PROG(GS_PROG, gs)
-AC_DEFINE_UNQUOTED(GS_PATH, "$GS_PROG", [Path to the 'gs' executable.])
-AC_PATH_PROG(LPSTAT_PROG, lpstat, "")
-AC_DEFINE_UNQUOTED(LPSTAT_PATH, "$LPSTAT_PROG", "")
-if test "$LPSTAT_PROG" = ""; then
-    AC_MSG_ERROR([lpstat not found])
-fi
-AC_PATH_PROG(LPR_PROG, lpr)
-AC_DEFINE_UNQUOTED(LPR_PATH, "$LPR_PROG", "")
-if test "$LPR_PROG" = ""; then
-    AC_MSG_ERROR([lpr not found])
-fi
 
 # Checks for libraries.
 AM_GNU_GETTEXT
@@ -59,18 +47,15 @@ AC_CHECK_FUNCS([dup2 memset putenv setlocale strcasecmp strchr strdup strrchr st
 
 AC_SUBST(GTK_REQUIRED, 2.0.0)
 AC_SUBST(GLIB_REQUIRED, 2.0.0)
-AC_SUBST(MOZEMBED_REQUIRED, 1.8.0.0)
 AC_SUBST(POPPLER_REQUIRED, 0.6.4)
-
-PKG_CHECK_EXISTS(mozilla-gtkmozembed,
-                 [AC_SUBST(MOZEMBED, mozilla-gtkmozembed)],
-                 [AC_SUBST(MOZEMBED, xulrunner-gtkmozembed)])
+AC_SUBST(LIBXUL_REQUIRED, 1.9)
 
 PKG_CHECK_MODULES(GTK_PANDA,
 [
-	glib-2.0		>=	$GLIB_REQUIRED
-	gtk+-2.0 		>=	$GTK_REQUIRED
-	$MOZEMBED >= $MOZEMBED_REQUIRED
+	glib-2.0					>=	$GLIB_REQUIRED
+	gtk+-2.0 					>=	$GTK_REQUIRED
+	poppler-glib 				>=	$POPPLER_REQUIRED
+	libxul-embedding-unstable	>=	$LIBXUL_REQUIRED
 ])
 
 dnl ***************************************************************************
@@ -85,14 +70,6 @@ PKG_CHECK_MODULES(CHECK_GTK_VER, gtk+-2.0 >= 2.10.0,
 		AC_DEFINE(OLD_GTK, 1, "")
 	])
 ]) 
-
-dnl ***************************************************************************
-dnl enable pdf
-dnl ***************************************************************************
-PKG_CHECK_MODULES(POPPLER,
-[
-	poppler-glib >= $POPPLER_REQUIRED
-])
 
 dnl ***************************************************************************
 dnl enable testcode

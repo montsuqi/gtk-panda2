@@ -22,7 +22,6 @@ gtkpanda_public_h_sources = \
 
 gtkpanda_c_sources = 		\
 	numeric.c 				\
-	gtkpandamain.c 			\
 	gtkpandaclist.c			\
 	gtkpandacombo.c			\
 	gtkpandafileentry.c		\
@@ -35,12 +34,12 @@ gtkpanda_c_sources = 		\
 	gtkpandapdf.c
 
 gtkpanda_cpp_sources = 		\
+	gtkpandamain.cpp		\
 	gtkpandahtml.cpp
 
 gtkpanda_private_h_sources =
 
 INCLUDES = $(GTK_PANDA_CFLAGS) \
-	$(POPPLER_CFLAGS) \
 	-I$(top_srcdir)
 
 AM_CPPFLAGS = -g -DLOCALEDIR=\"$(localedir)\"
@@ -56,8 +55,7 @@ libgtkpanda_2_0_la_SOURCES =		\
 libgtkpanda_2_0_la_LDFLAGS = 			\
 	-version-info  $(LTVERSION) 		\
 	-export-dynamic 					\
-	$(GTK_PANDA_LIBS)					\
-	$(POPPLER_LIBS)
+	$(GTK_PANDA_LIBS)
 EXTRA_HEADERS =
 EXTRA_DIST = 						\
 	$(gtkpanda_private_h_sources) 	\
@@ -82,8 +80,7 @@ DEPS = \
 	libgtkpanda-2.0.la
 LDADDS =	\
 	./libgtkpanda-2.0.la	\
-	$(GTK_PANDA_LIBS)		\
-	$(POPPLER_LIBS)
+	$(GTK_PANDA_LIBS)
 
 testclist_DEPENDENCIES = $(DEPS)
 testclist_LDADD = $(LDADDS)

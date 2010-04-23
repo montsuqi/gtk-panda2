@@ -6,5 +6,5 @@ includedir=@includedir@
 Name: Gtk+PANDA
 Description: Gtk+ additional enterprise widgets for PANDA
 Version: @VERSION@
-Libs: -lgtkpanda-2.0 -L${libdir} @GTK_PANDA_LIBS@ @POPPLER_LIBS@
-Cflags: -I${includedir}/gtkpanda-2.0 @GTK_PANDA_CFLAGS@ @POPPLER_CFLAGS@
+Libs: -lgtkpanda-2.0 -L${libdir} @GTK_PANDA_LIBS@ 
+Cflags: -I${includedir}/gtkpanda-2.0 @GTK_PANDA_CFLAGS@ 
