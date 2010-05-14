@@ -260,5 +260,7 @@ gtk_panda_html_get_uri (GtkPandaHTML *html)
 void
 gtk_panda_html_set_uri (GtkPandaHTML *html, const char *uri)
 {
-  gtk_moz_embed_load_url(GTK_MOZ_EMBED(html), uri);
+  if (getenv("GTK_PANDA_HTML_DISABLE") == NULL) {
+    gtk_moz_embed_load_url(GTK_MOZ_EMBED(html), uri);
+  }
 }
