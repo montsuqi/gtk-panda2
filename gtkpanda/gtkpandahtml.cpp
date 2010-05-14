@@ -55,14 +55,10 @@ static guint signals [LAST_SIGNAL] = { 0 };
 static void gtk_panda_html_class_init(GtkPandaHTMLClass *klass);
 static void gtk_panda_html_init(GtkPandaHTML     *html);
 static void gtk_panda_html_set_proxy(void);
-static gboolean gtk_panda_html_open_uri(GtkMozEmbed *embed,
+static gboolean open_uri_cb(GtkMozEmbed *embed,
   const char *uri, gpointer data);
-static void gtk_panda_html_new_window(GtkMozEmbed *embed,
+static void new_window_cb(GtkMozEmbed *embed,
   GtkMozEmbed **retval, guint chromemask, gpointer data);
-#if 0
-static void gtk_panda_html_reload(GtkWidget *widget,
-  GdkEventExpose *event, gpointer user_data);
-#endif
 
 GType
 gtk_panda_html_get_type (void)
@@ -121,13 +117,9 @@ gtk_panda_html_init (GtkPandaHTML *html)
 {
   gtk_panda_html_set_proxy();
   g_signal_connect(GTK_MOZ_EMBED(html), "open-uri",
-    G_CALLBACK(gtk_panda_html_open_uri), NULL);
+    G_CALLBACK(open_uri_cb), NULL);
   g_signal_connect(GTK_MOZ_EMBED(html), "new-window",
-    G_CALLBACK(gtk_panda_html_new_window), NULL);
-#if 0
-  g_signal_connect(GTK_WIDGET(html), "expose-event",
-    G_CALLBACK(gtk_panda_html_reload), NULL);
-#endif
+    G_CALLBACK(new_window_cb), NULL);
 }
 
 GtkWidget*
@@ -140,51 +132,50 @@ gboolean
 mozilla_prefs_set_string(const char *preference_name, 
   const char *new_value)
 {
-	g_return_val_if_fail(preference_name != NULL, FALSE);
-	if (!new_value) return FALSE;
-
-	nsCOMPtr<nsIPrefService> prefService = 
-				do_GetService(NS_PREFSERVICE_CONTRACTID);
-	nsCOMPtr<nsIPrefBranch> pref;
-	prefService->GetBranch("", getter_AddRefs(pref));
-
-	if (pref)
-	{
-		nsresult rv = pref->SetCharPref(preference_name, new_value);
-		return NS_SUCCEEDED(rv) ? TRUE : FALSE;
-	}
-	return FALSE;
+  g_return_val_if_fail(preference_name != NULL, FALSE);
+  if (!new_value){ 
+    return FALSE;
+  }
+  
+  nsCOMPtr<nsIPrefService> prefService = 
+  do_GetService(NS_PREFSERVICE_CONTRACTID);
+  nsCOMPtr<nsIPrefBranch> pref;
+  prefService->GetBranch("", getter_AddRefs(pref));
+  
+  if (pref) {
+    nsresult rv = pref->SetCharPref(preference_name, new_value);
+    return NS_SUCCEEDED(rv) ? TRUE : FALSE;
+  }
+  return FALSE;
 }
-
 
 gboolean
 mozilla_prefs_set_int (const char *preference_name, 
   int new_int_value)
 {
-	g_return_val_if_fail(preference_name != NULL, FALSE);
+  g_return_val_if_fail(preference_name != NULL, FALSE);
+  nsCOMPtr<nsIPrefService> prefService = 
+    do_GetService(NS_PREFSERVICE_CONTRACTID);
+  nsCOMPtr<nsIPrefBranch> pref;
+  prefService->GetBranch("", getter_AddRefs(pref));
+  
+  if (pref) {
+    nsresult rv = pref->SetIntPref(preference_name, new_int_value);
+    return NS_SUCCEEDED(rv) ? TRUE : FALSE;
+  }
 
-	nsCOMPtr<nsIPrefService> prefService = 
-				do_GetService(NS_PREFSERVICE_CONTRACTID);
-	nsCOMPtr<nsIPrefBranch> pref;
-	prefService->GetBranch("", getter_AddRefs(pref));
-
-	if (pref)
-	{
-		nsresult rv = pref->SetIntPref(preference_name, new_int_value);
-		return NS_SUCCEEDED(rv) ? TRUE : FALSE;
-	}
-
-	return FALSE;
+  return FALSE;
 }
 
 
 void
 mozilla_prefs_set_use_proxy (gboolean use)
 {
-	if (use)
-		mozilla_prefs_set_int("network.proxy.type", 1);
-	else
-		mozilla_prefs_set_int("network.proxy.type", 0);
+  if (use) {
+    mozilla_prefs_set_int("network.proxy.type", 1);
+  } else {
+    mozilla_prefs_set_int("network.proxy.type", 0);
+  }
 }
 
 static void
@@ -221,7 +212,7 @@ gtk_panda_html_set_proxy(void)
 }
 
 static gboolean
-gtk_panda_html_open_uri(GtkMozEmbed *embed,
+open_uri_cb(GtkMozEmbed *embed,
   const char *uri,
   gpointer data)
 {
@@ -232,7 +223,7 @@ gtk_panda_html_open_uri(GtkMozEmbed *embed,
 }
 
 static void
-gtk_panda_html_new_window(GtkMozEmbed *embed,
+new_window_cb(GtkMozEmbed *embed,
   GtkMozEmbed **retval,
   guint chromemask,
   gpointer data)
@@ -257,18 +248,6 @@ gtk_panda_html_new_window(GtkMozEmbed *embed,
   } 
   return;
 }
-
-#if 0
-gtk_panda_html_reload(GtkWidget *widget,
-  GdkEventExpose *event,
-  gpointer user_data)
-{
-  gtk_moz_embed_reload(GTK_MOZ_EMBED(widget), GTK_MOZ_EMBED_FLAG_RELOADNORMAL);
-  fprintf(stderr,"reloaded %s\n", gtk_moz_embed_get_location(GTK_MOZ_EMBED(widget)));
-  //gtk_widget_show_all(widget);
-  return;
-}
-#endif
 
 // public API
 
