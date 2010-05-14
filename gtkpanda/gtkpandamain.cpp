@@ -33,7 +33,7 @@ init_gtkmozembed()
 {
   char *profile_path;
   static const GREVersionRange greVersion = {
-  "1.9.1", PR_TRUE,
+  "1.9.0", PR_TRUE,
   "1.9.3", PR_FALSE
   };
   char xpcomLocation[4096];
