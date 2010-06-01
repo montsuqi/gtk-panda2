@@ -73,6 +73,8 @@ set_im_state_post_focus(
   gboolean enabled)
 {
   GtkIMContextXIM *xim;
+  GtkIMContext *im;
+  gboolean *state;
 
   if (!strcmp("xim", mim->context_id)) {
     xim = (GtkIMContextXIM *)mim->slave;
@@ -96,6 +98,14 @@ set_im_state_post_focus(
       XSetICValues (xim->ic,
         XNPreeditAttributes, preedit_attr, NULL);
       XFree(preedit_attr);
+    }
+  } else if (!strcmp("ibus", mim->context_id)) {
+    im = mim->slave;
+    state = (gboolean *)g_object_get_data(G_OBJECT(im), "im-state");
+    if (state != NULL) {
+      if (*state != enabled) {
+          emit_toggle_key(widget, im);
+      }
     }
   }
 }
