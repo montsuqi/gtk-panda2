@@ -2813,12 +2813,16 @@ NumericFormat(
 		}
 	}
 
-	for	( len = 0 , p = format ; *p != 0 && *p != '.' ; len ++, p ++ );		
+	for	( len = 0 , p = format ; *p != 0 && *p != '.' ; len ++, p ++ );
+
 	for	( q = str ; *q != 0 && *q != '.' ; q ++ );
 	qq = q - 1;
-	q ++;
+	if		( *q == 0 ){
+		fSmall = FALSE;
+	}
 
 	if		(  fSmall  ) {
+		q ++;
 		p = buf + len;
 		f = format + len;
 		while	(  *f  !=  0  ) {
