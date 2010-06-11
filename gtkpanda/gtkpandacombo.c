@@ -301,6 +301,11 @@ complete_combo_entry (gpointer data)
   } while(gtk_tree_model_iter_next(model, &iter));  
   g_free(prefix);
 
+  if (!GTK_WIDGET_HAS_FOCUS(combo->entry)
+      && (gtk_editable_get_position (GTK_EDITABLE(combo->entry)) != 0)) {
+    gtk_editable_set_position (GTK_EDITABLE(combo->entry), 0);
+  }
+
   return 0;
 }
 
