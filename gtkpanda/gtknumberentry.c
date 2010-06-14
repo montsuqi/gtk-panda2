@@ -210,7 +210,7 @@ gtk_number_entry_set_format(
 {
   GtkEditable *editable;
   gint pos;
-  char buf[64];
+  char buf[64] = "";
 
   g_return_if_fail (entry != NULL);
   g_return_if_fail (GTK_IS_NUMBER_ENTRY (entry));
@@ -235,7 +235,7 @@ gtk_number_entry_set_value (
 {
   GtkEditable *editable;
   gint pos;
-  char buf[64];
+  char buf[64] = "";
   int pr;
   int sc;
 
@@ -290,7 +290,7 @@ gtk_number_entry_key_press (
   gint return_val;
   gint pos;
   char *p;
-  char buf[64];
+  char buf[64] = "";
   int i;
   int minus;
   int pr;
