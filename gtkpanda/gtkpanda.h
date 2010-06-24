@@ -33,6 +33,7 @@
 #include <gtkpanda/gtkpandatext.h>
 #include <gtkpanda/gtkpandatimer.h>
 #include <gtkpanda/gtkpandadownload.h>
+#include <gtkpanda/gtkpandaprint.h>
 #include <gtkpanda/gtkpandapdf.h>
 
 void gtk_panda_init (int *argc, char ***argv);

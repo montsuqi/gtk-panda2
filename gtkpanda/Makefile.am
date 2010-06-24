@@ -17,6 +17,7 @@ gtkpanda_public_h_sources = \
 	gtkpandatext.h			\
 	gtkpandatimer.h			\
 	gtkpandadownload.h		\
+	gtkpandaprint.h			\
 	imcontrol.h				\
 	gtkpandapdf.h
 
@@ -30,6 +31,8 @@ gtkpanda_c_sources = 		\
 	gtkpandatext.c			\
 	gtkpandatimer.c			\
 	gtkpandadownload.c		\
+	gtkpandaprint.c			\
+	imcontrol.h				\
 	imcontrol.c				\
 	gtkpandapdf.c
 
