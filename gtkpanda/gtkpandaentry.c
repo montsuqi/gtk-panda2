@@ -440,7 +440,7 @@ gtk_panda_entry_im_off (GtkPandaEntry     *entry)
 
   mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(entry)->im_context);
 
-  set_im_state_pre_focus(entry, mim, FALSE);
-  set_im_state_post_focus(entry, mim, FALSE);
+  set_im_state_pre_focus(GTK_WIDGET(entry), mim, FALSE);
+  set_im_state_post_focus(GTK_WIDGET(entry), mim, FALSE);
 }
 
