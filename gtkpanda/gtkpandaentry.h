@@ -70,7 +70,6 @@ void gtk_panda_entry_set_input_mode (
 	GtkPandaEntry *entry, 
 	enum gtk_panda_entry_input_mode mode);
 void gtk_panda_entry_set_im_enabled (GtkPandaEntry *entry, gboolean flag);
-void gtk_panda_entry_im_off (GtkPandaEntry *entry);
 
 #ifdef __cplusplus
 }
