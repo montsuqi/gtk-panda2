@@ -837,7 +837,7 @@ gtk_panda_pdf_new (void)
   return g_object_new (GTK_PANDA_TYPE_PDF, NULL);
 }
 
-void
+gboolean
 gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
 {
   GError *error = NULL;
@@ -853,7 +853,9 @@ gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
     self->size = 0;
     self->data = NULL;
   }
-  if (data == NULL || size <= 0) return;
+  if (data == NULL || size <= 0) {
+    return FALSE;
+  }
   gtk_widget_show(GTK_WIDGET(self->image));
   self->data = g_memdup(data, size);
   self->size = size;
@@ -863,7 +865,7 @@ gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
     fprintf(stderr, "%s\n", error->message);
     gtk_image_set_from_pixbuf(GTK_IMAGE(self->image), NULL);
     g_error_free (error);
-    return;
+    return FALSE;
   }
   self->pageno = 0;
   sprintf(buf,"/%d",poppler_document_get_n_pages(self->doc));
@@ -871,9 +873,11 @@ gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
   sprintf(buf,"%d",self->pageno+1);
   gtk_entry_set_text(GTK_ENTRY(self->page_entry),buf);
   render_page(self);
+
+  return TRUE;
 }
 
-void
+gboolean
 gtk_panda_pdf_load(GtkPandaPDF *self, char *fname)
 {
   GError *error = NULL;
@@ -882,9 +886,9 @@ gtk_panda_pdf_load(GtkPandaPDF *self, char *fname)
 
   if (!g_file_get_contents(fname,&buf,&size,&error)) {
      g_error_free(error);
-    return;
+     return FALSE;
   }
-  gtk_panda_pdf_set(self,size,buf);
+  return gtk_panda_pdf_set(self,size,buf);
 }
 
 int

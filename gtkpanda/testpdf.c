@@ -15,7 +15,7 @@ static void clicked(GtkWidget *widget,
   gpointer p)
 {
 	gtk_panda_pdf_load(GTK_PANDA_PDF(pdf), 
-		gtk_entry_get_text(GTK_ENTRY(entry)));
+		(char*)gtk_entry_get_text(GTK_ENTRY(entry)));
 }
 
 int main( int   argc,
