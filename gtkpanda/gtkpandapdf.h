@@ -55,6 +55,8 @@ struct _GtkPandaPDF
   GtkWidget *scale;
   GtkWidget *scroll;
   GtkWidget *image;
+  GtkWidget *page_entry;
+  GtkWidget *page_label;
   GdkPixbuf *pixbuf;
   PopplerDocument *doc;
   double zoom;
@@ -82,6 +84,8 @@ struct _GtkPandaPDFClass
 extern GType gtk_panda_pdf_get_type (void);
 extern GtkWidget *gtk_panda_pdf_new (void);
 extern void gtk_panda_pdf_set (GtkPandaPDF *pps, int size, char *buff);
+extern void gtk_panda_pdf_load (GtkPandaPDF *pps, char *fname);
+extern int gtk_panda_pdf_get_page_count(GtkPandaPDF *pps);
 
 #ifdef __cplusplus
 }

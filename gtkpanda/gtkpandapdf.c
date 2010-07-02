@@ -102,8 +102,8 @@ void gtk_panda_pdf_zoom_fit_page(GtkPandaPDF *pdf);
 void gtk_panda_pdf_zoom_fit_width(GtkPandaPDF *pdf);
 void gtk_panda_pdf_zoom_in(GtkPandaPDF *pdf);
 void gtk_panda_pdf_zoom_out(GtkPandaPDF *pdf);
-void gtk_panda_pdf_page_next(GtkPandaPDF *pdf);
-void gtk_panda_pdf_page_prev(GtkPandaPDF *pdf);
+void gtk_panda_pdf_next_page(GtkPandaPDF *pdf);
+void gtk_panda_pdf_prev_page(GtkPandaPDF *pdf);
 void gtk_panda_pdf_save(GtkPandaPDF *pdf);
 void gtk_panda_pdf_print(GtkPandaPDF *pdf);
 
@@ -153,8 +153,8 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
   klass->zoom_fit_width = gtk_panda_pdf_zoom_fit_width;
   klass->zoom_in = gtk_panda_pdf_zoom_in;
   klass->zoom_out = gtk_panda_pdf_zoom_out;
-  klass->page_next = gtk_panda_pdf_page_next;
-  klass->page_prev = gtk_panda_pdf_page_prev;
+  klass->page_next = gtk_panda_pdf_next_page;
+  klass->page_prev = gtk_panda_pdf_prev_page;
   klass->save = gtk_panda_pdf_save;
   klass->print = gtk_panda_pdf_print;
 
@@ -490,26 +490,55 @@ gtk_panda_pdf_print(GtkPandaPDF *self)
 }
 
 void
-gtk_panda_pdf_page_next(GtkPandaPDF *self)
+gtk_panda_pdf_next_page(GtkPandaPDF *self)
 {
   int npage;
+  gchar buf[8];
 
   if (self->doc == NULL) return;
   npage = poppler_document_get_n_pages(self->doc);
   if (self->pageno < npage - 1) {
     self->pageno += 1;
+    sprintf(buf,"%d",self->pageno+1);
+    gtk_entry_set_text(GTK_ENTRY(self->page_entry),buf);
     render_page(self);
   }
 }
 
 void
-gtk_panda_pdf_page_prev(GtkPandaPDF *self)
+gtk_panda_pdf_prev_page(GtkPandaPDF *self)
 {
+  gchar buf[8];
+
   if (self->doc == NULL) return;
   if (self->pageno >= 1) {
     self->pageno -= 1;
+    sprintf(buf,"%d",self->pageno+1);
+    gtk_entry_set_text(GTK_ENTRY(self->page_entry),buf);
     render_page(self);
   }
+}
+
+void
+gtk_panda_pdf_goto_page(GtkPandaPDF *self,int page)
+{
+  int npage;
+  gchar buf[8];
+
+  if (self->doc == NULL) {
+    return;
+  }
+  npage = poppler_document_get_n_pages(self->doc);
+  if (page > npage - 1) {
+    page = npage - 1;
+  }
+  if (page < 0) {
+    page = 0;
+  }
+  self->pageno = page;
+  render_page(self);
+  sprintf(buf,"%d",self->pageno+1);
+  gtk_entry_set_text(GTK_ENTRY(self->page_entry),buf);
 }
 
 void
@@ -596,6 +625,24 @@ combo_changed_cb (GtkComboBox *combo, GtkPandaPDF *self)
 }
 
 static void
+prev_clicked_cb(GtkButton *button, GtkPandaPDF *self)
+{
+  gtk_panda_pdf_prev_page(self);
+}
+
+static void
+next_clicked_cb(GtkButton *button, GtkPandaPDF *self)
+{
+  gtk_panda_pdf_next_page(self);
+}
+
+static void
+page_entry_activated_cb(GtkEntry *entry,GtkPandaPDF *self)
+{
+  gtk_panda_pdf_goto_page(self,atoi(gtk_entry_get_text(entry))-1);
+}
+
+static void
 save_clicked_cb (GtkButton *button, GtkPandaPDF *self)
 {
   gtk_panda_pdf_save(self);
@@ -657,6 +704,8 @@ static void
 gtk_panda_pdf_init (GtkPandaPDF *self)
 {
   GtkWidget *hbox;
+  GtkWidget *prev_button;
+  GtkWidget *next_button;
   GtkWidget *print_button;
   GtkWidget *save_button;
   GtkWidget *child;
@@ -693,6 +742,26 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   self->data = NULL;
   self->size = 0;
   self->pan = FALSE;
+
+  /* prev button */
+  prev_button = gtk_button_new_from_stock(GTK_STOCK_GO_BACK);
+  g_signal_connect (G_OBJECT(prev_button), "clicked",
+    G_CALLBACK (prev_clicked_cb), self);
+
+  /* next button */
+  next_button = gtk_button_new_from_stock(GTK_STOCK_GO_FORWARD);
+  g_signal_connect (G_OBJECT(next_button), "clicked",
+    G_CALLBACK (next_clicked_cb), self);
+
+  /* page entry */
+  self->page_entry = gtk_entry_new();
+  g_signal_connect (G_OBJECT(self->page_entry), "activate",
+    G_CALLBACK (page_entry_activated_cb), self);
+  gtk_widget_set_usize(self->page_entry, 40,40);
+
+  /* page label */
+  self->page_label = gtk_label_new("");
+  gtk_widget_set_usize(self->page_label, 40,40);
 
   /* save button */
   save_button = gtk_button_new_from_stock(GTK_STOCK_SAVE);
@@ -739,6 +808,10 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   g_object_unref (store);
 
   hbox = gtk_hbox_new(FALSE, 0);
+  gtk_box_pack_start(GTK_BOX (hbox), prev_button, FALSE, FALSE, 2);
+  gtk_box_pack_start(GTK_BOX (hbox), next_button, FALSE, FALSE, 2);
+  gtk_box_pack_start(GTK_BOX (hbox), self->page_entry, FALSE, FALSE, 2);
+  gtk_box_pack_start(GTK_BOX (hbox), self->page_label, FALSE, FALSE, 2);
 
   gtk_box_pack_start(GTK_BOX (hbox), save_button, FALSE, FALSE, 2);
   gtk_box_pack_start(GTK_BOX (hbox), print_button, FALSE, FALSE, 2);
@@ -768,6 +841,7 @@ void
 gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
 {
   GError *error = NULL;
+  gchar buf[8];
 
   gtk_widget_hide(GTK_WIDGET(self->image));
   if (self->doc) {
@@ -792,5 +866,32 @@ gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
     return;
   }
   self->pageno = 0;
+  sprintf(buf,"/%d",poppler_document_get_n_pages(self->doc));
+  gtk_label_set_text(GTK_LABEL(self->page_label),buf);
+  sprintf(buf,"%d",self->pageno+1);
+  gtk_entry_set_text(GTK_ENTRY(self->page_entry),buf);
   render_page(self);
+}
+
+void
+gtk_panda_pdf_load(GtkPandaPDF *self, char *fname)
+{
+  GError *error = NULL;
+  gchar *buf;
+  gsize size;
+
+  if (!g_file_get_contents(fname,&buf,&size,&error)) {
+     g_error_free(error);
+    return;
+  }
+  gtk_panda_pdf_set(self,size,buf);
+}
+
+int
+gtk_panda_pdf_get_page_count(GtkPandaPDF *self)
+{
+  if (self->doc == NULL) {
+    return 0;
+  }
+  return poppler_document_get_n_pages(self->doc);
 }

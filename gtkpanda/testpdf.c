@@ -14,18 +14,8 @@ static void destroy( GtkWidget *widget,
 static void clicked(GtkWidget *widget,
   gpointer p)
 {
-	GError *error = NULL;
-	gchar *data;
-	gsize size = sizeof(data);
-
-	if (g_file_get_contents (gtk_entry_get_text(GTK_ENTRY(entry)), 
-		&data, &size, &error)) {
-		gtk_panda_pdf_set(GTK_PANDA_PDF(pdf), (int)size, data);
-		g_free(data);
-	} else {
-		fprintf(stderr, "error : %s\n", error->message);
-		g_error_free (error);
-	}
+	gtk_panda_pdf_load(GTK_PANDA_PDF(pdf), 
+		gtk_entry_get_text(GTK_ENTRY(entry)));
 }
 
 int main( int   argc,
@@ -42,7 +32,7 @@ int main( int   argc,
   g_signal_connect (G_OBJECT (window), "destroy",
       G_CALLBACK (destroy), NULL);
   gtk_container_set_border_width (GTK_CONTAINER (window), 0);
-  gtk_widget_set_size_request (window, 300, 300);
+  gtk_widget_set_size_request (window, 800, 600);
 
   vbox = gtk_vbox_new(FALSE,1);
   pdf = gtk_panda_pdf_new();
