@@ -105,7 +105,6 @@ void gtk_panda_pdf_zoom_out(GtkPandaPDF *pdf);
 void gtk_panda_pdf_next_page(GtkPandaPDF *pdf);
 void gtk_panda_pdf_prev_page(GtkPandaPDF *pdf);
 void gtk_panda_pdf_save(GtkPandaPDF *pdf);
-void gtk_panda_pdf_print(GtkPandaPDF *pdf);
 
 static void combo_changed_cb (GtkComboBox *combo, GtkPandaPDF *pdf);
 

@@ -26,7 +26,16 @@ int main( int   argc,
   GtkWidget *vbox;
   GtkWidget *hbox;
 
+
+
   gtk_init (&argc, &argv);
+
+#if 0
+  GtkWidget *pdf = gtk_panda_pdf_new();
+  gtk_panda_pdf_load(GTK_PANDA_PDF(pdf),"/tmp/1.pdf");
+  gtk_panda_pdf_print(GTK_PANDA_PDF(pdf));
+  exit(0);
+#endif
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   g_signal_connect (G_OBJECT (window), "destroy",
