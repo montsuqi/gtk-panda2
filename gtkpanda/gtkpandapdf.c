@@ -323,6 +323,7 @@ render_page(GtkPandaPDF *self)
   double zoom;
   PopplerPage *page;
 
+
   g_return_if_fail(self->doc);
   if (self->pixbuf) {
     g_object_unref(self->pixbuf);
@@ -339,6 +340,7 @@ render_page(GtkPandaPDF *self)
 
   poppler_page_render_to_pixbuf(page, 0, 0, 
     (int)(doc_w), (int)(doc_h), zoom, 0, self->pixbuf);
+  gtk_image_clear(GTK_IMAGE(self->image));
   gtk_image_set_from_pixbuf(GTK_IMAGE(self->image), self->pixbuf);
   g_object_unref(page);
 }
@@ -718,12 +720,17 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   self->image = gtk_image_new();
 
   self->scroll = gtk_scrolled_window_new(NULL, NULL);
+#if 0 // for glclient2 thread failure ; gtk2 bug?
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(self->scroll), 
     GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+#else
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(self->scroll), 
+    GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+#endif
   gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(self->scroll), 
     self->image);
   child = gtk_bin_get_child(GTK_BIN(self->scroll));
-  gtk_widget_set_events(child,
+  gtk_widget_add_events(child,
     GDK_BUTTON_PRESS_MASK
     | GDK_BUTTON_RELEASE_MASK
     | GDK_POINTER_MOTION_MASK
