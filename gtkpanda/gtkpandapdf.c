@@ -818,10 +818,10 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   gtk_box_pack_start(GTK_BOX (hbox), next_button, FALSE, FALSE, 2);
   gtk_box_pack_start(GTK_BOX (hbox), self->page_entry, FALSE, FALSE, 2);
   gtk_box_pack_start(GTK_BOX (hbox), self->page_label, FALSE, FALSE, 2);
+  gtk_box_pack_start(GTK_BOX (hbox), self->scale, FALSE, FALSE, 2);
 
   gtk_box_pack_start(GTK_BOX (hbox), save_button, FALSE, FALSE, 2);
   gtk_box_pack_start(GTK_BOX (hbox), print_button, FALSE, FALSE, 2);
-  gtk_box_pack_start(GTK_BOX (hbox), self->scale, FALSE, FALSE, 2);
 
   gtk_box_set_spacing(GTK_BOX(self), 2);
   gtk_box_set_homogeneous(GTK_BOX(self), FALSE);
