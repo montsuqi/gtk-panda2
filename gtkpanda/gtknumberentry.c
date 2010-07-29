@@ -366,6 +366,7 @@ dbgmsg(">gtk_entry_key_press");
     case GDK_Down:
       return (* GTK_WIDGET_CLASS (parent_class)->key_press_event) (widget, event);
     case GDK_Return:
+    case GDK_KP_Enter:
       return_val = TRUE;
       g_signal_emit_by_name (G_OBJECT (entry), "activate");
       break;
