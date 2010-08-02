@@ -173,8 +173,8 @@ gtk_panda_clist_set_column_width (
   col = gtk_tree_view_get_column(GTK_TREE_VIEW(clist), column);
   g_return_if_fail(col != NULL);
   gtk_tree_view_column_set_sizing(col, 
-    GTK_TREE_VIEW_COLUMN_FIXED);
-  gtk_tree_view_column_set_fixed_width(col, width);
+    GTK_TREE_VIEW_COLUMN_AUTOSIZE);
+  gtk_tree_view_column_set_min_width(col, width);
   gtk_tree_view_column_set_resizable(col, TRUE);
 }
 
