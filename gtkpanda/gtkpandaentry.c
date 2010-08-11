@@ -49,6 +49,25 @@ enum {
   PROP_ENABLE_IM,
 };
 
+#define GTK_PANDA_TYPE_INPUT_MODE (gtk_panda_type_input_mode_get_type())
+static GType
+gtk_panda_type_input_mode_get_type (void)
+{
+  static GType type = 0;
+  static const GEnumValue data[] = {
+    {GTK_PANDA_ENTRY_ASCII_MODE, "ASCII mode", "ascii_mode"},
+    {GTK_PANDA_ENTRY_KANA_MODE, "KANA mode", "kana_mode"},
+    {GTK_PANDA_ENTRY_IM_MODE, "IM mode", "im_mode"},
+    {0, NULL, NULL},
+  };
+
+  if (!type) {
+    type =
+        g_enum_register_static ("GtkPandaTypeInputMode", data);
+  }
+  return type;
+}
+
 static void gtk_panda_entry_class_init    (GtkPandaEntryClass *klass);
 static void gtk_panda_entry_init          (GtkPandaEntry     *entry);
 
@@ -123,12 +142,11 @@ gtk_panda_entry_class_init (GtkPandaEntryClass *klass)
 
   g_object_class_install_property (gobject_class,
     PROP_INPUT_MODE,
-    g_param_spec_int ("input_mode",
+    g_param_spec_enum ("input_mode",
                       _("Input Mode"),
                       _("The mode of input"),
-                      0,
-                      G_MAXINT,
-                      0,
+                      GTK_PANDA_TYPE_INPUT_MODE,
+                      GTK_PANDA_ENTRY_ASCII_MODE,
                       G_PARAM_READWRITE));
   
   g_object_class_install_property (gobject_class,
