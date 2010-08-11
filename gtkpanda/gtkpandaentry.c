@@ -134,7 +134,7 @@ gtk_panda_entry_class_init (GtkPandaEntryClass *klass)
   g_object_class_install_property (gobject_class,
     PROP_ENABLE_IM,
     g_param_spec_boolean ("enable-im",
-                          _("Enable input method controll"),
+                          _("Enable Input Method"),
                           _("Whether enable input method controll"),
                           FALSE,
                           G_PARAM_READWRITE));
