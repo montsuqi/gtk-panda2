@@ -462,7 +462,7 @@ gtk_panda_entry_set_property (GObject         *object,
   switch (prop_id)
     {
     case PROP_INPUT_MODE:
-      entry->input_mode = g_value_get_int(value);
+      entry->input_mode = g_value_get_enum(value);
       break;
     case PROP_ENABLE_IM:
       entry->im_enabled = g_value_get_boolean(value);
@@ -485,7 +485,7 @@ static void gtk_panda_entry_get_property (GObject         *object,
   switch (prop_id)
     {
     case PROP_INPUT_MODE:
-      g_value_set_int (value, entry->input_mode);
+      g_value_set_enum (value, entry->input_mode);
       break;
     case PROP_ENABLE_IM:
       g_value_set_boolean (value, entry->im_enabled);
