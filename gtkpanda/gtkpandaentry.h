@@ -55,7 +55,7 @@ struct _GtkPandaEntry
 {
   GtkEntry entry;
 
-  enum gtk_panda_entry_input_mode input_mode;
+  gint input_mode;
   gboolean im_enabled;
 };
 

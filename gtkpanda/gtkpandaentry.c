@@ -39,8 +39,15 @@
 #include <X11/Xlib.h>
 
 #include "config.h"
+#include "gtkpandaintl.h"
 #include "gtkpandaentry.h"
 #include "imcontrol.h"
+
+enum {
+  PROP_0,
+  PROP_INPUT_MODE,
+  PROP_ENABLE_IM,
+};
 
 static void gtk_panda_entry_class_init    (GtkPandaEntryClass *klass);
 static void gtk_panda_entry_init          (GtkPandaEntry     *entry);
@@ -56,6 +63,14 @@ static void gtk_panda_entry_insert_text   (GtkEditable       *editable,
 					   const gchar       *new_text,
 					   gint               new_text_length,
 					   gint              *position);
+static void  gtk_panda_entry_set_property       (GObject         *object,
+                       guint            prop_id,
+                       const GValue    *value,
+                       GParamSpec      *pspec);
+static void  gtk_panda_entry_get_property       (GObject         *object,
+                       guint            prop_id,
+                       GValue          *value,
+                       GParamSpec      *pspec);
 
 static GtkWidgetClass *parent_class = NULL;
 static gboolean force_im_disable = FALSE;
@@ -90,18 +105,39 @@ gtk_panda_entry_get_type (void)
 }
 
 static void
-gtk_panda_entry_class_init (GtkPandaEntryClass *class)
+gtk_panda_entry_class_init (GtkPandaEntryClass *klass)
 {
-  GtkObjectClass *object_class;
   GtkWidgetClass *widget_class;
+  GObjectClass *gobject_class;
 
-  object_class = (GtkObjectClass*) class;
-  widget_class = (GtkWidgetClass*) class;
   parent_class = gtk_type_class (GTK_TYPE_ENTRY);
 
+  widget_class = (GtkWidgetClass*) klass;
   widget_class->hide = gtk_panda_entry_hide;
   widget_class->focus_in_event = gtk_panda_entry_focus_in;
   widget_class->focus_out_event = gtk_panda_entry_focus_out;
+
+  gobject_class = (GObjectClass*) klass;
+  gobject_class->set_property = gtk_panda_entry_set_property; 
+  gobject_class->get_property = gtk_panda_entry_get_property; 
+
+  g_object_class_install_property (gobject_class,
+    PROP_INPUT_MODE,
+    g_param_spec_int ("input_mode",
+                      _("Input Mode"),
+                      _("The mode of input"),
+                      0,
+                      G_MAXINT,
+                      0,
+                      G_PARAM_READWRITE));
+  
+  g_object_class_install_property (gobject_class,
+    PROP_ENABLE_IM,
+    g_param_spec_boolean ("enable-im",
+                          _("Enable input method controll"),
+                          _("Whether enable input method controll"),
+                          FALSE,
+                          G_PARAM_READWRITE));
 }
 
 static void
@@ -411,6 +447,53 @@ gtk_panda_entry_insert_text (GtkEditable *editable,
    gtk_editable_set_position(editable, -1);
 
    g_free(prefix);
+}
+
+static void 
+gtk_panda_entry_set_property (GObject         *object,
+		      guint            prop_id,
+		      const GValue    *value,
+		      GParamSpec      *pspec)
+{
+  GtkPandaEntry *entry;
+
+  entry = GTK_PANDA_ENTRY (object);
+
+  switch (prop_id)
+    {
+    case PROP_INPUT_MODE:
+      entry->input_mode = g_value_get_int(value);
+      break;
+    case PROP_ENABLE_IM:
+      entry->im_enabled = g_value_get_boolean(value);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}
+
+static void gtk_panda_entry_get_property (GObject         *object,
+				  guint            prop_id,
+				  GValue          *value,
+				  GParamSpec      *pspec)
+{
+  GtkPandaEntry *entry;
+
+  entry = GTK_PANDA_ENTRY (object);
+
+  switch (prop_id)
+    {
+    case PROP_INPUT_MODE:
+      g_value_set_int (value, entry->input_mode);
+      break;
+    case PROP_ENABLE_IM:
+      g_value_set_boolean (value, entry->im_enabled);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
 }
 
 // public API
