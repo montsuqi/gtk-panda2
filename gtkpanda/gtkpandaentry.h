@@ -45,17 +45,17 @@ extern "C" {
 typedef struct _GtkPandaEntry       GtkPandaEntry;
 typedef struct _GtkPandaEntryClass  GtkPandaEntryClass;
 
-enum gtk_panda_entry_input_mode {
+typedef enum  {
   GTK_PANDA_ENTRY_ASCII_MODE,
   GTK_PANDA_ENTRY_KANA_MODE,
   GTK_PANDA_ENTRY_IM_MODE
-};
+}GtkPandaEntryInputMode;
 
 struct _GtkPandaEntry
 {
   GtkEntry entry;
 
-  gint input_mode;
+  GtkPandaEntryInputMode input_mode;
   gboolean im_enabled;
 };
 
@@ -68,7 +68,7 @@ GType gtk_panda_entry_get_type (void);
 GtkWidget* gtk_panda_entry_new (void);
 void gtk_panda_entry_set_input_mode (
 	GtkPandaEntry *entry, 
-	enum gtk_panda_entry_input_mode mode);
+	GtkPandaEntryInputMode mode);
 void gtk_panda_entry_set_im_enabled (GtkPandaEntry *entry, gboolean flag);
 
 #ifdef __cplusplus

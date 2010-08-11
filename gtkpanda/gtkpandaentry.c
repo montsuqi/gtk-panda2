@@ -500,7 +500,7 @@ static void gtk_panda_entry_get_property (GObject         *object,
 
 void
 gtk_panda_entry_set_input_mode (GtkPandaEntry *entry,
-				enum gtk_panda_entry_input_mode mode)
+				GtkPandaEntryInputMode mode)
 {
   entry->input_mode = mode;
 }
