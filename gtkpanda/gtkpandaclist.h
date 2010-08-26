@@ -39,7 +39,7 @@ extern "C" {
 #define GTK_PANDA_TYPE_CLIST			(gtk_panda_clist_get_type ())
 #define GTK_PANDA_CLIST(obj)			GTK_CHECK_CAST (obj, gtk_panda_clist_get_type (), GtkPandaCList)
 #define GTK_PANDA_CLIST_CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, gtk_panda_clist_get_type (), GtkPandaCListClass)
-#define GTK_PANDA_IS_CLIST(obj)			GTK_CHECK_TYPE (obj, gtk_panda_clist_get_type ())
+#define GTK_IS_PANDA_CLIST(obj)			GTK_CHECK_TYPE (obj, gtk_panda_clist_get_type ())
 
 typedef struct _GtkPandaCList		GtkPandaCList;
 typedef struct _GtkPandaCListClass	GtkPandaCListClass;

@@ -51,7 +51,7 @@ struct _GtkNumberEntry
 {
   GtkEntry parent;
   
-  char *format;
+  gchar *format;
   Numeric value;
   int scale;
   int expo;
@@ -65,7 +65,7 @@ struct _GtkNumberEntryClass
 GType      gtk_number_entry_get_type       (void);
 GtkWidget* gtk_number_entry_new            (void);
 GtkWidget* gtk_number_entry_new_with_max_length (guint16   max);
-GtkWidget* gtk_number_entry_new_with_format (char *fmt);
+GtkWidget* gtk_number_entry_new_with_format (gchar *fmt);
 
 void    gtk_number_entry_set_value(GtkNumberEntry *number_entry, 
                                    Numeric value);

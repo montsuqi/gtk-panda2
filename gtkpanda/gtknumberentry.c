@@ -36,6 +36,8 @@
 #include <gdk/gdki18n.h>
 #include <gtk/gtksignal.h>
 
+#include "config.h"
+#include "gtkpandaintl.h"
 #include "numeric.h"
 #include "gtknumberentry.h"
 #include "debug.h"
@@ -113,8 +115,8 @@ dbgmsg(">gtk_number_entry_class_init");
   g_object_class_install_property (gobject_class,
     PROP_FORMAT,
     g_param_spec_string ("format",
-    "Format",
-    "The format of the entry",
+    _("Format"),
+    _("The format of the entry"),
     "",
     G_PARAM_READWRITE))
 dbgmsg("<gtk_number_entry_class_init");

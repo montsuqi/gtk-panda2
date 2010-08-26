@@ -36,16 +36,10 @@
 #include "gtkpandaintl.h"
 #include "gtkpandaclist.h"
 
-static void gtk_panda_clist_class_init (GtkPandaCListClass *klass);
-static void gtk_panda_clist_init (GtkPandaCList *clist);
-
-static gboolean
-gtk_panda_clist_button_press (GtkWidget      *widget,
-  GdkEventButton *event);
-static void preserve_selection (GtkPandaCList *clist,
-  GList *selection);
-static void selection_changed (GtkTreeSelection *selection, 
-  gpointer user_data);
+enum {
+PROP_0,
+PROP_SHOW_TITLES
+};
 
 enum
 {
@@ -57,10 +51,31 @@ enum
 static GtkTreeViewClass *parent_class = NULL;
 static guint clist_signals [LAST_SIGNAL] = { 0 };
 
+static void gtk_panda_clist_class_init (GtkPandaCListClass *klass);
+static void gtk_panda_clist_init (GtkPandaCList *clist);
+
+static gboolean
+gtk_panda_clist_button_press (GtkWidget      *widget,
+  GdkEventButton *event);
+static void preserve_selection (GtkPandaCList *clist,
+  GList *selection);
+static void selection_changed (GtkTreeSelection *selection, 
+  gpointer user_data);
+
+static void  gtk_panda_clist_set_property       (GObject         *object,
+                       guint            prop_id,
+                       const GValue    *value,
+                       GParamSpec      *pspec);
+static void  gtk_panda_clist_get_property       (GObject         *object,
+                       guint            prop_id,
+                       GValue          *value,
+                       GParamSpec      *pspec);
+
+
 static void
 gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
 {
-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GtkObjectClass *gtk_object_class;
   GtkWidgetClass *widget_class;
 
@@ -72,7 +87,7 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
 
   clist_signals[SELECT_ROW] =
   g_signal_new ("select_row",
-        G_TYPE_FROM_CLASS (object_class),
+        G_TYPE_FROM_CLASS (gobject_class),
         G_SIGNAL_RUN_FIRST,
         G_STRUCT_OFFSET (GtkPandaCListClass, select_row),
         NULL, NULL,
@@ -83,7 +98,7 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
 
   clist_signals[UNSELECT_ROW] =
   g_signal_new ("unselect_row",
-        G_TYPE_FROM_CLASS (object_class),
+        G_TYPE_FROM_CLASS (gobject_class),
         G_SIGNAL_RUN_FIRST,
         G_STRUCT_OFFSET (GtkPandaCListClass, unselect_row),
         NULL, NULL,
@@ -91,6 +106,17 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
         G_TYPE_NONE, 2,
         G_TYPE_INT,
         G_TYPE_INT);
+
+  gobject_class->set_property = gtk_panda_clist_set_property; 
+  gobject_class->get_property = gtk_panda_clist_get_property; 
+
+  g_object_class_install_property (gobject_class,
+    PROP_SHOW_TITLES,
+    g_param_spec_boolean ("show-titles",
+                          _("Show header titles"),
+                          _("Whether show header titles"),
+                          TRUE,
+                          G_PARAM_READWRITE));
 }
 
 static void
@@ -184,7 +210,7 @@ gtk_panda_clist_clear (GtkPandaCList *clist)
   GtkTreeModel *model;
   GtkTreeIter iter;
   g_return_if_fail(clist != NULL);
-  g_return_if_fail(GTK_PANDA_IS_CLIST(clist));
+  g_return_if_fail(GTK_IS_PANDA_CLIST(clist));
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
   if (gtk_tree_model_get_iter_first(model, &iter)) {
@@ -206,7 +232,7 @@ gtk_panda_clist_append  (
   GValue *value;
   
   g_return_if_fail(clist != NULL);
-  g_return_if_fail(GTK_PANDA_IS_CLIST(clist));
+  g_return_if_fail(GTK_IS_PANDA_CLIST(clist));
 
   store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(clist)));
   ncols = gtk_tree_model_get_n_columns(GTK_TREE_MODEL(store));
@@ -228,7 +254,7 @@ gtk_panda_clist_get_n_rows(
   gint nrows;
 
   g_return_val_if_fail (clist != NULL, 0);
-  g_return_val_if_fail (GTK_PANDA_IS_CLIST (clist), 0);
+  g_return_val_if_fail (GTK_IS_PANDA_CLIST (clist), 0);
 
   nrows = 0; 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
@@ -248,7 +274,7 @@ gtk_panda_clist_get_n_columns(
   GtkListStore *store;
 
   g_return_val_if_fail(clist != NULL, 0);
-  g_return_val_if_fail(GTK_PANDA_IS_CLIST(clist), 0);
+  g_return_val_if_fail(GTK_IS_PANDA_CLIST(clist), 0);
 
   store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(clist)));
   return gtk_tree_model_get_n_columns(GTK_TREE_MODEL(store));
@@ -266,7 +292,7 @@ gtk_panda_clist_moveto (
   GtkTreeViewColumn *col;
 
   g_return_if_fail (clist != NULL);
-  g_return_if_fail (GTK_PANDA_IS_CLIST (clist));
+  g_return_if_fail (GTK_IS_PANDA_CLIST (clist));
 
   path = gtk_tree_path_new_from_indices(row, -1);
   col = gtk_tree_view_get_column(GTK_TREE_VIEW(clist), column);
@@ -471,4 +497,47 @@ static void selection_changed(GtkTreeSelection *selection,
     // now don't return ROW, COLUMN.
     g_signal_emit (clist, clist_signals[UNSELECT_ROW], 0, 0, 0);
   }
+}
+
+static void 
+gtk_panda_clist_set_property (GObject         *object,
+		      guint            prop_id,
+		      const GValue    *value,
+		      GParamSpec      *pspec)
+{
+  GtkPandaCList *clist;
+
+  g_return_if_fail(GTK_IS_PANDA_CLIST(object));
+  clist = GTK_PANDA_CLIST (object);
+
+  switch (prop_id)
+    {
+    case PROP_SHOW_TITLES:
+      clist->show_titles = g_value_get_enum(value);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}
+
+static void gtk_panda_clist_get_property (GObject         *object,
+				  guint            prop_id,
+				  GValue          *value,
+				  GParamSpec      *pspec)
+{
+  GtkPandaCList *clist;
+
+  g_return_if_fail(GTK_IS_PANDA_CLIST(object));
+  clist = GTK_PANDA_CLIST (object);
+
+  switch (prop_id)
+    {
+    case PROP_SHOW_TITLES:
+      g_value_set_boolean (value, clist->show_titles);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
 }
