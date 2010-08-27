@@ -475,6 +475,7 @@ gtk_panda_entry_set_property (GObject         *object,
 {
   GtkPandaEntry *entry;
 
+  g_return_if_fail(GTK_IS_PANDA_ENTRY(object));
   entry = GTK_PANDA_ENTRY (object);
 
   switch (prop_id)
@@ -498,6 +499,7 @@ static void gtk_panda_entry_get_property (GObject         *object,
 {
   GtkPandaEntry *entry;
 
+  g_return_if_fail(GTK_IS_PANDA_ENTRY(object));
   entry = GTK_PANDA_ENTRY (object);
 
   switch (prop_id)

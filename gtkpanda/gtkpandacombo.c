@@ -36,6 +36,13 @@
 #include "gtkpandaintl.h"
 #include "gtkpandacombo.h"
 
+enum {
+	PROP_0,
+	PROP_CASE_SENSITIVE,
+	PROP_USE_ARROWS,
+	PROP_LOOP_SELECTION
+};
+
 static void gtk_panda_combo_class_init(GtkPandaComboClass *klass);
 static void gtk_panda_combo_init(GtkPandaCombo *combo);
 
@@ -59,24 +66,59 @@ static void gtk_panda_combo_completion(GtkPandaCombo *combo);
 static void gtk_panda_combo_select_previous(GtkPandaCombo *combo);
 static void gtk_panda_combo_select_next(GtkPandaCombo *combo);
 
+static void  gtk_panda_combo_set_property       (GObject         *object,
+                       guint            prop_id,
+                       const GValue    *value,
+                       GParamSpec      *pspec);
+static void  gtk_panda_combo_get_property       (GObject         *object,
+                       guint            prop_id,
+                       GValue          *value,
+                       GParamSpec      *pspec);
+
 static GtkComboBoxClass *parent_class = NULL;
 
 static void
 gtk_panda_combo_class_init (GtkPandaComboClass * klass)
 {
-  GtkObjectClass *oclass;
+  GObjectClass *gobject_class;
   GtkWidgetClass *widget_class;
   GtkComboBoxClass *combo_class;
 
-  oclass = (GtkObjectClass *) klass;
   widget_class = (GtkWidgetClass *) klass;
   widget_class->mnemonic_activate = gtk_panda_combo_mnemonic_activate;
   widget_class->grab_focus = gtk_panda_combo_grab_focus;
 
   parent_class = gtk_type_class (GTK_TYPE_COMBO_BOX);
-
   combo_class = (GtkComboBoxClass *)klass;
   combo_class->get_active_text = gtk_panda_combo_get_active_text;
+
+  gobject_class = G_OBJECT_CLASS(klass);
+  gobject_class->set_property = gtk_panda_combo_set_property; 
+  gobject_class->get_property = gtk_panda_combo_get_property; 
+
+  g_object_class_install_property (gobject_class,
+    PROP_CASE_SENSITIVE,
+    g_param_spec_boolean ("case-sensitive",
+                          _("Case Sensitive"),
+                          _("Case Sensitive"),
+                          TRUE,
+                          G_PARAM_READWRITE));
+
+  g_object_class_install_property (gobject_class,
+    PROP_USE_ARROWS,
+    g_param_spec_boolean ("use-arrows",
+                          _("Use Arrows"),
+                          _("Use Arrows"),
+                          TRUE,
+                          G_PARAM_READWRITE));
+
+  g_object_class_install_property (gobject_class,
+    PROP_LOOP_SELECTION,
+    g_param_spec_boolean ("loop-selection",
+                          _("Loop Selection"),
+                          _("Loop Selection"),
+                          TRUE,
+                          G_PARAM_READWRITE));
 }
 
 static void
@@ -107,13 +149,9 @@ gtk_panda_combo_init (GtkPandaCombo * combo)
   // for set focusable false to popup button
   gtk_container_forall(GTK_CONTAINER(combo), set_focusable, NULL);
  
-  combo->case_sensitive = 0;
-  combo->value_in_list = 0;
-  combo->ok_if_empty = 1;
-  combo->use_arrows = 1;
-  combo->use_arrows_always = 0;
-
-  combo->activate_id = 0;
+  combo->case_sensitive = FALSE;
+  combo->use_arrows = TRUE;
+  combo->loop_selection = FALSE;
 
   g_signal_connect(combo->entry, "changed",
     G_CALLBACK(gtk_panda_combo_contents_changed), combo);
@@ -464,7 +502,7 @@ gtk_panda_combo_select_previous(GtkPandaCombo *combo)
     }
   }
   if (p == 0) {
-    if (combo->use_arrows_always)
+    if (combo->loop_selection)
       item = g_list_nth_data(list, g_list_length(list) - 1);
     else
       item = NULL;
@@ -504,7 +542,7 @@ gtk_panda_combo_select_next(GtkPandaCombo *combo)
 	if (strlen(item) > 0) {
       if (!strncmp(text, item, strlen(item))) {
         if (i == g_list_length(list) - 1) {
-          if (combo->use_arrows_always)
+          if (combo->loop_selection)
             item = g_list_nth_data(list, 0);
           else
             break;
@@ -535,7 +573,7 @@ gtk_panda_combo_select_next(GtkPandaCombo *combo)
     }
   }
   if (p == g_list_length(list) - 1) {
-    if (combo->use_arrows_always)
+    if (combo->loop_selection)
       item = g_list_nth_data(list, 0);
     else
       item = NULL;
@@ -554,46 +592,89 @@ gtk_panda_combo_select_next(GtkPandaCombo *combo)
   g_free(text);
 }
 
+static void 
+gtk_panda_combo_set_property (GObject         *object,
+		      guint            prop_id,
+		      const GValue    *value,
+		      GParamSpec      *pspec)
+{
+  GtkPandaCombo *combo;
+
+  g_return_if_fail(GTK_IS_PANDA_COMBO(object));
+  combo = GTK_PANDA_COMBO (object);
+
+  switch (prop_id)
+    {
+    case PROP_CASE_SENSITIVE:
+      combo->case_sensitive = g_value_get_boolean(value);
+      break;
+    case PROP_USE_ARROWS:
+      combo->use_arrows = g_value_get_boolean(value);
+      break;
+    case PROP_LOOP_SELECTION:
+      combo->loop_selection = g_value_get_boolean(value);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}
+
+static void gtk_panda_combo_get_property (GObject         *object,
+				  guint            prop_id,
+				  GValue          *value,
+				  GParamSpec      *pspec)
+{
+  GtkPandaCombo *combo;
+
+  g_return_if_fail(GTK_IS_PANDA_COMBO(object));
+  combo = GTK_PANDA_COMBO (object);
+
+  switch (prop_id)
+    {
+    case PROP_CASE_SENSITIVE:
+      g_value_set_boolean (value, combo->case_sensitive);
+      break;
+    case PROP_USE_ARROWS:
+      g_value_set_boolean (value, combo->use_arrows);
+      break;
+    case PROP_LOOP_SELECTION:
+      g_value_set_boolean (value, combo->loop_selection);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}
+
 // public API
 
 void
-gtk_panda_combo_set_value_in_list (GtkPandaCombo *combo, 
-  gint val, 
-  gint ok_if_empty)
+gtk_panda_combo_set_case_sensitive (GtkPandaCombo * combo, gboolean val)
 {
   g_return_if_fail (combo != NULL);
-  g_return_if_fail (GTK_PANDA_IS_COMBO (combo));
-
-  combo->value_in_list = val;
-  combo->ok_if_empty = ok_if_empty;
-}
-
-void
-gtk_panda_combo_set_case_sensitive (GtkPandaCombo * combo, gint val)
-{
-  g_return_if_fail (combo != NULL);
-  g_return_if_fail (GTK_PANDA_IS_COMBO (combo));
+  g_return_if_fail (GTK_IS_PANDA_COMBO (combo));
 
   combo->case_sensitive = val;
 }
 
 void
-gtk_panda_combo_set_use_arrows (GtkPandaCombo * combo, gint val)
+gtk_panda_combo_set_use_arrows (GtkPandaCombo * combo, gboolean val)
 {
   g_return_if_fail (combo != NULL);
-  g_return_if_fail (GTK_PANDA_IS_COMBO (combo));
+  g_return_if_fail (GTK_IS_PANDA_COMBO (combo));
 
   combo->use_arrows = val;
 }
 
 void
-gtk_panda_combo_set_use_arrows_always (GtkPandaCombo * combo, gint val)
+gtk_panda_combo_set_loop_selection (GtkPandaCombo * combo, gboolean val)
 {
   g_return_if_fail (combo != NULL);
-  g_return_if_fail (GTK_PANDA_IS_COMBO (combo));
+  g_return_if_fail (GTK_IS_PANDA_COMBO (combo));
 
-  combo->use_arrows_always = val;
-  combo->use_arrows = 1;
+  combo->loop_selection = val;
+  combo->use_arrows = TRUE;
 }
 
 void
@@ -603,7 +684,7 @@ gtk_panda_combo_set_popdown_strings (GtkPandaCombo * combo, GList * strings)
   GList *list;
   
   g_return_if_fail (combo != NULL);
-  g_return_if_fail (GTK_PANDA_IS_COMBO (combo));
+  g_return_if_fail (GTK_IS_PANDA_COMBO (combo));
   g_return_if_fail (strings != NULL);
   store = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(combo)));
   gtk_list_store_clear(store);

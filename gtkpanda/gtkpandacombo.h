@@ -40,7 +40,7 @@ extern "C" {
 #define GTK_PANDA_TYPE_COMBO			(gtk_panda_combo_get_type ())
 #define GTK_PANDA_COMBO(obj)			GTK_CHECK_CAST (obj, gtk_panda_combo_get_type (), GtkPandaCombo)
 #define GTK_PANDA_COMBO_CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, gtk_panda_combo_get_type (), GtkPandaComboClass)
-#define GTK_PANDA_IS_COMBO(obj)			GTK_CHECK_TYPE (obj, gtk_panda_combo_get_type ())
+#define GTK_IS_PANDA_COMBO(obj)			GTK_CHECK_TYPE (obj, gtk_panda_combo_get_type ())
 
 typedef struct _GtkPandaCombo		GtkPandaCombo;
 typedef struct _GtkPandaComboClass	GtkPandaComboClass;
@@ -49,17 +49,10 @@ typedef struct _GtkPandaComboClass	GtkPandaComboClass;
 struct _GtkPandaCombo {
   GtkComboBox box;
 
-  guint entry_change_id;
-  guint list_change_id;
+  gboolean case_sensitive:1;
+  gboolean use_arrows:1;
+  gboolean loop_selection:1;
 
-  guint value_in_list:1;
-  guint ok_if_empty:1;
-  guint case_sensitive:1;
-  guint use_arrows:1;
-  guint use_arrows_always:1;
-
-  guint16 current_button;
-  guint activate_id;
   GtkWidget *entry;
 };
 
@@ -75,26 +68,20 @@ GType gtk_panda_combo_get_type(void);
 
 GtkWidget *gtk_panda_combo_new(void);
 
-/* the in the entry must be or not be in the list */
-void gtk_panda_combo_set_value_in_list(
-       GtkPandaCombo* combo, 
-       gint val,
-       gint ok_if_empty);
-
 /* sett arrows working for changing the value (can be annoying */
 void gtk_panda_combo_set_use_arrows(
        GtkPandaCombo* combo, 
-       gint val);
+       gboolean enabled);
 
 /* up/arrows change value if current value not in list */
-void gtk_panda_combo_set_use_arrows_always(
+void gtk_panda_combo_set_loop_selection(
        GtkPandaCombo* combo, 
-       gint val);
+       gboolean enabled);
 
 /* percase-sensitive compares */
 void gtk_panda_combo_set_case_sensitive(
        GtkPandaCombo* combo, 
-       gint val);
+       gboolean enabled);
 
 /* simnterface */
 void gtk_panda_combo_set_popdown_strings(
