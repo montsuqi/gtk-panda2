@@ -60,8 +60,8 @@ struct _GtkPandaHTMLClass
 
 GType gtk_panda_html_get_type (void);
 GtkWidget* gtk_panda_html_new (void);
-char *gtk_panda_html_get_uri (GtkPandaHTML *html);
-void gtk_panda_html_set_uri (GtkPandaHTML *html, const char *uri);
+gchar *gtk_panda_html_get_uri (GtkPandaHTML *html);
+void gtk_panda_html_set_uri (GtkPandaHTML *html, const gchar *uri);
 
 #ifdef __cplusplus
 }

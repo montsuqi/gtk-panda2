@@ -49,6 +49,12 @@ enum
   LAST_SIGNAL
 };
 
+
+enum {
+  PROP_0,
+  PROP_URI
+};
+
 static GtkMozEmbedClass *parent_class = NULL;
 static guint signals [LAST_SIGNAL] = { 0 };
 
@@ -59,6 +65,16 @@ static gboolean open_uri_cb(GtkMozEmbed *embed,
   const char *uri, gpointer data);
 static void new_window_cb(GtkMozEmbed *embed,
   GtkMozEmbed **retval, guint chromemask, gpointer data);
+static void gtk_panda_html_set_property (
+  GObject         *object,
+  guint           prop_id,
+  const GValue    *value,
+  GParamSpec      *pspec);
+static void gtk_panda_html_get_property (
+  GObject         *object,
+  guint           prop_id,
+  GValue          *value,
+  GParamSpec      *psec);
 
 GType
 gtk_panda_html_get_type (void)
@@ -92,18 +108,21 @@ gtk_panda_html_get_type (void)
 static void 
 gtk_panda_html_class_init (GtkPandaHTMLClass *klass)
 {
-  GObjectClass *object_class;
+  GObjectClass *gobject_class;
   GtkObjectClass *gtk_object_class;
   GtkWidgetClass *widget_class;
 
-  object_class = G_OBJECT_CLASS(klass);
+  gobject_class = G_OBJECT_CLASS(klass);
   gtk_object_class = (GtkObjectClass*) klass;
   widget_class = (GtkWidgetClass*) klass;
   parent_class = (GtkMozEmbedClass *)gtk_type_class (GTK_TYPE_MOZ_EMBED);
 
+  gobject_class->set_property = gtk_panda_html_set_property;
+  gobject_class->get_property = gtk_panda_html_get_property;
+
   signals[ACTIVATE] =
   g_signal_new ("activate",
-        G_TYPE_FROM_CLASS (object_class),
+        G_TYPE_FROM_CLASS (gobject_class),
         G_SIGNAL_RUN_LAST,
         G_STRUCT_OFFSET (GtkPandaHTMLClass, activate),
         NULL, NULL,
@@ -249,16 +268,60 @@ new_window_cb(GtkMozEmbed *embed,
   return;
 }
 
+static void
+gtk_panda_html_set_property (
+  GObject      *object,
+  guint        prop_id,
+  const GValue *value,
+  GParamSpec   *pspec)
+{
+  GtkPandaHTML  *html;
+
+  g_return_if_fail(GTK_IS_PANDA_HTML(object));
+  html = GTK_PANDA_HTML (object);
+  
+  switch  (prop_id)  {
+    case PROP_URI:
+      gtk_panda_html_set_uri(html, g_value_get_string(value));
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
+}
+
+static void
+gtk_panda_html_get_property (
+  GObject      *object,
+  guint        prop_id,
+  GValue       *value,
+  GParamSpec    *pspec)
+{
+  GtkPandaHTML  *html;
+
+  g_return_if_fail(GTK_IS_PANDA_HTML(html));
+  html = GTK_PANDA_HTML (html);
+  
+  switch (prop_id) {
+    case PROP_URI:
+      g_value_set_string(value, gtk_panda_html_get_uri(html));
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
+}
+
 // public API
 
-char *
+gchar *
 gtk_panda_html_get_uri (GtkPandaHTML *html)
 {
   return gtk_moz_embed_get_location(GTK_MOZ_EMBED(html));
 }
 
 void
-gtk_panda_html_set_uri (GtkPandaHTML *html, const char *uri)
+gtk_panda_html_set_uri (GtkPandaHTML *html, const gchar *uri)
 {
   if (getenv("GTK_PANDA_HTML_DISABLE") == NULL) {
     gtk_moz_embed_load_url(GTK_MOZ_EMBED(html), uri);
