@@ -298,8 +298,8 @@ gtk_panda_html_get_property (
 {
   GtkPandaHTML  *html;
 
-  g_return_if_fail(GTK_IS_PANDA_HTML(html));
-  html = GTK_PANDA_HTML (html);
+  g_return_if_fail(GTK_IS_PANDA_HTML(object));
+  html = GTK_PANDA_HTML (object);
   
   switch (prop_id) {
     case PROP_URI:
