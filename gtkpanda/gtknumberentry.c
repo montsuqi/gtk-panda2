@@ -118,7 +118,7 @@ dbgmsg(">gtk_number_entry_class_init");
     _("Format"),
     _("The format of the entry"),
     "",
-    G_PARAM_READWRITE))
+    G_PARAM_READWRITE));
 dbgmsg("<gtk_number_entry_class_init");
 }
 
