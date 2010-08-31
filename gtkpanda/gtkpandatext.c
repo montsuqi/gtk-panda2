@@ -235,7 +235,7 @@ gtk_panda_text_set_property (
   switch  (prop_id)  {
     case PROP_TEXT:
       buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
-      str = g_value_get_string(value);
+      str = (gchar*)g_value_get_string(value);
       gtk_text_buffer_set_text(buf, str, strlen(str));
       break;
     case PROP_ENABLE_IM:
@@ -256,6 +256,8 @@ gtk_panda_text_get_property (
 {
   GtkPandaText  *text;
   GtkTextBuffer *buf;
+  GtkTextIter start;
+  GtkTextIter end;
   gchar *str;
 
   g_return_if_fail(GTK_IS_PANDA_TEXT(object));
@@ -264,7 +266,9 @@ gtk_panda_text_get_property (
   switch (prop_id) {
     case PROP_TEXT:
       buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
-      str = gtk_text_buffer_get_text(buf,0,-1,TRUE);
+	  gtk_text_buffer_get_start_iter(buf, &start);
+	  gtk_text_buffer_get_end_iter(buf, &end);
+      str = gtk_text_buffer_get_text(buf,&start,&end,FALSE);
       g_value_set_string(value, g_strdup(str));
       break;
     case PROP_ENABLE_IM:
