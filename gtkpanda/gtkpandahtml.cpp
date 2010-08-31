@@ -203,7 +203,6 @@ gtk_panda_html_set_proxy(void)
   char *env;
   char *head;
   char *tail;
-  char *p;
   char *host;
   char *port;
 
