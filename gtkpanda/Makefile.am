@@ -2,7 +2,7 @@
 
 AUTOMAKE_OPTIONS = 1.4
 
-LTVERSION = 2:0:1
+LTVERSION = 2:1:0
 
 gtkpanda_public_h_sources = \
 	debug.h 				\
