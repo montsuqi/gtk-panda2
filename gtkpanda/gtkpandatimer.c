@@ -36,16 +36,29 @@
 #include "gtkpandaintl.h"
 #include "gtkpandatimer.h"
 
-static void gtk_panda_timer_class_init    (GtkPandaTimerClass *klass);
-static void gtk_panda_timer_init          (GtkPandaTimer      *timer);
-
-static GtkWidgetClass *parent_class = NULL;
-
 enum {
   TIMEOUT,
   LAST_SIGNAL
 };
+
+enum {
+  PROP_0,
+  PROP_DURATION,
+};
+
 static guint timer_signals[LAST_SIGNAL] = {0,};
+static GtkWidgetClass *parent_class = NULL;
+
+static void gtk_panda_timer_class_init    (GtkPandaTimerClass *klass);
+static void gtk_panda_timer_init          (GtkPandaTimer      *timer);
+static void gtk_panda_timer_set_property       (GObject         *object,
+                      guint            prop_id,
+                      const GValue    *value,
+                      GParamSpec      *pspec);
+static void gtk_panda_timer_get_property       (GObject         *object,
+                       guint            prop_id,
+                       GValue          *value,
+                       GParamSpec      *pspec);
 
 GType
 gtk_panda_timer_get_type (void)
@@ -77,23 +90,77 @@ gtk_panda_timer_get_type (void)
 }
 
 static void
-gtk_panda_timer_class_init (GtkPandaTimerClass *class)
+gtk_panda_timer_class_init (GtkPandaTimerClass *klass)
 {
-  GtkObjectClass *object_class;
-  GtkWidgetClass *widget_class;
+  GObjectClass *gobject_class;
 
-  object_class = (GtkObjectClass*) class;
-  widget_class = (GtkWidgetClass*) class;
+  gobject_class = G_OBJECT_CLASS(klass);
   parent_class = gtk_type_class (GTK_TYPE_WIDGET);
 
+  gobject_class->set_property = gtk_panda_timer_set_property; 
+  gobject_class->get_property = gtk_panda_timer_get_property; 
+
+  g_object_class_install_property (gobject_class,
+    PROP_DURATION,
+    g_param_spec_uint ("duration",
+                      _("Duration"),
+                      _("Duration"),
+                      0,     // min
+                      1000,  // max
+                      0,     // default
+                      G_PARAM_READWRITE));
+  
   timer_signals[TIMEOUT] =
     g_signal_new ("timeout",
-                  G_OBJECT_CLASS_TYPE (class),
+                  G_OBJECT_CLASS_TYPE (klass),
                   G_SIGNAL_RUN_LAST,
                   G_STRUCT_OFFSET (GtkPandaTimerClass, timeout),
                   NULL, NULL,
                   g_cclosure_marshal_VOID__VOID,
                   G_TYPE_NONE, 0);
+}
+
+static void 
+gtk_panda_timer_set_property (GObject         *object,
+		      guint            prop_id,
+		      const GValue    *value,
+		      GParamSpec      *pspec)
+{
+  GtkPandaTimer *timer;
+
+  g_return_if_fail(GTK_IS_PANDA_TIMER(object));
+  timer = GTK_PANDA_TIMER (object);
+
+  switch (prop_id)
+    {
+    case PROP_DURATION:
+      timer->duration = g_value_get_uint(value);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}
+
+static void gtk_panda_timer_get_property (GObject         *object,
+				  guint            prop_id,
+				  GValue          *value,
+				  GParamSpec      *pspec)
+{
+  GtkPandaTimer *timer;
+
+  g_return_if_fail(GTK_IS_PANDA_TIMER(object));
+  timer = GTK_PANDA_TIMER (object);
+
+  switch (prop_id)
+    {
+    case PROP_DURATION:
+      g_value_set_uint (value, timer->duration);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
 }
 
 static void
