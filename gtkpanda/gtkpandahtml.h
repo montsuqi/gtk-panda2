@@ -48,12 +48,13 @@ typedef struct _GtkPandaHTMLClass  GtkPandaHTMLClass;
 
 struct _GtkPandaHTML
 {
-  GtkMozEmbed html;
+  GtkVBox parent;
+  GtkWidget *mozembed;
 };
 
 struct _GtkPandaHTMLClass
 {
-  GtkMozEmbedClass parent_class;
+  GtkVBoxClass parent_class;
 
   void (*activate) (GtkPandaHTML *html, gpointer data);
 };

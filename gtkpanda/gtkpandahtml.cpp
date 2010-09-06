@@ -55,7 +55,7 @@ enum {
   PROP_URI
 };
 
-static GtkMozEmbedClass *parent_class = NULL;
+static GtkVBoxClass *parent_class = NULL;
 static guint signals [LAST_SIGNAL] = { 0 };
 
 static void gtk_panda_html_class_init(GtkPandaHTMLClass *klass);
@@ -96,7 +96,7 @@ gtk_panda_html_get_type (void)
         (GInstanceInitFunc) gtk_panda_html_init
       };
 
-      type = g_type_register_static( GTK_TYPE_MOZ_EMBED,
+      type = g_type_register_static( GTK_TYPE_VBOX,
                                      "GtkPandaHTML",
                                      &info,
                                      (GTypeFlags)0);
@@ -115,7 +115,7 @@ gtk_panda_html_class_init (GtkPandaHTMLClass *klass)
   gobject_class = G_OBJECT_CLASS(klass);
   gtk_object_class = (GtkObjectClass*) klass;
   widget_class = (GtkWidgetClass*) klass;
-  parent_class = (GtkMozEmbedClass *)gtk_type_class (GTK_TYPE_MOZ_EMBED);
+  parent_class = (GtkVBoxClass *)gtk_type_class (GTK_TYPE_VBOX);
 
   gobject_class->set_property = gtk_panda_html_set_property;
   gobject_class->get_property = gtk_panda_html_get_property;
@@ -132,13 +132,16 @@ gtk_panda_html_class_init (GtkPandaHTMLClass *klass)
 }
 
 static void
-gtk_panda_html_init (GtkPandaHTML *html)
+gtk_panda_html_init (GtkPandaHTML *self)
 {
   gtk_panda_html_set_proxy();
-  g_signal_connect(GTK_MOZ_EMBED(html), "open-uri",
+  self->mozembed = gtk_moz_embed_new();
+  g_signal_connect(GTK_MOZ_EMBED(self->mozembed), "open-uri",
     G_CALLBACK(open_uri_cb), NULL);
-  g_signal_connect(GTK_MOZ_EMBED(html), "new-window",
+  g_signal_connect(GTK_MOZ_EMBED(self->mozembed), "new-window",
     G_CALLBACK(new_window_cb), NULL);
+  gtk_box_pack_start(GTK_BOX (self), GTK_WIDGET(self->mozembed), TRUE, TRUE, 0);
+  gtk_widget_show_all(GTK_WIDGET(self));
 }
 
 GtkWidget*
@@ -314,15 +317,15 @@ gtk_panda_html_get_property (
 // public API
 
 gchar *
-gtk_panda_html_get_uri (GtkPandaHTML *html)
+gtk_panda_html_get_uri (GtkPandaHTML *self)
 {
-  return gtk_moz_embed_get_location(GTK_MOZ_EMBED(html));
+  return gtk_moz_embed_get_location(GTK_MOZ_EMBED(self->mozembed));
 }
 
 void
-gtk_panda_html_set_uri (GtkPandaHTML *html, const gchar *uri)
+gtk_panda_html_set_uri (GtkPandaHTML *self, const gchar *uri)
 {
   if (getenv("GTK_PANDA_HTML_DISABLE") == NULL) {
-    gtk_moz_embed_load_url(GTK_MOZ_EMBED(html), uri);
+    gtk_moz_embed_load_url(GTK_MOZ_EMBED(self->mozembed), uri);
   }
 }
