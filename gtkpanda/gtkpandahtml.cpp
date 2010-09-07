@@ -120,6 +120,14 @@ gtk_panda_html_class_init (GtkPandaHTMLClass *klass)
   gobject_class->set_property = gtk_panda_html_set_property;
   gobject_class->get_property = gtk_panda_html_get_property;
 
+  g_object_class_install_property (gobject_class,
+    PROP_URI,
+    g_param_spec_string ("url",
+    _("URI"),
+    _("URI"),
+    "",
+    (GParamFlags)G_PARAM_READWRITE));
+
   signals[ACTIVATE] =
   g_signal_new ("activate",
         G_TYPE_FROM_CLASS (gobject_class),
