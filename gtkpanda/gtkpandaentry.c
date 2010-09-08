@@ -55,9 +55,9 @@ gtk_panda_type_input_mode_get_type (void)
 {
   static GType type = 0;
   static const GEnumValue data[] = {
-    {GTK_PANDA_ENTRY_ASCII_MODE, "ASCII mode", "ascii_mode"},
-    {GTK_PANDA_ENTRY_KANA_MODE, "KANA mode", "kana_mode"},
-    {GTK_PANDA_ENTRY_IM_MODE, "IM mode", "im_mode"},
+    {GTK_PANDA_ENTRY_ASCII_MODE, "GTK_PANDA_ENTRY_ASCII_MODE", "ascii"},
+    {GTK_PANDA_ENTRY_KANA_MODE, "GTK_PANDA_ENTRY_KANA_MODE", "kana"},
+    {GTK_PANDA_ENTRY_IM_MODE, "GTK_PANDA_ENTRY_IM_MODE", "im"},
     {0, NULL, NULL},
   };
 
