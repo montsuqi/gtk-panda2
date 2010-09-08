@@ -513,7 +513,7 @@ gtk_panda_clist_set_property (GObject         *object,
   switch (prop_id)
     {
     case PROP_SHOW_TITLES:
-      clist->show_titles = g_value_get_enum(value);
+      clist->show_titles = g_value_get_boolean(value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
