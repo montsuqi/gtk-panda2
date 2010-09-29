@@ -27,6 +27,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <glib-object.h>
@@ -38,7 +39,9 @@
 
 enum {
 PROP_0,
-PROP_SHOW_TITLES
+PROP_SHOW_TITLES,
+PROP_N_COLUMNS,
+PROP_COLUMN_WIDTHS
 };
 
 enum
@@ -113,9 +116,27 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
   g_object_class_install_property (gobject_class,
     PROP_SHOW_TITLES,
     g_param_spec_boolean ("show-titles",
-                          _("Show header titles"),
-                          _("Whether show header titles"),
+                          _("Show header title"),
+                          _("Whether show header title"),
                           TRUE,
+                          G_PARAM_READWRITE));
+
+  g_object_class_install_property (gobject_class,
+    PROP_N_COLUMNS,
+    g_param_spec_int ("n-columns",
+                          _("Number of columns"),
+                          _("Number of columns"),
+                          1,
+                          15,
+                          3,
+                          G_PARAM_READWRITE));
+
+  g_object_class_install_property (gobject_class,
+    PROP_COLUMN_WIDTHS,
+    g_param_spec_string ("column-widths",
+                          _("The list of column width"),
+                          _("The list of column width(comma separated string)"),
+                          "80,80,80,80,80,80,80,80,80,80,80,80,80,80,80",
                           G_PARAM_READWRITE));
 }
 
@@ -125,7 +146,10 @@ gtk_panda_clist_init ( GtkPandaCList * clist)
   GtkTreeSelection *selection;
   
   clist->prev_selection = NULL;
+  clist->show_titles = TRUE;
+  clist->column_widths = g_strdup("");
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(clist));
+  gtk_panda_clist_set_n_columns(clist,1);
   g_signal_connect (G_OBJECT(selection), "changed",
     G_CALLBACK(selection_changed), (gpointer)clist);
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(clist), FALSE );
@@ -161,30 +185,83 @@ gtk_panda_clist_get_type (void)
 }
 
 GtkWidget *
-gtk_panda_clist_new (gint columns)
+gtk_panda_clist_new ()
 {
+  return (GtkWidget*)g_object_new(GTK_PANDA_TYPE_CLIST, NULL);
+}
+
+void
+gtk_panda_clist_set_n_columns (
+  GtkPandaCList *clist,
+  gint new_n_columns) 
+{
+  GtkTreeViewColumn *column;
   GtkListStore *store;
-  GtkWidget *clist;
   GType *types;
   int i;
+  int n_columns;
+  GtkWidget *label;
+  gchar buf[16];
 
-  clist = g_object_new(GTK_PANDA_TYPE_CLIST, NULL);
-  types = g_new0(GType, columns);
-  for (i = 0; i < columns; i++ ){ 
-    gtk_tree_view_insert_column_with_attributes (
-      GTK_TREE_VIEW(clist),
-      -1,
-      "",
-      gtk_cell_renderer_text_new (),
-      "text", i,
-      NULL);
+  g_return_if_fail(clist != NULL);
+  g_return_if_fail(new_n_columns > 0);
+
+  n_columns = gtk_panda_clist_get_n_columns(clist);
+  if (n_columns == new_n_columns) {
+    return;
+  } else {
+    for (i = n_columns - 1; i >= 0; i-- ){ 
+      column = gtk_tree_view_get_column(GTK_TREE_VIEW(clist), i);
+      if (column != NULL) {
+        gtk_tree_view_remove_column(GTK_TREE_VIEW(clist),column);
+      }
+    }
+    for (i = 0 ; i < new_n_columns; i++ ){ 
+      gtk_tree_view_insert_column_with_attributes (
+        GTK_TREE_VIEW(clist),
+        -1,
+        "",
+        gtk_cell_renderer_text_new (),
+        "text", i,
+        NULL);
+      column = gtk_tree_view_get_column(GTK_TREE_VIEW(clist), i);
+      sprintf(buf,"label%d",i);
+      label = gtk_label_new(buf);
+      gtk_widget_show(label);
+      gtk_tree_view_column_set_widget(column,label);
+    }
+  }
+
+  clist->n_columns = new_n_columns;
+  types = g_new0(GType, new_n_columns);
+  for (i = 0; i < new_n_columns; i++) {
     types[i] =  G_TYPE_STRING;
   }
-  store = gtk_list_store_newv(columns, types);
+  store = gtk_list_store_newv(new_n_columns, types);
   gtk_tree_view_set_model(GTK_TREE_VIEW(clist), GTK_TREE_MODEL(store));
-  //g_object_unref (store);
-  GTK_PANDA_CLIST(clist)->show_titles = FALSE;
-  return clist;
+}
+
+void 
+gtk_panda_clist_set_column_widths (
+  GtkPandaCList *clist,
+  const gchar *new_column_widths)
+{
+  gchar **widths;
+  int i;
+
+  g_return_if_fail(clist != NULL);
+  g_return_if_fail(new_column_widths != NULL);
+
+  if (clist->column_widths != NULL) {
+    g_free(clist->column_widths);
+  }
+  clist->column_widths = g_strdup(new_column_widths);
+
+  widths = g_strsplit(new_column_widths,",",100);
+  for(i = 0; widths[i] != NULL; i++) {
+    gtk_panda_clist_set_column_width(clist,i,atoi(widths[i])); 
+  }
+  g_strfreev(widths);
 }
 
 void 
@@ -197,7 +274,9 @@ gtk_panda_clist_set_column_width (
 
   g_return_if_fail(clist != NULL);
   col = gtk_tree_view_get_column(GTK_TREE_VIEW(clist), column);
-  g_return_if_fail(col != NULL);
+  if (col == NULL) {
+    return;
+  }
   gtk_tree_view_column_set_sizing(col, 
     GTK_TREE_VIEW_COLUMN_AUTOSIZE);
   gtk_tree_view_column_set_min_width(col, width);
@@ -277,6 +356,9 @@ gtk_panda_clist_get_n_columns(
   g_return_val_if_fail(GTK_IS_PANDA_CLIST(clist), 0);
 
   store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(clist)));
+  if (store == NULL) {
+    return 0;
+  }
   return gtk_tree_model_get_n_columns(GTK_TREE_MODEL(store));
 }
 
@@ -342,6 +424,9 @@ gtk_panda_clist_set_selection_mode (
 {
   GtkTreeSelection *select;
 
+  g_return_if_fail (clist != NULL);
+  g_return_if_fail (GTK_IS_PANDA_CLIST (clist));
+
   select = gtk_tree_view_get_selection (GTK_TREE_VIEW (clist));
   gtk_tree_selection_set_mode (select, mode);
 }
@@ -354,6 +439,9 @@ gtk_panda_clist_select_row (
 {
   GtkTreeSelection *select;
   GtkTreePath *path;
+
+  g_return_if_fail (clist != NULL);
+  g_return_if_fail (GTK_IS_PANDA_CLIST (clist));
 
   select = gtk_tree_view_get_selection (GTK_TREE_VIEW (clist));
   path = gtk_tree_path_new_from_indices(row, -1);
@@ -369,23 +457,24 @@ gtk_panda_clist_unselect_row (
   GtkTreeSelection *select;
   GtkTreePath *path;
 
+  g_return_if_fail (clist != NULL);
+  g_return_if_fail (GTK_IS_PANDA_CLIST (clist));
+
   select = gtk_tree_view_get_selection(GTK_TREE_VIEW(clist));
   path = gtk_tree_path_new_from_indices(row, -1);
   gtk_tree_selection_unselect_path(select, path);
 }
 
 void 
-gtk_panda_clist_titles_show (
-  GtkPandaCList *clist)
+gtk_panda_clist_set_show_titles (
+  GtkPandaCList *clist,
+  gboolean show_titles)
 {
-	clist->show_titles = TRUE;
-}
+  g_return_if_fail (clist != NULL);
+  g_return_if_fail (GTK_IS_PANDA_CLIST (clist));
 
-void 
-gtk_panda_clist_titles_hide (
-  GtkPandaCList *clist)
-{
-	clist->show_titles = FALSE;
+  clist->show_titles = show_titles;
+  gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(clist),show_titles);
 }
 
 static gboolean
@@ -513,7 +602,13 @@ gtk_panda_clist_set_property (GObject         *object,
   switch (prop_id)
     {
     case PROP_SHOW_TITLES:
-      clist->show_titles = g_value_get_boolean(value);
+      gtk_panda_clist_set_show_titles(clist,g_value_get_boolean(value));
+      break;
+    case PROP_N_COLUMNS:
+      gtk_panda_clist_set_n_columns(clist,g_value_get_int(value));
+	  break;
+    case PROP_COLUMN_WIDTHS:
+      gtk_panda_clist_set_column_widths(clist,g_value_get_string(value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -535,6 +630,12 @@ static void gtk_panda_clist_get_property (GObject         *object,
     {
     case PROP_SHOW_TITLES:
       g_value_set_boolean (value, clist->show_titles);
+      break;
+    case PROP_N_COLUMNS:
+      g_value_set_int (value, clist->n_columns);
+      break;
+    case PROP_COLUMN_WIDTHS:
+      g_value_set_string (value, g_strdup(clist->column_widths));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

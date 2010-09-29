@@ -50,6 +50,8 @@ struct _GtkPandaCList {
 
   GList *prev_selection;
   gboolean show_titles;
+  gint n_columns;
+  gchar *column_widths;
 };
 
 struct _GtkPandaCListClass {
@@ -60,10 +62,14 @@ struct _GtkPandaCListClass {
 };
 
 GType gtk_panda_clist_get_type (void);
-GtkWidget *gtk_panda_clist_new (gint columns);
+GtkWidget *gtk_panda_clist_new ();
+void gtk_panda_clist_set_n_columns(GtkPandaCList *clist, 
+  gint n_columns);
+void gtk_panda_clist_set_column_widths(GtkPandaCList *clist,
+  const gchar *column_widths);
 
 void gtk_panda_clist_set_column_width (GtkPandaCList *clist,
-  gint      column,
+  gint      column, 
   gint      width);
 
 void gtk_panda_clist_set_selection_mode (GtkPandaCList *clist,
@@ -93,8 +99,8 @@ void gtk_panda_clist_select_row (GtkPandaCList *clist,
 void gtk_panda_clist_unselect_row (GtkPandaCList *clist,
   gint      row,
   gint      column);
-void gtk_panda_clist_titles_show (GtkPandaCList *clist);
-void gtk_panda_clist_titles_hide (GtkPandaCList *clist);
+void gtk_panda_clist_set_show_titles(GtkPandaCList *clist,
+  gboolean show_titles);
 
 #ifdef __cplusplus
 }
