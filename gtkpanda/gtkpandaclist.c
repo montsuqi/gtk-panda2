@@ -41,7 +41,8 @@ enum {
 PROP_0,
 PROP_SHOW_TITLES,
 PROP_N_COLUMNS,
-PROP_COLUMN_WIDTHS
+PROP_COLUMN_WIDTHS,
+PROP_SELECTION_MODE
 };
 
 enum
@@ -50,6 +51,24 @@ enum
   UNSELECT_ROW,
   LAST_SIGNAL 
 }; 
+
+#define GTK_PANDA_TYPE_SELECTION_MODE (gtk_panda_type_selection_mode_get_type())
+static GType
+gtk_panda_type_selection_mode_get_type (void)
+{
+  static GType type = 0;
+  static const GEnumValue data[] = {
+    {GTK_SELECTION_SINGLE, "GTK_SELECTION_SINGLE", "single"},
+    {GTK_SELECTION_MULTIPLE, "GTK_SELECTION_MULTIPLE", "multi"},
+    {0, NULL, NULL},
+  };
+
+  if (!type) {
+    type =
+        g_enum_register_static ("GtkPandaTypeSelectionMode", data);
+  }
+  return type;
+}
 
 static GtkTreeViewClass *parent_class = NULL;
 static guint clist_signals [LAST_SIGNAL] = { 0 };
@@ -138,6 +157,15 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
                           _("The list of column width(comma separated string)"),
                           "80,80,80,80,80,80,80,80,80,80,80,80,80,80,80",
                           G_PARAM_READWRITE));
+
+  g_object_class_install_property (gobject_class,
+    PROP_SELECTION_MODE,
+    g_param_spec_enum ("selection_mode",
+                      _("Selection Mode"),
+                      _("The mode of selection"),
+                      GTK_PANDA_TYPE_SELECTION_MODE,
+                      GTK_SELECTION_SINGLE,
+                      G_PARAM_READWRITE));
 }
 
 static void
@@ -148,6 +176,7 @@ gtk_panda_clist_init ( GtkPandaCList * clist)
   clist->prev_selection = NULL;
   clist->show_titles = TRUE;
   clist->column_widths = g_strdup("");
+  clist->selection_mode = GTK_SELECTION_SINGLE;
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(clist));
   gtk_panda_clist_set_n_columns(clist,1);
   g_signal_connect (G_OBJECT(selection), "changed",
@@ -417,6 +446,20 @@ gtk_panda_clist_row_is_visible (GtkPandaCList *clist,
   return ret;
 }
 
+GtkSelectionMode
+gtk_panda_clist_get_selection_mode (
+  GtkPandaCList *clist)
+{
+  GtkTreeSelection *select;
+
+  g_return_val_if_fail (clist != NULL,GTK_SELECTION_SINGLE);
+  g_return_val_if_fail (GTK_IS_PANDA_CLIST (clist),GTK_SELECTION_SINGLE);
+
+  select = gtk_tree_view_get_selection (GTK_TREE_VIEW (clist));
+  clist->selection_mode = gtk_tree_selection_get_mode (select);
+  return clist->selection_mode;
+}
+
 void 
 gtk_panda_clist_set_selection_mode (
   GtkPandaCList *clist,
@@ -429,6 +472,7 @@ gtk_panda_clist_set_selection_mode (
 
   select = gtk_tree_view_get_selection (GTK_TREE_VIEW (clist));
   gtk_tree_selection_set_mode (select, mode);
+  clist->selection_mode = mode;
 }
 
 void 
@@ -610,6 +654,9 @@ gtk_panda_clist_set_property (GObject         *object,
     case PROP_COLUMN_WIDTHS:
       gtk_panda_clist_set_column_widths(clist,g_value_get_string(value));
       break;
+    case PROP_SELECTION_MODE:
+      gtk_panda_clist_set_selection_mode(clist,g_value_get_enum(value));
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -636,6 +683,9 @@ static void gtk_panda_clist_get_property (GObject         *object,
       break;
     case PROP_COLUMN_WIDTHS:
       g_value_set_string (value, g_strdup(clist->column_widths));
+      break;
+    case PROP_SELECTION_MODE:
+      g_value_set_enum (value, gtk_panda_clist_get_selection_mode(clist));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
