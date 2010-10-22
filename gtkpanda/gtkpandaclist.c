@@ -229,8 +229,6 @@ gtk_panda_clist_set_n_columns (
   GType *types;
   int i;
   int n_columns;
-  GtkWidget *label;
-  gchar buf[16];
 
   g_return_if_fail(clist != NULL);
   g_return_if_fail(new_n_columns > 0);
@@ -238,14 +236,15 @@ gtk_panda_clist_set_n_columns (
   n_columns = gtk_panda_clist_get_n_columns(clist);
   if (n_columns == new_n_columns) {
     return;
-  } else {
-    for (i = n_columns - 1; i >= 0; i-- ){ 
+  } else if (n_columns > new_n_columns){
+    for (i = n_columns - 1; i >= new_n_columns; i-- ){ 
       column = gtk_tree_view_get_column(GTK_TREE_VIEW(clist), i);
       if (column != NULL) {
         gtk_tree_view_remove_column(GTK_TREE_VIEW(clist),column);
       }
     }
-    for (i = 0 ; i < new_n_columns; i++ ){ 
+  } else {
+    for (i = n_columns ; i < new_n_columns; i++ ){ 
       gtk_tree_view_insert_column_with_attributes (
         GTK_TREE_VIEW(clist),
         -1,
@@ -253,11 +252,6 @@ gtk_panda_clist_set_n_columns (
         gtk_cell_renderer_text_new (),
         "text", i,
         NULL);
-      column = gtk_tree_view_get_column(GTK_TREE_VIEW(clist), i);
-      sprintf(buf,"label%d",i);
-      label = gtk_label_new(buf);
-      gtk_widget_show(label);
-      gtk_tree_view_column_set_widget(column,label);
     }
   }
 
