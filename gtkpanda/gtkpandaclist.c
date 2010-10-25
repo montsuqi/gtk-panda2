@@ -145,7 +145,7 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
     g_param_spec_int ("n-columns",
                           _("Number of columns"),
                           _("Number of columns"),
-                          1,
+                          0,
                           15,
                           3,
                           G_PARAM_READWRITE));
@@ -178,7 +178,7 @@ gtk_panda_clist_init ( GtkPandaCList * clist)
   clist->column_widths = g_strdup("");
   clist->selection_mode = GTK_SELECTION_SINGLE;
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(clist));
-  gtk_panda_clist_set_n_columns(clist,1);
+  gtk_panda_clist_set_n_columns(clist,0);
   g_signal_connect (G_OBJECT(selection), "changed",
     G_CALLBACK(selection_changed), (gpointer)clist);
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(clist), FALSE );
@@ -231,7 +231,18 @@ gtk_panda_clist_set_n_columns (
   int n_columns;
 
   g_return_if_fail(clist != NULL);
-  g_return_if_fail(new_n_columns > 0);
+  g_return_if_fail(new_n_columns >= 0);
+
+  if (new_n_columns == 0) {
+    GList *list;
+    list = gtk_tree_view_get_columns(GTK_TREE_VIEW(clist));
+    for (i=0; i < g_list_length(list); i++) {
+      gtk_tree_view_remove_column(GTK_TREE_VIEW(clist),g_list_nth_data(list,i));
+    }
+    gtk_tree_view_set_model(GTK_TREE_VIEW(clist), NULL);
+    g_list_free(list);
+    return;
+  }
 
   n_columns = gtk_panda_clist_get_n_columns(clist);
   if (n_columns == new_n_columns) {
