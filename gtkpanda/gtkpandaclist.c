@@ -241,6 +241,7 @@ gtk_panda_clist_set_n_columns (
     }
     gtk_tree_view_set_model(GTK_TREE_VIEW(clist), NULL);
     g_list_free(list);
+    clist->n_columns = 0;
     return;
   }
 
