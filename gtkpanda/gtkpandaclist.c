@@ -40,7 +40,7 @@
 enum {
 PROP_0,
 PROP_SHOW_TITLES,
-PROP_N_COLUMNS,
+PROP_COLUMNS,
 PROP_COLUMN_WIDTHS,
 PROP_SELECTION_MODE
 };
@@ -141,8 +141,8 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
                           G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
-    PROP_N_COLUMNS,
-    g_param_spec_int ("n-columns",
+    PROP_COLUMNS,
+    g_param_spec_int ("columns",
                           _("Number of columns"),
                           _("Number of columns"),
                           0,
@@ -152,7 +152,7 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
 
   g_object_class_install_property (gobject_class,
     PROP_COLUMN_WIDTHS,
-    g_param_spec_string ("column-widths",
+    g_param_spec_string ("column_widths",
                           _("The list of column width"),
                           _("The list of column width(comma separated string)"),
                           "80,80,80,80,80,80,80,80,80,80,80,80,80,80,80",
@@ -178,7 +178,7 @@ gtk_panda_clist_init ( GtkPandaCList * clist)
   clist->column_widths = g_strdup("");
   clist->selection_mode = GTK_SELECTION_SINGLE;
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(clist));
-  gtk_panda_clist_set_n_columns(clist,0);
+  gtk_panda_clist_set_columns(clist,0);
   g_signal_connect (G_OBJECT(selection), "changed",
     G_CALLBACK(selection_changed), (gpointer)clist);
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(clist), FALSE );
@@ -220,20 +220,20 @@ gtk_panda_clist_new ()
 }
 
 void
-gtk_panda_clist_set_n_columns (
+gtk_panda_clist_set_columns (
   GtkPandaCList *clist,
-  gint new_n_columns) 
+  gint new_columns) 
 {
   GtkTreeViewColumn *column;
   GtkListStore *store;
   GType *types;
   int i;
-  int n_columns;
+  int columns;
 
   g_return_if_fail(clist != NULL);
-  g_return_if_fail(new_n_columns >= 0);
+  g_return_if_fail(new_columns >= 0);
 
-  if (new_n_columns == 0) {
+  if (new_columns == 0) {
     GList *list;
     list = gtk_tree_view_get_columns(GTK_TREE_VIEW(clist));
     for (i=0; i < g_list_length(list); i++) {
@@ -241,22 +241,22 @@ gtk_panda_clist_set_n_columns (
     }
     gtk_tree_view_set_model(GTK_TREE_VIEW(clist), NULL);
     g_list_free(list);
-    clist->n_columns = 0;
+    clist->columns = 0;
     return;
   }
 
-  n_columns = gtk_panda_clist_get_n_columns(clist);
-  if (n_columns == new_n_columns) {
+  columns = gtk_panda_clist_get_columns(clist);
+  if (columns == new_columns) {
     return;
-  } else if (n_columns > new_n_columns){
-    for (i = n_columns - 1; i >= new_n_columns; i-- ){ 
+  } else if (columns > new_columns){
+    for (i = columns - 1; i >= new_columns; i-- ){ 
       column = gtk_tree_view_get_column(GTK_TREE_VIEW(clist), i);
       if (column != NULL) {
         gtk_tree_view_remove_column(GTK_TREE_VIEW(clist),column);
       }
     }
   } else {
-    for (i = n_columns ; i < new_n_columns; i++ ){ 
+    for (i = columns ; i < new_columns; i++ ){ 
       gtk_tree_view_insert_column_with_attributes (
         GTK_TREE_VIEW(clist),
         -1,
@@ -267,12 +267,12 @@ gtk_panda_clist_set_n_columns (
     }
   }
 
-  clist->n_columns = new_n_columns;
-  types = g_new0(GType, new_n_columns);
-  for (i = 0; i < new_n_columns; i++) {
+  clist->columns = new_columns;
+  types = g_new0(GType, new_columns);
+  for (i = 0; i < new_columns; i++) {
     types[i] =  G_TYPE_STRING;
   }
-  store = gtk_list_store_newv(new_n_columns, types);
+  store = gtk_list_store_newv(new_columns, types);
   gtk_tree_view_set_model(GTK_TREE_VIEW(clist), GTK_TREE_MODEL(store));
 }
 
@@ -382,7 +382,7 @@ gtk_panda_clist_get_n_rows(
 }
 
 gint
-gtk_panda_clist_get_n_columns(
+gtk_panda_clist_get_columns(
   GtkPandaCList *clist)
 {
   GtkListStore *store;
@@ -654,8 +654,8 @@ gtk_panda_clist_set_property (GObject         *object,
     case PROP_SHOW_TITLES:
       gtk_panda_clist_set_show_titles(clist,g_value_get_boolean(value));
       break;
-    case PROP_N_COLUMNS:
-      gtk_panda_clist_set_n_columns(clist,g_value_get_int(value));
+    case PROP_COLUMNS:
+      gtk_panda_clist_set_columns(clist,g_value_get_int(value));
 	  break;
     case PROP_COLUMN_WIDTHS:
       gtk_panda_clist_set_column_widths(clist,g_value_get_string(value));
@@ -684,8 +684,8 @@ static void gtk_panda_clist_get_property (GObject         *object,
     case PROP_SHOW_TITLES:
       g_value_set_boolean (value, clist->show_titles);
       break;
-    case PROP_N_COLUMNS:
-      g_value_set_int (value, clist->n_columns);
+    case PROP_COLUMNS:
+      g_value_set_int (value, clist->columns);
       break;
     case PROP_COLUMN_WIDTHS:
       g_value_set_string (value, g_strdup(clist->column_widths));

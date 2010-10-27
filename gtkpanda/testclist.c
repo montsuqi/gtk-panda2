@@ -36,7 +36,7 @@ select_row(
   fprintf(stderr, "is row selected? : %d\n", 
     gtk_panda_clist_row_is_selected(clist, row));
   fprintf(stderr, "ncolumns:%d nrows:%d\n", 
-    gtk_panda_clist_get_n_columns(clist),
+    gtk_panda_clist_get_columns(clist),
     gtk_panda_clist_get_n_rows(clist));
 }
 
@@ -100,12 +100,12 @@ main (int argc, char *argv[])
   gtk_widget_show(label2);
 
   clist1 = gtk_panda_clist_new ();
-  gtk_panda_clist_set_n_columns(GTK_PANDA_CLIST(clist1),10);
+  gtk_panda_clist_set_columns(GTK_PANDA_CLIST(clist1),10);
 
 
-  gtk_panda_clist_set_n_columns(GTK_PANDA_CLIST(clist1),1);
-  gtk_panda_clist_set_n_columns(GTK_PANDA_CLIST(clist1),5);
-  gtk_panda_clist_set_n_columns(GTK_PANDA_CLIST(clist1),COLUMNS);
+  gtk_panda_clist_set_columns(GTK_PANDA_CLIST(clist1),1);
+  gtk_panda_clist_set_columns(GTK_PANDA_CLIST(clist1),5);
+  gtk_panda_clist_set_columns(GTK_PANDA_CLIST(clist1),COLUMNS);
   column = gtk_tree_view_get_column(GTK_TREE_VIEW(clist1),0);
   gtk_tree_view_column_set_widget(column, label1);
   gtk_tree_view_column_set_widget(column, label2);
