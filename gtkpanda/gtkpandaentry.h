@@ -46,9 +46,9 @@ typedef struct _GtkPandaEntry       GtkPandaEntry;
 typedef struct _GtkPandaEntryClass  GtkPandaEntryClass;
 
 typedef enum  {
-  GTK_PANDA_ENTRY_ASCII_MODE,
-  GTK_PANDA_ENTRY_KANA_MODE,
-  GTK_PANDA_ENTRY_IM_MODE
+  GTK_PANDA_ENTRY_ASCII,
+  GTK_PANDA_ENTRY_KANA,
+  GTK_PANDA_ENTRY_XIM
 }GtkPandaEntryInputMode;
 
 struct _GtkPandaEntry
@@ -56,7 +56,7 @@ struct _GtkPandaEntry
   GtkEntry entry;
 
   GtkPandaEntryInputMode input_mode;
-  gboolean im_enabled;
+  gboolean xim_enabled;
 };
 
 struct _GtkPandaEntryClass
@@ -69,7 +69,7 @@ GtkWidget* gtk_panda_entry_new (void);
 void gtk_panda_entry_set_input_mode (
 	GtkPandaEntry *entry, 
 	GtkPandaEntryInputMode mode);
-void gtk_panda_entry_set_im_enabled (GtkPandaEntry *entry, gboolean flag);
+void gtk_panda_entry_set_xim_enabled (GtkPandaEntry *entry, gboolean flag);
 
 #ifdef __cplusplus
 }

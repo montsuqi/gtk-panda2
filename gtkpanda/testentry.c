@@ -149,7 +149,7 @@ create_window1 ()
 
   entry1 = gtk_panda_entry_new ();
   gtk_panda_entry_set_input_mode (GTK_PANDA_ENTRY (entry1),
-				  GTK_PANDA_ENTRY_ASCII_MODE);
+				  GTK_PANDA_ENTRY_ASCII);
   gtk_widget_ref (entry1);
   gtk_object_set_data_full (GTK_OBJECT (window1), "entry1", entry1,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -160,7 +160,7 @@ create_window1 ()
 
   entry2 = gtk_panda_entry_new ();
   gtk_panda_entry_set_input_mode (GTK_PANDA_ENTRY (entry2),
-				  GTK_PANDA_ENTRY_KANA_MODE);
+				  GTK_PANDA_ENTRY_KANA);
   gtk_signal_connect (GTK_OBJECT (entry2), "changed",
                       GTK_SIGNAL_FUNC (on_changed),
                       NULL);
@@ -191,8 +191,8 @@ create_window1 ()
 
   entry3 = gtk_panda_entry_new ();
   gtk_panda_entry_set_input_mode (GTK_PANDA_ENTRY (entry3),
-				  GTK_PANDA_ENTRY_IM_MODE);
-  gtk_panda_entry_set_im_enabled (GTK_PANDA_ENTRY (entry3), TRUE);
+				  GTK_PANDA_ENTRY_XIM);
+  gtk_panda_entry_set_xim_enabled (GTK_PANDA_ENTRY (entry3), TRUE);
   gtk_widget_ref (entry3);
   gtk_object_set_data_full (GTK_OBJECT (window1), "entry3", entry3,
                             (GtkDestroyNotify) gtk_widget_unref);

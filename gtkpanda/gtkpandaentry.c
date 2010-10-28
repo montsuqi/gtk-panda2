@@ -46,7 +46,7 @@
 enum {
   PROP_0,
   PROP_INPUT_MODE,
-  PROP_ENABLE_IM,
+  PROP_ENABLE_XIM,
 };
 
 #define GTK_PANDA_TYPE_INPUT_MODE (gtk_panda_type_input_mode_get_type())
@@ -55,9 +55,9 @@ gtk_panda_type_input_mode_get_type (void)
 {
   static GType type = 0;
   static const GEnumValue data[] = {
-    {GTK_PANDA_ENTRY_ASCII_MODE, "GTK_PANDA_ENTRY_ASCII_MODE", "ascii"},
-    {GTK_PANDA_ENTRY_KANA_MODE, "GTK_PANDA_ENTRY_KANA_MODE", "kana"},
-    {GTK_PANDA_ENTRY_IM_MODE, "GTK_PANDA_ENTRY_IM_MODE", "im"},
+    {GTK_PANDA_ENTRY_ASCII , "GTK_PANDA_ENTRY_ASCII", "ascii"},
+    {GTK_PANDA_ENTRY_KANA  , "GTK_PANDA_ENTRY_KANA" , "kana"},
+    {GTK_PANDA_ENTRY_XIM   , "GTK_PANDA_ENTRY_XIM"  , "xim"},
     {0, NULL, NULL},
   };
 
@@ -146,12 +146,12 @@ gtk_panda_entry_class_init (GtkPandaEntryClass *klass)
                       _("Input Mode"),
                       _("The mode of input"),
                       GTK_PANDA_TYPE_INPUT_MODE,
-                      GTK_PANDA_ENTRY_ASCII_MODE,
+                      GTK_PANDA_ENTRY_ASCII,
                       G_PARAM_READWRITE));
   
   g_object_class_install_property (gobject_class,
-    PROP_ENABLE_IM,
-    g_param_spec_boolean ("enable-im",
+    PROP_ENABLE_XIM,
+    g_param_spec_boolean ("enable_xim",
                           _("Enable Input Method"),
                           _("Whether enable input method controll"),
                           FALSE,
@@ -161,8 +161,8 @@ gtk_panda_entry_class_init (GtkPandaEntryClass *klass)
 static void
 gtk_panda_entry_init (GtkPandaEntry *entry)
 {
-  entry->input_mode = GTK_PANDA_ENTRY_IM_MODE;
-  entry->im_enabled = FALSE;
+  entry->input_mode = GTK_PANDA_ENTRY_XIM;
+  entry->xim_enabled = FALSE;
   g_signal_connect(entry, "key_press_event",
     G_CALLBACK(gtk_panda_entry_key_press), entry);
   g_signal_connect (entry, "insert_text",
@@ -210,11 +210,11 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
   mim = GTK_IM_MULTICONTEXT(entry->im_context);
 
   if (force_im_disable) {
-    pentry->input_mode = GTK_PANDA_ENTRY_ASCII_MODE;
+    pentry->input_mode = GTK_PANDA_ENTRY_ASCII;
   }
 
-  if (pentry->input_mode == GTK_PANDA_ENTRY_IM_MODE) {
-    set_im_state_pre_focus(widget, mim, pentry->im_enabled);
+  if (pentry->input_mode == GTK_PANDA_ENTRY_XIM) {
+    set_im_state_pre_focus(widget, mim, pentry->xim_enabled);
   }
 
   if (GTK_WIDGET_CLASS (parent_class)->focus_in_event) {
@@ -222,8 +222,8 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
       (widget, event);
   }
 
-  if (pentry->input_mode == GTK_PANDA_ENTRY_IM_MODE) {
-    set_im_state_post_focus(widget, mim, pentry->im_enabled);
+  if (pentry->input_mode == GTK_PANDA_ENTRY_XIM) {
+    set_im_state_post_focus(widget, mim, pentry->xim_enabled);
   }
 
   gtk_editable_set_position(GTK_EDITABLE(widget), -1);
@@ -256,7 +256,7 @@ gtk_panda_entry_key_press (GtkWidget      *widget,
 
   entry = GTK_PANDA_ENTRY (widget);
 
-  if (entry->input_mode == GTK_PANDA_ENTRY_KANA_MODE)
+  if (entry->input_mode == GTK_PANDA_ENTRY_KANA)
     {
       if (event->keyval == GDK_Return)
         {
@@ -385,7 +385,7 @@ gtk_panda_entry_insert_text (GtkEditable *editable,
   entry = GTK_ENTRY (editable);
 
   /* Handle kana input */
-  if (GTK_PANDA_ENTRY (entry)->input_mode == GTK_PANDA_ENTRY_KANA_MODE)
+  if (GTK_PANDA_ENTRY (entry)->input_mode == GTK_PANDA_ENTRY_KANA)
     {
       gchar buff[8];
       gint prefix_start, prefix_end;
@@ -483,8 +483,8 @@ gtk_panda_entry_set_property (GObject         *object,
     case PROP_INPUT_MODE:
       entry->input_mode = g_value_get_enum(value);
       break;
-    case PROP_ENABLE_IM:
-      entry->im_enabled = g_value_get_boolean(value);
+    case PROP_ENABLE_XIM:
+      entry->xim_enabled = g_value_get_boolean(value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -507,8 +507,8 @@ static void gtk_panda_entry_get_property (GObject         *object,
     case PROP_INPUT_MODE:
       g_value_set_enum (value, entry->input_mode);
       break;
-    case PROP_ENABLE_IM:
-      g_value_set_boolean (value, entry->im_enabled);
+    case PROP_ENABLE_XIM:
+      g_value_set_boolean (value, entry->xim_enabled);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -526,8 +526,8 @@ gtk_panda_entry_set_input_mode (GtkPandaEntry *entry,
 }
 
 void
-gtk_panda_entry_set_im_enabled (GtkPandaEntry *entry, gboolean flag)
+gtk_panda_entry_set_xim_enabled (GtkPandaEntry *entry, gboolean flag)
 {
-  entry->im_enabled = flag;
+  entry->xim_enabled = flag;
 }
 
