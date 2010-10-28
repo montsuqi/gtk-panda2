@@ -151,7 +151,7 @@ gtk_panda_entry_class_init (GtkPandaEntryClass *klass)
   
   g_object_class_install_property (gobject_class,
     PROP_ENABLE_XIM,
-    g_param_spec_boolean ("enable_xim",
+    g_param_spec_boolean ("xim_enabled",
                           _("Enable Input Method"),
                           _("Whether enable input method controll"),
                           FALSE,
