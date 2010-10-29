@@ -31,19 +31,19 @@ int main( int   argc,
 
   vbox = gtk_vbox_new(FALSE,1);
 
-  fc1 = gtk_panda_fileentry_new();
-  gtk_panda_fileentry_set_mode(GTK_PANDA_FILEENTRY(fc1),
+  fc1 = gtk_panda_file_entry_new();
+  gtk_panda_file_entry_set_mode(GTK_PANDA_FILE_ENTRY(fc1),
     GTK_FILE_CHOOSER_ACTION_OPEN);
-  gtk_entry_set_text(GTK_ENTRY(GTK_PANDA_FILEENTRY(fc1)->entry), 
+  gtk_entry_set_text(GTK_ENTRY(GTK_PANDA_FILE_ENTRY(fc1)->entry), 
     "/tmp/test.txt");
 
-  fc2 = gtk_panda_fileentry_new();
-  gtk_panda_fileentry_set_mode(GTK_PANDA_FILEENTRY(fc2),
+  fc2 = gtk_panda_file_entry_new();
+  gtk_panda_file_entry_set_mode(GTK_PANDA_FILE_ENTRY(fc2),
     GTK_FILE_CHOOSER_ACTION_SAVE);
   sprintf(buf, "this is test.");
-  gtk_entry_set_text(GTK_ENTRY(GTK_PANDA_FILEENTRY(fc2)->entry), 
+  gtk_entry_set_text(GTK_ENTRY(GTK_PANDA_FILE_ENTRY(fc2)->entry), 
     "/tmp/test.txt");
-  gtk_panda_fileentry_set_data(GTK_PANDA_FILEENTRY(fc2), 
+  gtk_panda_file_entry_set_data(GTK_PANDA_FILE_ENTRY(fc2), 
     strlen(buf), buf);
 
   gtk_box_pack_start(GTK_BOX(vbox), fc1, FALSE, FALSE, 1);

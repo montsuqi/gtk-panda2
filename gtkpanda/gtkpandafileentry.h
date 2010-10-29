@@ -24,8 +24,8 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#ifndef __GTK_PANDA_FILEENTRY_H__
-#define __GTK_PANDA_FILEENTRY_H__
+#ifndef __GTK_PANDA_FILE_ENTRY_H__
+#define __GTK_PANDA_FILE_ENTRY_H__
 
 #include <gtk/gtk.h>
 
@@ -33,16 +33,16 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define GTK_PANDA_TYPE_FILEENTRY \
-  (gtk_panda_fileentry_get_type ())
-#define GTK_PANDA_FILEENTRY(obj) \
-  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_FILEENTRY, GtkPandaFileEntry))
-#define GTK_PANDA_FILEENTRY_CLASS(klass) \
-  (GTK_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_FILEENTRY, GtkPandaFileEntryClass))
-#define GTK_IS_PANDA_FILEENTRY(obj) \
-  (GTK_CHECK_TYPE ((obj), GTK_PANDA_TYPE_FILEENTRY))
-#define GTK_IS_PANDA_FILEENTRY_CLASS(klass) \
-  (GTK_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_FILEENTRY))
+#define GTK_PANDA_TYPE_FILE_ENTRY \
+  (gtk_panda_file_entry_get_type ())
+#define GTK_PANDA_FILE_ENTRY(obj) \
+  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_FILE_ENTRY, GtkPandaFileEntry))
+#define GTK_PANDA_FILE_ENTRY_CLASS(klass) \
+  (GTK_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_FILE_ENTRY, GtkPandaFileEntryClass))
+#define GTK_IS_PANDA_FILE_ENTRY(obj) \
+  (GTK_CHECK_TYPE ((obj), GTK_PANDA_TYPE_FILE_ENTRY))
+#define GTK_IS_PANDA_FILE_ENTRY_CLASS(klass) \
+  (GTK_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_FILE_ENTRY))
 
 typedef struct _GtkPandaFileEntry       GtkPandaFileEntry;
 typedef struct _GtkPandaFileEntryClass  GtkPandaFileEntryClass;
@@ -66,15 +66,15 @@ struct _GtkPandaFileEntryClass
   void (*done_action) (GtkPandaFileEntry *fe);
 };
 
-extern GType gtk_panda_fileentry_get_type (void);
-extern GtkWidget *gtk_panda_fileentry_new (void);
-extern void gtk_panda_fileentry_set_mode (GtkPandaFileEntry *fe, GtkFileChooserAction mode);
-extern GtkFileChooserAction gtk_panda_fileentry_get_mode (GtkPandaFileEntry *fe);
-extern void gtk_panda_fileentry_set_data (GtkPandaFileEntry *fe, int size, char *buff);
-extern void gtk_panda_fileentry_set_folder (GtkPandaFileEntry *fe, char *folder);
+extern GType gtk_panda_file_entry_get_type (void);
+extern GtkWidget *gtk_panda_file_entry_new (void);
+extern void gtk_panda_file_entry_set_mode (GtkPandaFileEntry *fe, GtkFileChooserAction mode);
+extern GtkFileChooserAction gtk_panda_file_entry_get_mode (GtkPandaFileEntry *fe);
+extern void gtk_panda_file_entry_set_data (GtkPandaFileEntry *fe, int size, char *buff);
+extern void gtk_panda_file_entry_set_folder (GtkPandaFileEntry *fe, char *folder);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif /* __GTK_PANDA_FILEENTRY_H__ */
+#endif /* __GTK_PANDA_FILE_ENTRY_H__ */
