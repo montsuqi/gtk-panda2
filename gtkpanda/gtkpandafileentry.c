@@ -240,6 +240,7 @@ gtk_panda_file_entry_init (GtkPandaFileEntry *self)
   gtk_box_set_homogeneous(GTK_BOX(self), FALSE);
   
   gtk_widget_show_all(GTK_WIDGET(self));
+  gtk_panda_file_entry_set_mode(self,GTK_FILE_CHOOSER_ACTION_OPEN);
   GTK_WIDGET_SET_FLAGS (self, GTK_CAN_FOCUS);
 }
 

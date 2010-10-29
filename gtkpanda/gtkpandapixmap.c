@@ -28,8 +28,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <glib-object.h>
+#include <glib.h>
 #include <gtk/gtk.h>
 
 #include "config.h"
@@ -86,7 +88,10 @@ gtk_panda_pixmap_set_image(GtkPandaPixmap *pixmap,
   gchar *buf,
   gsize size)
 {
+  GdkPixbuf *pixbuf;
   gchar *filename;
+  GtkAllocation alloc;
+  
   int fd = g_file_open_tmp("gtk_panda_pixmap_XXXXXX", &filename, NULL);
   if (fd == 1) {
     return;
@@ -98,6 +103,16 @@ gtk_panda_pixmap_set_image(GtkPandaPixmap *pixmap,
   } else {
     return;
   }
-  gtk_image_set_from_file(GTK_IMAGE(pixmap),filename);
+#if 0
+  gtk_widget_get_allocation(GTK_WIDGET(pixmap),&alloc);
+#else
+  alloc = GTK_WIDGET(pixmap)->allocation;
+#endif
+  pixbuf = gdk_pixbuf_new_from_file_at_size(filename,
+    alloc.width, alloc.height, NULL);
+  if (pixbuf != NULL) {
+    gtk_image_set_from_pixbuf(GTK_IMAGE(pixmap), pixbuf);
+  }
+  unlink(filename); 
   g_free(filename);
 }
