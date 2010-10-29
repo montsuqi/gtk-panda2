@@ -43,8 +43,8 @@
 #include "gtkpandaintl.h"
 #include "gtkpandafileentry.h"
 
-static void gtk_panda_fileentry_class_init    (GtkPandaFileentryClass *klass);
-static void gtk_panda_fileentry_init          (GtkPandaFileentry      *fileentry);
+static void gtk_panda_fileentry_class_init    (GtkPandaFileEntryClass *klass);
+static void gtk_panda_fileentry_init          (GtkPandaFileEntry      *fileentry);
 static void gtk_panda_fileentry_destroy       (GtkObject      *fileentry);
 
 static GtkHBoxClass *parent_class = NULL;
@@ -58,7 +58,7 @@ enum
 
 static guint signals [LAST_SIGNAL] = { 0 };
 
-void gtk_panda_fileentry_browse_clicked(GtkPandaFileentry *fe);
+void gtk_panda_fileentry_browse_clicked(GtkPandaFileEntry *fe);
 
 GType
 gtk_panda_fileentry_get_type (void)
@@ -69,26 +69,26 @@ gtk_panda_fileentry_get_type (void)
     {
       static const GTypeInfo info =
       {
-        sizeof (GtkPandaFileentryClass),
+        sizeof (GtkPandaFileEntryClass),
         NULL, /* base_init */
         NULL, /* base_finalize */
         (GClassInitFunc) gtk_panda_fileentry_class_init,
         NULL, /* class_finalize */
         NULL, /* class_data */
-        sizeof (GtkPandaFileentry),
+        sizeof (GtkPandaFileEntry),
         0,
         (GInstanceInitFunc) gtk_panda_fileentry_init
       };
 
       type = g_type_register_static( GTK_TYPE_HBOX, 
-        "GtkPandaFileentry", &info, 0);
+        "GtkPandaFileEntry", &info, 0);
     }
 
   return type;
 }
 
 static void
-gtk_panda_fileentry_class_init (GtkPandaFileentryClass *klass)
+gtk_panda_fileentry_class_init (GtkPandaFileEntryClass *klass)
 {
   GtkWidgetClass *widget_class;
   GtkObjectClass *gtk_object_class;
@@ -104,7 +104,7 @@ gtk_panda_fileentry_class_init (GtkPandaFileentryClass *klass)
   g_signal_new ("browse_clicked",
         G_OBJECT_CLASS_TYPE (klass),
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-        G_STRUCT_OFFSET (GtkPandaFileentryClass, browse_clicked),
+        G_STRUCT_OFFSET (GtkPandaFileEntryClass, browse_clicked),
         NULL, NULL,
         g_cclosure_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
@@ -113,7 +113,7 @@ gtk_panda_fileentry_class_init (GtkPandaFileentryClass *klass)
   g_signal_new ("done_action",
         G_OBJECT_CLASS_TYPE (klass),
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-        G_STRUCT_OFFSET (GtkPandaFileentryClass, done_action),
+        G_STRUCT_OFFSET (GtkPandaFileEntryClass, done_action),
         NULL, NULL,
         g_cclosure_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
@@ -126,19 +126,19 @@ gtk_panda_fileentry_destroy(GtkObject *object)
 }
 
 void
-gtk_panda_fileentry_browse_clicked(GtkPandaFileentry *self)
+gtk_panda_fileentry_browse_clicked(GtkPandaFileEntry *self)
 {
 	g_signal_emit_by_name(G_OBJECT(self->button), "clicked", NULL);
 }
 
 static void
-entry_activate_cb(GtkEntry *entry, GtkPandaFileentry *self)
+entry_activate_cb(GtkEntry *entry, GtkPandaFileEntry *self)
 {
   // do nothing
 }
 
 static void
-button_click_cb(GtkButton *button, GtkPandaFileentry *self)
+button_click_cb(GtkButton *button, GtkPandaFileEntry *self)
 {
   GError *error = NULL;
   GtkWidget *dialog;
@@ -215,7 +215,7 @@ button_click_cb(GtkButton *button, GtkPandaFileentry *self)
 }
 
 static void
-gtk_panda_fileentry_init (GtkPandaFileentry *self)
+gtk_panda_fileentry_init (GtkPandaFileEntry *self)
 {
   GtkWidget *hbox;
 
@@ -251,7 +251,7 @@ gtk_panda_fileentry_new (void)
 }
 
 void
-gtk_panda_fileentry_set_mode (GtkPandaFileentry *self, GtkFileChooserAction mode)
+gtk_panda_fileentry_set_mode (GtkPandaFileEntry *self, GtkFileChooserAction mode)
 {
   self->mode = mode;
   gtk_button_set_use_stock(GTK_BUTTON(self->button), TRUE);
@@ -269,13 +269,13 @@ gtk_panda_fileentry_set_mode (GtkPandaFileentry *self, GtkFileChooserAction mode
 }
 
 GtkFileChooserAction
-gtk_panda_fileentry_get_mode (GtkPandaFileentry *self)
+gtk_panda_fileentry_get_mode (GtkPandaFileEntry *self)
 {
   return self->mode;
 }
 
 void
-gtk_panda_fileentry_set_data (GtkPandaFileentry *self, 
+gtk_panda_fileentry_set_data (GtkPandaFileEntry *self, 
   int size, 
   char *data)
 {
@@ -294,7 +294,7 @@ gtk_panda_fileentry_set_data (GtkPandaFileentry *self,
 }
 
 void
-gtk_panda_fileentry_set_folder (GtkPandaFileentry *self, 
+gtk_panda_fileentry_set_folder (GtkPandaFileEntry *self, 
   char *str)
 {
   if (self->folder != NULL) {
@@ -308,7 +308,7 @@ gtk_panda_fileentry_set_folder (GtkPandaFileentry *self,
 
 
 void
-gtk_panda_fileentry_get (GtkPandaFileentry * self,
+gtk_panda_fileentry_get (GtkPandaFileEntry * self,
   int *size,
   char **data)
 {

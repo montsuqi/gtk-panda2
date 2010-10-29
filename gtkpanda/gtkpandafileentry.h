@@ -36,18 +36,18 @@ extern "C" {
 #define GTK_PANDA_TYPE_FILEENTRY \
   (gtk_panda_fileentry_get_type ())
 #define GTK_PANDA_FILEENTRY(obj) \
-  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_FILEENTRY, GtkPandaFileentry))
+  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_FILEENTRY, GtkPandaFileEntry))
 #define GTK_PANDA_FILEENTRY_CLASS(klass) \
-  (GTK_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_FILEENTRY, GtkPandaFileentryClass))
+  (GTK_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_FILEENTRY, GtkPandaFileEntryClass))
 #define GTK_IS_PANDA_FILEENTRY(obj) \
   (GTK_CHECK_TYPE ((obj), GTK_PANDA_TYPE_FILEENTRY))
 #define GTK_IS_PANDA_FILEENTRY_CLASS(klass) \
   (GTK_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_FILEENTRY))
 
-typedef struct _GtkPandaFileentry       GtkPandaFileentry;
-typedef struct _GtkPandaFileentryClass  GtkPandaFileentryClass;
+typedef struct _GtkPandaFileEntry       GtkPandaFileEntry;
+typedef struct _GtkPandaFileEntryClass  GtkPandaFileEntryClass;
 
-struct _GtkPandaFileentry
+struct _GtkPandaFileEntry
 {
   GtkHBox parent;
 
@@ -59,19 +59,19 @@ struct _GtkPandaFileentry
   char *folder;
 };
 
-struct _GtkPandaFileentryClass
+struct _GtkPandaFileEntryClass
 {
   GtkHBoxClass parent_class;
-  void (*browse_clicked) (GtkPandaFileentry *fe);
-  void (*done_action) (GtkPandaFileentry *fe);
+  void (*browse_clicked) (GtkPandaFileEntry *fe);
+  void (*done_action) (GtkPandaFileEntry *fe);
 };
 
 extern GType gtk_panda_fileentry_get_type (void);
 extern GtkWidget *gtk_panda_fileentry_new (void);
-extern void gtk_panda_fileentry_set_mode (GtkPandaFileentry *fe, GtkFileChooserAction mode);
-extern GtkFileChooserAction gtk_panda_fileentry_get_mode (GtkPandaFileentry *fe);
-extern void gtk_panda_fileentry_set_data (GtkPandaFileentry *fe, int size, char *buff);
-extern void gtk_panda_fileentry_set_folder (GtkPandaFileentry *fe, char *folder);
+extern void gtk_panda_fileentry_set_mode (GtkPandaFileEntry *fe, GtkFileChooserAction mode);
+extern GtkFileChooserAction gtk_panda_fileentry_get_mode (GtkPandaFileEntry *fe);
+extern void gtk_panda_fileentry_set_data (GtkPandaFileEntry *fe, int size, char *buff);
+extern void gtk_panda_fileentry_set_folder (GtkPandaFileEntry *fe, char *folder);
 
 #ifdef __cplusplus
 }
