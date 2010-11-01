@@ -90,7 +90,7 @@ gtk_panda_pixmap_set_image(GtkPandaPixmap *pixmap,
 {
   GdkPixbuf *pixbuf;
   gchar *filename;
-  GtkAllocation alloc;
+  GtkRequisition req;
   
   int fd = g_file_open_tmp("gtk_panda_pixmap_XXXXXX", &filename, NULL);
   if (fd == 1) {
@@ -103,13 +103,9 @@ gtk_panda_pixmap_set_image(GtkPandaPixmap *pixmap,
   } else {
     return;
   }
-#if 0
-  gtk_widget_get_allocation(GTK_WIDGET(pixmap),&alloc);
-#else
-  alloc = GTK_WIDGET(pixmap)->allocation;
-#endif
+  gtk_widget_size_request(GTK_WIDGET(pixmap), &req);
   pixbuf = gdk_pixbuf_new_from_file_at_size(filename,
-    alloc.width, alloc.height, NULL);
+    req.width, req.height, NULL);
   if (pixbuf != NULL) {
     gtk_image_set_from_pixbuf(GTK_IMAGE(pixmap), pixbuf);
   }
