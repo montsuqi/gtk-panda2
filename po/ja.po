@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtk+panda 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-07 06:00+0900\n"
+"POT-Creation-Date: 2010-11-05 15:17+0900\n"
 "PO-Revision-Date: 2007-07-02 11:20+0900\n"
 "Last-Translator: yusuke mihara <mihara@netlab.jp>\n"
 "Language-Team: yusuke mihara <mihara@netlab.jp>\n"
@@ -15,87 +15,139 @@ msgstr ""
 "Content-Type: text/plain; charset=euc-jp\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gtkpanda/gtkpandaentry.c:202
-msgid "over-the-spot style requires fontset"
-msgstr "フォントセットにover-the-spotスタイルが必要です"
+#: gtkpanda/gtknumberentry.c:118
+msgid "Format"
+msgstr "フォーマット"
 
-#: gtkpanda/gtkpandaentry.c:222
-msgid "Can't create input context."
-msgstr "入力コンテキストを作成できません．"
+#: gtkpanda/gtknumberentry.c:119
+msgid "The format of the entry"
+msgstr "フォーマット"
 
-#: gtkpanda/gtkpandafileentry.c:146
+#: gtkpanda/gtkpandaclist.c:138
+msgid "Show header title"
+msgstr "タイトルの表示"
+
+#: gtkpanda/gtkpandaclist.c:139
+msgid "Whether show header title"
+msgstr "タイトルの表示"
+
+#: gtkpanda/gtkpandaclist.c:146 gtkpanda/gtkpandaclist.c:147
+msgid "Number of columns"
+msgstr "カラム数"
+
+#: gtkpanda/gtkpandaclist.c:156
+msgid "The list of column width"
+msgstr "カラム数"
+
+#: gtkpanda/gtkpandaclist.c:157
+msgid "The list of column width(comma separated string)"
+msgstr "カラム幅のリスト(コンマ区切り)"
+
+#: gtkpanda/gtkpandaclist.c:164
+msgid "Selection Mode"
+msgstr "選択モード"
+
+#: gtkpanda/gtkpandaclist.c:165
+msgid "The mode of selection"
+msgstr "選択モード"
+
+#: gtkpanda/gtkpandacombo.c:102 gtkpanda/gtkpandacombo.c:103
+msgid "Case Sensitive"
+msgstr "大文字小文字の区別"
+
+#: gtkpanda/gtkpandacombo.c:110 gtkpanda/gtkpandacombo.c:111
+msgid "Use Arrows"
+msgstr "矢印キーの利用"
+
+#: gtkpanda/gtkpandacombo.c:118 gtkpanda/gtkpandacombo.c:119
+msgid "Loop Selection"
+msgstr "回帰選択"
+
+#: gtkpanda/gtkpandaentry.c:146
+msgid "Input Mode"
+msgstr "入力モード"
+
+#: gtkpanda/gtkpandaentry.c:147
+msgid "The mode of input"
+msgstr "入力モード"
+
+#: gtkpanda/gtkpandaentry.c:155
+msgid "Enable Input Method"
+msgstr "インプットメソッドの有効化"
+
+#: gtkpanda/gtkpandaentry.c:156
+msgid "Whether enable input method controll"
+msgstr "インプットメソッドの有効化"
+
+#: gtkpanda/gtkpandafileentry.c:156
 msgid "Specify filename..."
 msgstr "ファイル名を指定してください..."
 
-#: gtkpanda/gtkpandafileentry.c:177
+#: gtkpanda/gtkpandafileentry.c:190
 #, c-format
 msgid "Succeeded in writing %s"
-msgstr "%s 書き込み終了"
+msgstr "%s の書き込みが完了しました"
 
-#: gtkpanda/gtkpandapdf.c:63 gtkpanda/gtkpandaps.c:58
+#: gtkpanda/gtkpandahtml.cpp:126 gtkpanda/gtkpandahtml.cpp:127
+msgid "URI"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:63
 msgid "Fit Page"
 msgstr "全体に合わせる"
 
-#: gtkpanda/gtkpandapdf.c:64 gtkpanda/gtkpandaps.c:59
+#: gtkpanda/gtkpandapdf.c:64
 msgid "Fit Page Width"
 msgstr "幅に合わせる"
 
-#: gtkpanda/gtkpandapdf.c:66 gtkpanda/gtkpandaps.c:61
+#: gtkpanda/gtkpandapdf.c:66
 msgid "50%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:67 gtkpanda/gtkpandaps.c:62
+#: gtkpanda/gtkpandapdf.c:67
 msgid "75%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:68 gtkpanda/gtkpandaps.c:63
+#: gtkpanda/gtkpandapdf.c:68
 msgid "100%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:69 gtkpanda/gtkpandaps.c:64
+#: gtkpanda/gtkpandapdf.c:69
 msgid "125%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:70 gtkpanda/gtkpandaps.c:65
+#: gtkpanda/gtkpandapdf.c:70
 msgid "150%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:71 gtkpanda/gtkpandaps.c:66
+#: gtkpanda/gtkpandapdf.c:71
 msgid "175%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:72 gtkpanda/gtkpandaps.c:67
+#: gtkpanda/gtkpandapdf.c:72
 msgid "200%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:73 gtkpanda/gtkpandaps.c:68
+#: gtkpanda/gtkpandapdf.c:73
 msgid "300%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:74 gtkpanda/gtkpandaps.c:69
+#: gtkpanda/gtkpandapdf.c:74
 msgid "400%"
 msgstr ""
 
-#: gtkpanda/gtkpandaps.c:489
-msgid "pritner selection"
-msgstr "プリンタ選択"
-
-#: gtkpanda/gtkpandaps.c:500
-msgid "printer"
-msgstr "プリンタ"
-
-#: gtkpanda/numeric.c:1357
+#: gtkpanda/numeric.c:1348
 #, c-format
 msgid "Cannot convert NaN to int4"
 msgstr "Nanをint4に変換できません"
 
-#: gtkpanda/numeric.c:1575 gtkpanda/numeric.c:1594 gtkpanda/numeric.c:1598
-#: gtkpanda/numeric.c:1608
+#: gtkpanda/numeric.c:1566 gtkpanda/numeric.c:1585 gtkpanda/numeric.c:1589
+#: gtkpanda/numeric.c:1599
 #, c-format
 msgid "Bad numeric input format '%s'"
 msgstr "numeric型への不正な入力形式 %s"
 
-#: gtkpanda/numeric.c:1860
+#: gtkpanda/numeric.c:1851
 #, c-format
 msgid ""
 "overflow on numeric \n"
@@ -104,25 +156,34 @@ msgstr ""
 "numeric型オーバーフロー\n"
 "精度%2$d、位取り%3$dのフィールドで絶対値が10^%1$d以上です"
 
-#: gtkpanda/numeric.c:2104
+#: gtkpanda/numeric.c:2095
 #, c-format
 msgid "division by zero on numeric"
 msgstr "numeric型での0割です"
 
-#: gtkpanda/numeric.c:2340
+#: gtkpanda/numeric.c:2331
 #, c-format
 msgid "math error on numeric - cannot compute SQRT of negative value"
 msgstr "負の値の平方根を計算できません"
 
-#: gtkpanda/numeric.c:2416
+#: gtkpanda/numeric.c:2407
 #, c-format
 msgid "argument for EXP() too big"
 msgstr "EXP()の引数が大きすぎます"
 
-#: gtkpanda/numeric.c:2477
+#: gtkpanda/numeric.c:2468
 #, c-format
 msgid "math error on numeric - cannot compute LN of value <= zero"
 msgstr "負の値の対数を計算できません"
+
+#~ msgid "over-the-spot style requires fontset"
+#~ msgstr "フォントセットにover-the-spotスタイルが必要です"
+
+#~ msgid "Can't create input context."
+#~ msgstr "入力コンテキストを作成できません．"
+
+#~ msgid "printer"
+#~ msgstr "プリンタ"
 
 #~ msgid "can not save %s: %s"
 #~ msgstr "%sに保存できません:%s"
