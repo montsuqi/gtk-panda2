@@ -52,7 +52,7 @@ typedef struct _GtkPandaTextClass	GtkPandaTextClass;
 struct _GtkPandaText {
   GtkTextView textview;
   
-  gboolean im_enabled;
+  gboolean xim_enabled;
 };
 
 struct _GtkPandaTextClass {
@@ -64,7 +64,7 @@ struct _GtkPandaTextClass {
 
 GType gtk_panda_text_get_type (void);
 GtkWidget* gtk_panda_text_new (void);
-void gtk_panda_text_set_im_enabled (GtkPandaText *text, gboolean flag);
+void gtk_panda_text_set_xim_enabled (GtkPandaText *text, gboolean flag);
 
 #ifdef __cplusplus
 }

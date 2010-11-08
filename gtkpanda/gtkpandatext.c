@@ -49,7 +49,7 @@ enum
 enum {
   PROP_0,
   PROP_TEXT,
-  PROP_ENABLE_IM
+  PROP_ENABLE_XIM
 };
 
 static GtkWidgetClass *parent_class = NULL;
@@ -98,8 +98,8 @@ gtk_panda_text_class_init ( GtkPandaTextClass * klass)
     G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
-    PROP_ENABLE_IM,
-    g_param_spec_boolean ("enable-im",
+    PROP_ENABLE_XIM,
+    g_param_spec_boolean ("xim_enabled",
                           _("Enable Input Method"),
                           _("Whether enable input method controll"),
                           FALSE,
@@ -133,7 +133,7 @@ gtk_panda_text_init (GtkPandaText * text)
 {
   GtkTextBuffer *buffer;
 
-  text->im_enabled = FALSE;
+  text->xim_enabled = FALSE;
   buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 
   gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_CHAR);
@@ -208,12 +208,12 @@ gtk_panda_text_focus_in (GtkWidget     *widget,
   ptext = GTK_PANDA_TEXT(widget);
   mim = GTK_IM_MULTICONTEXT(text->im_context);
 
-  set_im_state_pre_focus(widget, mim, ptext->im_enabled);
+  set_im_state_pre_focus(widget, mim, ptext->xim_enabled);
 
   if (GTK_WIDGET_CLASS (parent_class)->focus_in_event)
     (* GTK_WIDGET_CLASS (parent_class)->focus_in_event) (widget, event);
 
-  set_im_state_post_focus(widget, mim, ptext->im_enabled);
+  set_im_state_post_focus(widget, mim, ptext->xim_enabled);
 
   return FALSE;
 }
@@ -238,8 +238,8 @@ gtk_panda_text_set_property (
       str = (gchar*)g_value_get_string(value);
       gtk_text_buffer_set_text(buf, str, strlen(str));
       break;
-    case PROP_ENABLE_IM:
-      text->im_enabled = g_value_get_boolean(value);
+    case PROP_ENABLE_XIM:
+      text->xim_enabled = g_value_get_boolean(value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -271,8 +271,8 @@ gtk_panda_text_get_property (
       str = gtk_text_buffer_get_text(buf,&start,&end,FALSE);
       g_value_set_string(value, g_strdup(str));
       break;
-    case PROP_ENABLE_IM:
-      g_value_set_boolean(value, text->im_enabled);
+    case PROP_ENABLE_XIM:
+      g_value_set_boolean(value, text->xim_enabled);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -283,9 +283,9 @@ gtk_panda_text_get_property (
 // public API
 
 void 
-gtk_panda_text_set_im_enabled (
+gtk_panda_text_set_xim_enabled (
   GtkPandaText *text, 
   gboolean flag)
 {
-  text->im_enabled = flag;
+  text->xim_enabled = flag;
 }

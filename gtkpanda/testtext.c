@@ -141,7 +141,7 @@ main (int argc, char *argv[])
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window1)->vbox), 
 		      scrolledwindow2, TRUE, TRUE, 0);
   text2 = gtk_panda_text_new();
-  gtk_panda_text_set_im_enabled(GTK_PANDA_TEXT(text2), TRUE);
+  gtk_panda_text_set_xim_enabled(GTK_PANDA_TEXT(text2), TRUE);
   gtk_container_add (GTK_CONTAINER (scrolledwindow2), text2);
   g_signal_connect(G_OBJECT(text2), "activate",
     G_CALLBACK(cb_text2_activate), NULL);
