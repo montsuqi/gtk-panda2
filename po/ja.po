@@ -37,7 +37,7 @@ msgstr "カラム数"
 
 #: gtkpanda/gtkpandaclist.c:156
 msgid "The list of column width"
-msgstr "カラム数"
+msgstr "カラム幅リスト"
 
 #: gtkpanda/gtkpandaclist.c:157
 msgid "The list of column width(comma separated string)"
