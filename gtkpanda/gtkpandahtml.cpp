@@ -122,7 +122,7 @@ gtk_panda_html_class_init (GtkPandaHTMLClass *klass)
 
   g_object_class_install_property (gobject_class,
     PROP_URI,
-    g_param_spec_string ("url",
+    g_param_spec_string ("uri",
     _("URI"),
     _("URI"),
     "",

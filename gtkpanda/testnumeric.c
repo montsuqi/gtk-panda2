@@ -84,7 +84,7 @@ main(
 
 	gtk_signal_connect(GTK_OBJECT(window),"destroy",
 					   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
-	entry = gtk_number_entry_new_with_format("----,--9.99");
+	entry = gtk_number_entry_new_with_format("----,---.99");
 	g_signal_connect(G_OBJECT(entry), "activate",
 					   G_CALLBACK(activate), NULL);
 	g_signal_connect(G_OBJECT(entry), "changed",
