@@ -134,7 +134,7 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
 
   g_object_class_install_property (gobject_class,
     PROP_SHOW_TITLES,
-    g_param_spec_boolean ("show-titles",
+    g_param_spec_boolean ("show_titles",
                           _("Show header title"),
                           _("Whether show header title"),
                           TRUE,
