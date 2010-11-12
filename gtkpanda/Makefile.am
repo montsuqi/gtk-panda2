@@ -20,7 +20,8 @@ gtkpanda_public_h_sources = \
 	gtkpandaprint.h			\
 	imcontrol.h				\
 	gtkpandapdf.h			\
-	gtkpandapixmap.h
+	gtkpandapixmap.h		\
+	gtkpandawindow.h
 
 gtkpanda_c_sources = 		\
 	numeric.c 				\
@@ -36,7 +37,8 @@ gtkpanda_c_sources = 		\
 	imcontrol.h				\
 	imcontrol.c				\
 	gtkpandapdf.c			\
-	gtkpandapixmap.c
+	gtkpandapixmap.c		\
+	gtkpandawindow.c
 
 gtkpanda_cpp_sources = 		\
 	gtkpandamain.cpp		\
