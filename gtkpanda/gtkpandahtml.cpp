@@ -148,7 +148,11 @@ gtk_panda_html_init (GtkPandaHTML *self)
     G_CALLBACK(open_uri_cb), NULL);
   g_signal_connect(GTK_MOZ_EMBED(self->mozembed), "new-window",
     G_CALLBACK(new_window_cb), NULL);
-  gtk_box_pack_start(GTK_BOX (self), GTK_WIDGET(self->mozembed), TRUE, TRUE, 0);
+  if (getenv("GTK_PANDA_HTML_DISABLE") == NULL) {
+    gtk_box_pack_start(GTK_BOX (self), 
+      GTK_WIDGET(self->mozembed), TRUE, TRUE, 0);
+  }
+
   gtk_widget_show_all(GTK_WIDGET(self));
 }
 

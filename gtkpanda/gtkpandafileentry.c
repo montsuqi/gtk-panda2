@@ -217,8 +217,6 @@ button_click_cb(GtkButton *button, GtkPandaFileEntry *self)
 static void
 gtk_panda_file_entry_init (GtkPandaFileEntry *self)
 {
-  GtkWidget *hbox;
-
   self->entry = gtk_entry_new();
   self->button = gtk_button_new();
   self->mode = GTK_FILE_CHOOSER_ACTION_OPEN;
@@ -230,8 +228,6 @@ gtk_panda_file_entry_init (GtkPandaFileEntry *self)
     G_CALLBACK(entry_activate_cb), self);
   g_signal_connect(G_OBJECT(self->button), "clicked",
     G_CALLBACK(button_click_cb), self);
-
-  hbox = gtk_hbox_new(FALSE, 0);
 
   gtk_box_pack_start(GTK_BOX(self), self->entry, TRUE, TRUE, 2);
   gtk_box_pack_start(GTK_BOX(self), self->button, FALSE, FALSE, 2);
