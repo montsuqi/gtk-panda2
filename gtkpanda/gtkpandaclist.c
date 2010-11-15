@@ -146,7 +146,7 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
                           _("Number of columns"),
                           _("Number of columns"),
                           0,
-                          15,
+                          100,
                           0,
                           G_PARAM_READWRITE));
 
