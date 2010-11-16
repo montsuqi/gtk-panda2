@@ -62,15 +62,19 @@ PKG_CHECK_MODULES(GTK_PANDA,
 dnl ***************************************************************************
 dnl gtk version check
 dnl ***************************************************************************
-PKG_CHECK_MODULES(CHECK_GTK_VER, gtk+-2.0 >= 2.10.0,
+PKG_CHECK_MODULES(CHECK_GTK_VER, gtk+-2.0 >= 2.14.0,
+[AC_DEFINE(GTK_2_14, 1, "")],
 [
-],
-[
-	PKG_CHECK_MODULES(CHECK_GTK_VER, gtk+-2.0 >= 2.8.0,
+	PKG_CHECK_MODULES(CHECK_GTK_VER, gtk+-2.0 >= 2.10.0,
 	[
-		AC_DEFINE(OLD_GTK, 1, "")
-	])
-]) 
+	],
+	[
+		PKG_CHECK_MODULES(CHECK_GTK_VER, gtk+-2.0 >= 2.8.0,
+		[
+			AC_DEFINE(OLD_GTK, 1, "")
+		])
+	]) 
+])
 
 dnl ***************************************************************************
 dnl enable testcode

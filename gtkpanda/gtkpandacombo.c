@@ -33,6 +33,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <glib-object.h>
 
+#include "config.h"
 #include "gtkpandaintl.h"
 #include "gtkpandacombo.h"
 
@@ -145,6 +146,10 @@ gtk_panda_combo_init (GtkPandaCombo * combo)
                                   "text", 0,
                                   NULL);
   gtk_combo_box_set_active (GTK_COMBO_BOX (combo), -1);
+#ifdef GTK_2_14
+  gtk_combo_box_set_button_sensitivity (GTK_COMBO_BOX (combo),
+    GTK_SENSITIVITY_ON);
+#endif
 
   // for set focusable false to popup button
   gtk_container_forall(GTK_CONTAINER(combo), set_focusable, NULL);
