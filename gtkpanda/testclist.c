@@ -32,12 +32,14 @@ select_row(
 	int				column,
     gpointer    	user_data)
 {
-  fprintf(stderr, "---- select row %d\n", row);
-  fprintf(stderr, "is row selected? : %d\n", 
-    gtk_panda_clist_row_is_selected(clist, row));
-  fprintf(stderr, "ncolumns:%d nrows:%d\n", 
-    gtk_panda_clist_get_columns(clist),
-    gtk_panda_clist_get_n_rows(clist));
+	int i;
+  	fprintf(stderr, "select:");
+	for (i=0; i < gtk_panda_clist_get_n_rows(clist); i++) {
+    	if (gtk_panda_clist_row_is_selected(clist, i)) {
+  			fprintf(stderr, "%d ", i);
+		}
+	}
+  	fprintf(stderr, "\n");
 }
 
 static void
