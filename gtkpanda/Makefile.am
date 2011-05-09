@@ -21,7 +21,8 @@ gtkpanda_public_h_sources = \
 	imcontrol.h				\
 	gtkpandapdf.h			\
 	gtkpandapixmap.h		\
-	gtkpandawindow.h
+	gtkpandawindow.h		\
+	gtkpandatable.h
 
 gtkpanda_c_sources = 		\
 	numeric.c 				\
@@ -38,7 +39,8 @@ gtkpanda_c_sources = 		\
 	imcontrol.c				\
 	gtkpandapdf.c			\
 	gtkpandapixmap.c		\
-	gtkpandawindow.c
+	gtkpandawindow.c		\
+	gtkpandatable.c
 
 gtkpanda_cpp_sources = 		\
 	gtkpandamain.cpp		\
@@ -82,7 +84,8 @@ noinst_PROGRAMS = 	\
 	testtext		\
 	testtimer		\
 	testpdf			\
-	testpixmap
+	testpixmap		\
+	testtable
 
 DEPS = \
 	libgtkpanda-2.0.la
@@ -119,3 +122,6 @@ testpdf_LDADD = $(LDADDS)
 
 testpixmap_DEPENDENCIES = $(DEPS)
 testpixmap_LDADD = $(LDADDS)
+
+testtable_DEPENDENCIES = $(DEPS)
+testtable_LDADD = $(LDADDS)

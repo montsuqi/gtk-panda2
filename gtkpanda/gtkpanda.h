@@ -37,6 +37,7 @@
 #include <gtkpanda/gtkpandapdf.h>
 #include <gtkpanda/gtkpandapixmap.h>
 #include <gtkpanda/gtkpandawindow.h>
+#include <gtkpanda/gtkpandatable.h>
 
 void gtk_panda_init (int *argc, char ***argv);
 

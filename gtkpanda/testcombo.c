@@ -150,7 +150,7 @@ main (int argc, char *argv[])
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window1)->vbox), 
 		      combo1, TRUE, TRUE, 0);
   combo1_items = g_list_append (combo1_items, "hoge1");
-  combo1_items = g_list_append (combo1_items, "hoge2");
+  combo1_items = g_list_append (combo1_items, "toooooooooooooooooooooooooooooooooooooooolong");
   combo1_items = g_list_append (combo1_items, "hoge3");
   gtk_panda_combo_set_popdown_strings (GTK_PANDA_COMBO (combo1), combo1_items);
   g_list_free (combo1_items);
