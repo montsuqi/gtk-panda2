@@ -12,19 +12,19 @@
 void
 reset_table(GtkPandaTable *table)
 {
-  gchar *data[5] = { "icon", "text","label","check","white" };
+  gchar *data[6] = { "white","icon", "text","label","check","white" };
   int i;
 
   gtk_panda_table_clear(table);
   for(i=0;i<10;i++) {
     if (i %2 ==0) {
-      data[0] = (gchar*)GTK_STOCK_BOLD;
-      data[3] = "True";
-      data[4] = "white";
+      data[1] = (gchar*)GTK_STOCK_BOLD;
+      data[4] = "True";
+      data[5] = "white";
     } else {
-      data[0] = (gchar*)GTK_STOCK_CONVERT;
-      data[3] = "False";
-      data[4] = "lightgray";
+      data[1] = (gchar*)GTK_STOCK_CONVERT;
+      data[4] = "False";
+      data[5] = "lightgray";
     }
     gtk_panda_table_append(table,data);
   }
@@ -66,11 +66,11 @@ main (int argc, char *argv[])
   table = gtk_panda_table_new();
   gtk_box_pack_start(GTK_BOX(vbox),table,TRUE,TRUE,0);
 
-  gtk_panda_table_set_columns(GTK_PANDA_TABLE(table),5);
+  gtk_panda_table_set_columns(GTK_PANDA_TABLE(table),6);
   gtk_panda_table_set_titles(GTK_PANDA_TABLE(table),
     "icon,text,label,check");
   gtk_panda_table_set_types(GTK_PANDA_TABLE(table),
-    "icon,text,label,check,color");
+    "color,icon,text,label,check,color");
   reset_table(GTK_PANDA_TABLE(table));
   g_signal_connect (G_OBJECT(table), "cell-edited",
     G_CALLBACK(cb_cell_edited), NULL);

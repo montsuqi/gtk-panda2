@@ -197,6 +197,7 @@ parse_prop_types(GtkPandaTable *table)
       table->renderer_types[i] = GTK_PANDA_TABLE_RENDERER_CHECK;
       table->model_types[i] = G_TYPE_BOOLEAN;
     } else if (!strcmp(splits[i], "color")) {
+      table->renderer_types[i] = GTK_PANDA_TABLE_RENDERER_COLOR;
       if (i < table->columns) {
         table->color_column = i;
       }
@@ -249,62 +250,73 @@ apply_prop_types(GtkPandaTable *table)
   GtkTreeViewColumn *col;
   GtkCellRenderer *renderer;
 
+/* FIXFIX */
+
+  table->color_column = -1;
   for(i = 0; i < table->columns; i++) {
-    col = gtk_tree_view_column_new();
-    gtk_tree_view_column_set_title(col, "");
-    gtk_tree_view_append_column(GTK_TREE_VIEW(table), col);
-
-    switch(table->renderer_types[i]) {
-    case GTK_PANDA_TABLE_RENDERER_TEXT:
-      renderer = gtk_cell_renderer_text_new();
-      gtk_tree_view_column_pack_start(col, renderer, TRUE);
-      g_object_set(G_OBJECT(renderer),
-        "editable",TRUE,
-        NULL);
-      gtk_tree_view_column_set_attributes(col, renderer, 
-        "text",i,
-        NULL);
-	  g_object_set_data(G_OBJECT(renderer),
-		"column_num", GUINT_TO_POINTER(i));
-      g_signal_connect(G_OBJECT(renderer),"edited",
-        G_CALLBACK(cb_text_renderer_edited),table);
-      break;
-    case GTK_PANDA_TABLE_RENDERER_LABEL:
-      renderer = gtk_cell_renderer_text_new();
-      gtk_tree_view_column_pack_start(col, renderer, TRUE);
-      g_object_set(G_OBJECT(renderer),
-        "editable",FALSE,
-        NULL);
-      gtk_tree_view_column_set_attributes(col, renderer, 
-        "text",i,
-        NULL);
-      break;
-    case GTK_PANDA_TABLE_RENDERER_CHECK:
-      renderer = gtk_cell_renderer_toggle_new();
-      gtk_tree_view_column_pack_start(col, renderer, TRUE);
-      g_object_set(G_OBJECT(renderer),
-        "activatable",TRUE,
-        NULL);
-      gtk_tree_view_column_set_attributes(col, renderer, 
-        "active", i,
-        NULL);
-	  g_object_set_data(G_OBJECT(renderer),
-		"column_num", GUINT_TO_POINTER(i));
-      g_signal_connect(G_OBJECT(renderer),"toggled",
-        G_CALLBACK(cb_toggle_renderer_toggled),table);
-      break;
-    case GTK_PANDA_TABLE_RENDERER_ICON:
-      renderer = gtk_cell_renderer_pixbuf_new();
-      gtk_tree_view_column_pack_start(col, renderer, TRUE);
-      gtk_tree_view_column_set_attributes(col, renderer, 
-        "stock-id",i,
-        NULL);
-      break;
+    if (table->renderer_types[i] == GTK_PANDA_TABLE_RENDERER_COLOR) {
+      table->color_column = i;
     }
+  }
 
-    if (table->color_column != -1) {
-      gtk_tree_view_column_add_attribute(col, renderer, 
-        "cell-background",table->color_column);
+  for(i = 0; i < table->columns; i++) {
+    if (table->renderer_types[i] != GTK_PANDA_TABLE_RENDERER_COLOR) {
+      col = gtk_tree_view_column_new();
+      gtk_tree_view_column_set_title(col, "");
+      gtk_tree_view_append_column(GTK_TREE_VIEW(table), col);
+
+      switch(table->renderer_types[i]) {
+      case GTK_PANDA_TABLE_RENDERER_TEXT:
+        renderer = gtk_cell_renderer_text_new();
+        gtk_tree_view_column_pack_start(col, renderer, TRUE);
+        g_object_set(G_OBJECT(renderer),
+          "editable",TRUE,
+          NULL);
+        gtk_tree_view_column_set_attributes(col, renderer, 
+          "text",i,
+          NULL);
+	    g_object_set_data(G_OBJECT(renderer),
+	  	"column_num", GUINT_TO_POINTER(i));
+        g_signal_connect(G_OBJECT(renderer),"edited",
+          G_CALLBACK(cb_text_renderer_edited),table);
+        break;
+      case GTK_PANDA_TABLE_RENDERER_LABEL:
+        renderer = gtk_cell_renderer_text_new();
+        gtk_tree_view_column_pack_start(col, renderer, TRUE);
+        g_object_set(G_OBJECT(renderer),
+          "editable",FALSE,
+          NULL);
+        gtk_tree_view_column_set_attributes(col, renderer, 
+          "text",i,
+          NULL);
+        break;
+      case GTK_PANDA_TABLE_RENDERER_CHECK:
+        renderer = gtk_cell_renderer_toggle_new();
+        gtk_tree_view_column_pack_start(col, renderer, TRUE);
+        g_object_set(G_OBJECT(renderer),
+          "activatable",TRUE,
+          NULL);
+        gtk_tree_view_column_set_attributes(col, renderer, 
+          "active", i,
+          NULL);
+	    g_object_set_data(G_OBJECT(renderer),
+	  	"column_num", GUINT_TO_POINTER(i));
+        g_signal_connect(G_OBJECT(renderer),"toggled",
+          G_CALLBACK(cb_toggle_renderer_toggled),table);
+        break;
+      case GTK_PANDA_TABLE_RENDERER_ICON:
+        renderer = gtk_cell_renderer_pixbuf_new();
+        gtk_tree_view_column_pack_start(col, renderer, TRUE);
+        gtk_tree_view_column_set_attributes(col, renderer, 
+          "stock-id",i,
+          NULL);
+        break;
+      }
+
+      if (table->color_column != -1) {
+        gtk_tree_view_column_add_attribute(col, renderer, 
+          "cell-background",table->color_column);
+      }
     }
   }
 }
