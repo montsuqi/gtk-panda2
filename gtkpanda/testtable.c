@@ -16,7 +16,7 @@ reset_table(GtkPandaTable *table)
   int i;
 
   gtk_panda_table_clear(table);
-  for(i=0;i<10;i++) {
+  for(i=0;i<100;i++) {
     if (i %2 ==0) {
       data[1] = (gchar*)GTK_STOCK_BOLD;
       data[4] = "True";
@@ -51,6 +51,7 @@ int
 main (int argc, char *argv[])
 {
   GtkWidget *window;
+  GtkWidget *scroll;
   GtkWidget *vbox;
   GtkWidget *table;
   GtkWidget *button;
@@ -60,15 +61,20 @@ main (int argc, char *argv[])
   gtk_panda_init (&argc, &argv);
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_widget_set_size_request (window, 300, 500);
+
   vbox = gtk_vbox_new(FALSE,0);
   gtk_container_add(GTK_CONTAINER(window),vbox);
 
+  scroll = gtk_scrolled_window_new(NULL,NULL);
+  gtk_box_pack_start(GTK_BOX(vbox),scroll,TRUE,TRUE,0);
+
   table = gtk_panda_table_new();
-  gtk_box_pack_start(GTK_BOX(vbox),table,TRUE,TRUE,0);
+  gtk_container_add(GTK_CONTAINER(scroll),table);
 
   gtk_panda_table_set_columns(GTK_PANDA_TABLE(table),6);
   gtk_panda_table_set_titles(GTK_PANDA_TABLE(table),
-    "icon,text,label,check");
+    "icon1,text1,label1,check1");
   gtk_panda_table_set_types(GTK_PANDA_TABLE(table),
     "color,icon,text,label,check,color");
   reset_table(GTK_PANDA_TABLE(table));

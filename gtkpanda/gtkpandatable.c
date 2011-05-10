@@ -128,6 +128,7 @@ gtk_panda_table_init ( GtkPandaTable * table)
   gtk_panda_table_set_columns(table,1);
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(table), FALSE );
   gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(table), FALSE );
+  gtk_tree_view_set_reorderable(GTK_TREE_VIEW(table), FALSE );
   GTK_WIDGET_SET_FLAGS(GTK_WIDGET(table), GTK_CAN_FOCUS);
 }
 
@@ -262,6 +263,7 @@ apply_prop_types(GtkPandaTable *table)
   for(i = 0; i < table->columns; i++) {
     if (table->renderer_types[i] != GTK_PANDA_TABLE_RENDERER_COLOR) {
       col = gtk_tree_view_column_new();
+      gtk_tree_view_column_set_resizable(col,TRUE);
       gtk_tree_view_column_set_title(col, "");
       gtk_tree_view_append_column(GTK_TREE_VIEW(table), col);
 
@@ -341,7 +343,7 @@ apply_prop_titles(GtkPandaTable *table)
       GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,i)),"");
   }
 
-  splits = g_strsplit(table->types,",",GTK_PANDA_TABLE_MAX_COLS);
+  splits = g_strsplit(table->titles,",",GTK_PANDA_TABLE_MAX_COLS);
   for(i = 0; splits[i] != NULL && i < len; i++) {
     gtk_tree_view_column_set_title(
       GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,i)),splits[i]);
