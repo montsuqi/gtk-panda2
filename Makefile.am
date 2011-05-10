@@ -1,12 +1,7 @@
 ## Makefile.am for gtk+panda
 
-if TESTCODE
-TESTDIRS = test
-endif
-
 SUBDIRS = intl po 					\
 	gtkpanda 				\
-	$(TESTDIRS) \
 	docs
 
 

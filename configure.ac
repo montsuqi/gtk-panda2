@@ -76,18 +76,10 @@ PKG_CHECK_MODULES(CHECK_GTK_VER, gtk+-2.0 >= 2.14.0,
 	]) 
 ])
 
-dnl ***************************************************************************
-dnl enable testcode
-dnl ***************************************************************************
-AC_ARG_ENABLE(testcode,
- [ --enable-testcode sample code [[disable]] ],,[enable_testcode="no"] )
-AM_CONDITIONAL(TESTCODE, test "x$enable_testcode" = "xyes")
-
 AC_CONFIG_FILES([	Makefile 
 					docs/Makefile 
 					gtkpanda/Makefile 
 					gtkpanda2.pc 
 					intl/Makefile 
-					po/Makefile.in 
-					test/Makefile ])
+					po/Makefile.in ])
 AC_OUTPUT
