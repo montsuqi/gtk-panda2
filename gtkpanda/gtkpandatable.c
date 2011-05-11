@@ -400,7 +400,13 @@ gtk_panda_table_set_columns (
   int i;
 
   g_return_if_fail(table != NULL);
-  g_return_if_fail(new_columns >= 0);
+  if (new_columns <= 0) {
+    new_columns = 1;
+  }
+
+  if (new_columns > GTK_PANDA_TABLE_MAX_COLS) {
+    new_columns = GTK_PANDA_TABLE_MAX_COLS;
+  }
 
   list = gtk_tree_view_get_columns(GTK_TREE_VIEW(table));
   for (i=0; i < g_list_length(list); i++) {
