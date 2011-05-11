@@ -115,16 +115,16 @@ gtk_panda_table_class_init ( GtkPandaTableClass * klass)
   g_object_class_install_property (gobject_class,
     PROP_TITLES,
     g_param_spec_string ("column_titles",
-      _("The list of column titles"),
-      _("The list of column titles(comma separated string)"),
+      _("The list of column title"),
+      _("The list of column title(comma separated string)"),
       "",
       G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
     PROP_WIDTHS,
     g_param_spec_string ("column_widths",
-      _("The list of column widths"),
-      _("The list of column widths(comma separated string)"),
+      _("The list of column width"),
+      _("The list of column width(comma separated string)"),
       "",
       G_PARAM_READWRITE));
 }
