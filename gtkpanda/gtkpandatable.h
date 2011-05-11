@@ -59,6 +59,7 @@ struct _GtkPandaTable {
   gint columns;
   gchar *types;
   gchar *titles;
+  gchar *widths;
   int renderer_types[GTK_PANDA_TABLE_MAX_COLS];
   GType model_types[GTK_PANDA_TABLE_MAX_COLS];
   int color_column;
@@ -78,7 +79,9 @@ void gtk_panda_table_set_columns(GtkPandaTable *table,
 void gtk_panda_table_set_types(GtkPandaTable *table,
   const gchar *types);
 void gtk_panda_table_set_titles (GtkPandaTable *table,
-  const gchar *headers);
+  const gchar *titles);
+void gtk_panda_table_set_column_widths (GtkPandaTable *table,
+  const gchar *widths);
 
 void gtk_panda_table_moveto (GtkPandaTable *table,
   gint      row,
@@ -88,6 +91,7 @@ void gtk_panda_table_moveto (GtkPandaTable *table,
 
 gint gtk_panda_table_get_n_rows(GtkPandaTable *table);
 gint gtk_panda_table_get_columns(GtkPandaTable *table);
+gint gtk_panda_table_get_column_type(GtkPandaTable *table,gint column);
 
 GtkVisibility gtk_panda_table_row_is_visible (GtkPandaTable *table, gint row);
 

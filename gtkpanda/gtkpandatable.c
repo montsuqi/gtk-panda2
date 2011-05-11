@@ -42,7 +42,8 @@ enum {
 PROP_0,
 PROP_COLUMNS,
 PROP_TYPES,
-PROP_TITLES
+PROP_TITLES,
+PROP_WIDTHS
 };
 
 enum
@@ -98,9 +99,9 @@ gtk_panda_table_class_init ( GtkPandaTableClass * klass)
     g_param_spec_int ("columns",
       _("Number of columns"),
       _("Number of columns"),
-      0,
-      99,
-      0,
+      1,
+      GTK_PANDA_TABLE_MAX_COLS,
+      1,
       G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
@@ -118,6 +119,14 @@ gtk_panda_table_class_init ( GtkPandaTableClass * klass)
       _("The list of column titles(comma separated string)"),
       "",
       G_PARAM_READWRITE));
+
+  g_object_class_install_property (gobject_class,
+    PROP_WIDTHS,
+    g_param_spec_string ("column_widths",
+      _("The list of column widths"),
+      _("The list of column widths(comma separated string)"),
+      "",
+      G_PARAM_READWRITE));
 }
 
 static void
@@ -125,6 +134,7 @@ gtk_panda_table_init ( GtkPandaTable * table)
 {
   table->types = g_strdup("");
   table->titles = g_strdup("");
+  table->widths = g_strdup("");
   gtk_panda_table_set_columns(table,1);
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(table), FALSE );
   gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(table), FALSE );
@@ -251,8 +261,6 @@ apply_prop_types(GtkPandaTable *table)
   GtkTreeViewColumn *col;
   GtkCellRenderer *renderer;
 
-/* FIXFIX */
-
   table->color_column = -1;
   for(i = 0; i < table->columns; i++) {
     if (table->renderer_types[i] == GTK_PANDA_TABLE_RENDERER_COLOR) {
@@ -264,7 +272,11 @@ apply_prop_types(GtkPandaTable *table)
     if (table->renderer_types[i] != GTK_PANDA_TABLE_RENDERER_COLOR) {
       col = gtk_tree_view_column_new();
       gtk_tree_view_column_set_resizable(col,TRUE);
+      gtk_tree_view_column_set_sizing(col,GTK_TREE_VIEW_COLUMN_AUTOSIZE);
       gtk_tree_view_column_set_title(col, "");
+      g_object_set(G_OBJECT(col), 
+        "alignment", 0.5,
+        NULL);
       gtk_tree_view_append_column(GTK_TREE_VIEW(table), col);
 
       switch(table->renderer_types[i]) {
@@ -352,6 +364,32 @@ apply_prop_titles(GtkPandaTable *table)
   g_list_free(list);
 }
 
+static void
+apply_prop_widths(GtkPandaTable *table)
+{
+  int i, len;
+  gchar **splits;
+  GList *list;
+
+  g_return_if_fail(table != NULL);
+
+  if (table->titles == NULL) {
+    return;
+  }
+
+  list = gtk_tree_view_get_columns(GTK_TREE_VIEW(table));
+  len = g_list_length(list);
+
+  splits = g_strsplit(table->widths,",",GTK_PANDA_TABLE_MAX_COLS);
+  for(i = 0; splits[i] != NULL && i < len; i++) {
+    gtk_tree_view_column_set_min_width(
+      GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,i)),
+      atoi(splits[i]));
+  }
+  g_strfreev(splits);
+  g_list_free(list);
+}
+
 void
 gtk_panda_table_set_columns (
   GtkPandaTable *table,
@@ -407,7 +445,22 @@ gtk_panda_table_set_titles(
     g_free(table->titles);
   }
   table->titles = g_strdup(titles);
-  gtk_panda_table_set_columns(table,table->columns);
+  apply_prop_titles(table);
+}
+
+void
+gtk_panda_table_set_column_widths(
+  GtkPandaTable *table,
+  const gchar *widths)
+{
+  g_return_if_fail(table != NULL);
+  g_return_if_fail(widths != NULL);
+
+  if (table->widths != NULL) {
+    g_free(table->widths);
+  }
+  table->widths = g_strdup(widths);
+  apply_prop_widths(table);
 }
 
 void 
@@ -483,6 +536,17 @@ gtk_panda_table_get_n_rows(
   return nrows;
 }
 
+gint
+gtk_panda_table_get_column_type(GtkPandaTable *table,
+  gint col)
+{
+  g_return_val_if_fail (table != NULL,0);
+  g_return_val_if_fail (GTK_IS_PANDA_TABLE (table),0);
+  g_return_val_if_fail (col < GTK_PANDA_TABLE_MAX_COLS,0);
+
+  return table->renderer_types[col];
+}
+
 void 
 gtk_panda_table_moveto (
   GtkPandaTable *table,
@@ -527,6 +591,9 @@ gtk_panda_table_set_property (GObject *object,
     case PROP_TITLES:
       gtk_panda_table_set_titles(table,g_value_get_string(value));
       break;
+    case PROP_WIDTHS:
+      gtk_panda_table_set_column_widths(table,g_value_get_string(value));
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -554,6 +621,9 @@ gtk_panda_table_get_property (GObject         *object,
       break;
     case PROP_TITLES:
       g_value_set_string (value, g_strdup(table->titles));
+      break;
+    case PROP_WIDTHS:
+      g_value_set_string (value, g_strdup(table->widths));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);

@@ -73,10 +73,12 @@ main (int argc, char *argv[])
   gtk_container_add(GTK_CONTAINER(scroll),table);
 
   gtk_panda_table_set_columns(GTK_PANDA_TABLE(table),6);
-  gtk_panda_table_set_titles(GTK_PANDA_TABLE(table),
-    "icon1,text1,label1,check1");
   gtk_panda_table_set_types(GTK_PANDA_TABLE(table),
     "color,icon,text,label,check,color");
+  gtk_panda_table_set_titles(GTK_PANDA_TABLE(table),
+    "icon1,text1,label1,check1");
+  gtk_panda_table_set_column_widths(GTK_PANDA_TABLE(table),
+    "100,200,100,200");
   reset_table(GTK_PANDA_TABLE(table));
   g_signal_connect (G_OBJECT(table), "cell-edited",
     G_CALLBACK(cb_cell_edited), NULL);
