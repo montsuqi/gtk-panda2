@@ -26,8 +26,14 @@ reset_table(GtkPandaTable *table)
       data[4] = "False";
       data[5] = "lightgray";
     }
+    data[2] = g_strdup_printf("text_%04d",i);
     gtk_panda_table_append(table,data);
   }
+
+  gtk_panda_table_moveto(table,50,3,0.5,0.5);
+
+
+  gtk_widget_grab_focus(GTK_WIDGET(table));
 }
 
 void

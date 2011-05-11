@@ -132,6 +132,8 @@ gtk_panda_table_class_init ( GtkPandaTableClass * klass)
 static void
 gtk_panda_table_init ( GtkPandaTable * table)
 {
+  GtkTreeSelection *selection;
+  
   table->types = g_strdup("");
   table->titles = g_strdup("");
   table->widths = g_strdup("");
@@ -139,6 +141,9 @@ gtk_panda_table_init ( GtkPandaTable * table)
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(table), FALSE );
   gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(table), FALSE );
   gtk_tree_view_set_reorderable(GTK_TREE_VIEW(table), FALSE );
+
+  selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(table));
+  gtk_tree_selection_set_mode(selection,GTK_SELECTION_NONE);
   GTK_WIDGET_SET_FLAGS(GTK_WIDGET(table), GTK_CAN_FOCUS);
 }
 
@@ -570,6 +575,7 @@ gtk_panda_table_moveto (
   path = gtk_tree_path_new_from_indices(row, -1);
   col = gtk_tree_view_get_column(GTK_TREE_VIEW(table), column);
 
+  gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,FALSE);
   gtk_tree_view_scroll_to_cell(
 	GTK_TREE_VIEW(table), path, col, TRUE, row_align, col_align);
   gtk_tree_path_free(path);
