@@ -86,7 +86,7 @@ void gtk_panda_combo_set_case_sensitive(
 /* simnterface */
 void gtk_panda_combo_set_popdown_strings(
        GtkPandaCombo* combo, 
-       GList *strings);
+       gchar **strings);
 
 #ifdef __cplusplus
 }

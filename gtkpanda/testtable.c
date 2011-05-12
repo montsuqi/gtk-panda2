@@ -25,6 +25,7 @@ reset_table(GtkPandaTable *table)
       data[1] = (gchar*)GTK_STOCK_CONVERT;
       data[4] = "False";
       data[5] = "lightgray";
+      data[5] = "AliceBlue";
     }
     data[2] = g_strdup_printf("text_%04d",i);
     gtk_panda_table_append(table,data);

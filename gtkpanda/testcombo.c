@@ -105,8 +105,8 @@ int
 main (int argc, char *argv[])
 {
   GtkWidget *window1;
-  GList *combo1_items = NULL;
-  GList *combo2_items = NULL;
+  gchar *items1[10];
+  gchar *items2[10];
 
   GtkWidget *button;
 
@@ -149,11 +149,11 @@ main (int argc, char *argv[])
   gtk_widget_show (combo1);
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window1)->vbox), 
 		      combo1, TRUE, TRUE, 0);
-  combo1_items = g_list_append (combo1_items, "hoge1");
-  combo1_items = g_list_append (combo1_items, "toooooooooooooooooooooooooooooooooooooooolong");
-  combo1_items = g_list_append (combo1_items, "hoge3");
-  gtk_panda_combo_set_popdown_strings (GTK_PANDA_COMBO (combo1), combo1_items);
-  g_list_free (combo1_items);
+  items1[0] = "item1";
+  items1[1] = "item2_____________________________________________";
+  items1[2] = "item3";
+  items1[3] = NULL;
+  gtk_panda_combo_set_popdown_strings (GTK_PANDA_COMBO (combo1), items1);
   g_signal_connect(GTK_PANDA_COMBO(combo1)->entry, "activate",
     G_CALLBACK(on_combo_entry1_activate), NULL);
   g_signal_connect(GTK_PANDA_COMBO(combo1)->entry, "changed",
@@ -164,15 +164,13 @@ main (int argc, char *argv[])
   gtk_widget_show (combo2);
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window1)->vbox), 
 		      combo2, TRUE, TRUE, 0);
-  combo2_items = g_list_append (combo2_items, "hoge21");
-  combo2_items = g_list_append (combo2_items, "hoge22");
-  combo2_items = g_list_append (combo2_items, "hoge23");
-  gtk_panda_combo_set_popdown_strings (GTK_PANDA_COMBO (combo2), combo2_items);
-  combo2_items = g_list_append (combo2_items, "hoge24");
-  combo2_items = g_list_append (combo2_items, "hoge25");
-  combo2_items = g_list_append (combo2_items, "hoge26");
-  gtk_panda_combo_set_popdown_strings (GTK_PANDA_COMBO (combo2), combo2_items);
-  g_list_free (combo2_items);
+  items2[0] = "item21";
+  items2[1] = "item22";
+  items2[2] = "item23";
+  items2[3] = "item24";
+  items2[4] = "item25";
+  items2[5] = NULL;
+  gtk_panda_combo_set_popdown_strings (GTK_PANDA_COMBO (combo2), items2);
   g_signal_connect(GTK_PANDA_COMBO(combo2)->entry, "activate",
     G_CALLBACK(on_combo_entry2_activate), NULL);
   g_signal_connect(GTK_PANDA_COMBO(combo2)->entry, "changed",

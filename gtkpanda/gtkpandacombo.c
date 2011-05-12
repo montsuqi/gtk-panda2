@@ -684,22 +684,19 @@ gtk_panda_combo_set_loop_selection (GtkPandaCombo * combo, gboolean val)
 }
 
 void
-gtk_panda_combo_set_popdown_strings (GtkPandaCombo * combo, GList * strings)
+gtk_panda_combo_set_popdown_strings (GtkPandaCombo * combo, gchar **strs)
 {
   GtkListStore *store;
-  GList *list;
+  int i;
   
   g_return_if_fail (combo != NULL);
   g_return_if_fail (GTK_IS_PANDA_COMBO (combo));
-  g_return_if_fail (strings != NULL);
+  g_return_if_fail (strs != NULL);
   store = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(combo)));
   gtk_list_store_clear(store);
 
-  list = strings;
-  while (list)
-    {
-      gtk_combo_box_append_text(GTK_COMBO_BOX(combo), list->data);
-      list = list->next;
-    }
+  for(i=0;strs[i]!=NULL;i++) {
+    gtk_combo_box_append_text(GTK_COMBO_BOX(combo), strs[i]);
+  }
   gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 }
