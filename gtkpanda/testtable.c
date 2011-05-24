@@ -8,40 +8,48 @@
 #include <gtk/gtk.h>
 #include "gtkpanda.h"
 
+#define ROW_SIZE 100
 
 void
-reset_table(GtkPandaTable *table)
+reset_data(GtkPandaTable *table)
 {
-  gchar *data[6] = { "white","icon", "text","label","check","white" };
+  static int num = 1;
+  gchar *rowdata[5] = {GTK_STOCK_YES,"text","label","T",NULL};
+  gchar *colors[ROW_SIZE+1];
   int i;
 
-  gtk_panda_table_clear(table);
-  for(i=0;i<100;i++) {
-    if (i %2 ==0) {
-      data[1] = (gchar*)GTK_STOCK_BOLD;
-      data[4] = "True";
-      data[5] = "white";
+  for(i=0;i<ROW_SIZE;i++) {
+    if (i%2==0) {
+      rowdata[0] = GTK_STOCK_YES;
+      rowdata[1] = g_strdup_printf("even%d",num);
+      rowdata[2] = "label";
+      rowdata[3] = "T";
     } else {
-      data[1] = (gchar*)GTK_STOCK_CONVERT;
-      data[4] = "False";
-      data[5] = "lightgray";
-      data[5] = "AliceBlue";
+      rowdata[0] = GTK_STOCK_NO;
+      rowdata[1] = g_strdup_printf("odd%d",num);
+      rowdata[2] = "LABEL";
+      rowdata[3] = "F";
     }
-    data[2] = g_strdup_printf("text_%04d",i);
-    gtk_panda_table_append(table,data);
+    gtk_panda_table_set_row(table,i,rowdata);
   }
 
-  gtk_panda_table_moveto(table,50,3,0.5,0.5);
-
-
-  gtk_widget_grab_focus(GTK_WIDGET(table));
+  colors[ROW_SIZE] = NULL;
+  for(i=0;i<ROW_SIZE;i++){
+    if (i%2==0) {
+      colors[i] = "white";
+    } else {
+      colors[i] = "azure";
+    }
+  }
+  gtk_panda_table_set_row_colors(table,colors);
+  num++;
 }
 
 void
 cb_clicked(GtkWidget *widget,
   gpointer data)
 {
-  reset_table(GTK_PANDA_TABLE(data));
+  reset_data(GTK_PANDA_TABLE(data));
 }
 
 void
@@ -79,16 +87,17 @@ main (int argc, char *argv[])
   table = gtk_panda_table_new();
   gtk_container_add(GTK_CONTAINER(scroll),table);
 
-  gtk_panda_table_set_columns(GTK_PANDA_TABLE(table),6);
+  gtk_panda_table_set_columns(GTK_PANDA_TABLE(table),4);
   gtk_panda_table_set_types(GTK_PANDA_TABLE(table),
-    "color,icon,text,label,check,color");
+    "icon,text,label,check");
   gtk_panda_table_set_titles(GTK_PANDA_TABLE(table),
     "icon1,text1,label1,check1");
   gtk_panda_table_set_column_widths(GTK_PANDA_TABLE(table),
-    "100,200,100,200");
-  reset_table(GTK_PANDA_TABLE(table));
+    "50,100,100,50");
+  gtk_panda_table_set_rows(GTK_PANDA_TABLE(table),ROW_SIZE);
   g_signal_connect (G_OBJECT(table), "cell-edited",
     G_CALLBACK(cb_cell_edited), NULL);
+  reset_data(GTK_PANDA_TABLE(table));
 
   button = gtk_button_new_with_label("reset");
   gtk_box_pack_start(GTK_BOX(vbox),button,FALSE,FALSE,0);

@@ -40,13 +40,13 @@ extern "C" {
 #define GTK_IS_PANDA_TABLE(obj)			GTK_CHECK_TYPE (obj, gtk_panda_table_get_type ())
 
 #define GTK_PANDA_TABLE_MAX_COLS 100
+#define GTK_PANDA_TABLE_MAX_ROWS 1000
 
 enum GtkPandaTableRendererType {
   GTK_PANDA_TABLE_RENDERER_TEXT = 0,
   GTK_PANDA_TABLE_RENDERER_LABEL,
   GTK_PANDA_TABLE_RENDERER_CHECK,
-  GTK_PANDA_TABLE_RENDERER_ICON,
-  GTK_PANDA_TABLE_RENDERER_COLOR
+  GTK_PANDA_TABLE_RENDERER_ICON
 };
 
 typedef struct _GtkPandaTable		GtkPandaTable;
@@ -56,13 +56,13 @@ typedef struct _GtkPandaTableClass	GtkPandaTableClass;
 struct _GtkPandaTable {
   GtkTreeView tree;
 
+  gint rows;
   gint columns;
   gchar *types;
   gchar *titles;
   gchar *widths;
   int renderer_types[GTK_PANDA_TABLE_MAX_COLS];
   GType model_types[GTK_PANDA_TABLE_MAX_COLS];
-  int color_column;
 };
 
 struct _GtkPandaTableClass {
@@ -74,30 +74,30 @@ struct _GtkPandaTableClass {
 GType gtk_panda_table_get_type (void);
 GtkWidget *gtk_panda_table_new ();
 
+void gtk_panda_table_set_rows(GtkPandaTable *table, 
+  gint n_rows);
 void gtk_panda_table_set_columns(GtkPandaTable *table, 
   gint n_columns);
 void gtk_panda_table_set_types(GtkPandaTable *table,
   const gchar *types);
-void gtk_panda_table_set_titles (GtkPandaTable *table,
+void gtk_panda_table_set_titles(GtkPandaTable *table,
   const gchar *titles);
-void gtk_panda_table_set_column_widths (GtkPandaTable *table,
+void gtk_panda_table_set_column_widths(GtkPandaTable *table,
   const gchar *widths);
-
-void gtk_panda_table_moveto (GtkPandaTable *table,
-  gint      row,
-  gint      column,
-  gfloat    row_align,
-  gfloat    col_align);
-
+void gtk_panda_table_set_row(GtkPandaTable *table,
+  gint i,
+  gchar *text[]);
+void gtk_panda_table_set_row_colors(GtkPandaTable *table,
+  gchar *colors[]);
+void gtk_panda_table_moveto(GtkPandaTable *table,
+  gint row,
+  gint column,
+  gboolean use_align,
+  gfloat row_align,
+  gfloat col_align);
 gint gtk_panda_table_get_n_rows(GtkPandaTable *table);
 gint gtk_panda_table_get_columns(GtkPandaTable *table);
 gint gtk_panda_table_get_column_type(GtkPandaTable *table,gint column);
-
-GtkVisibility gtk_panda_table_row_is_visible (GtkPandaTable *table, gint row);
-
-void gtk_panda_table_clear (GtkPandaTable *table);
-void gtk_panda_table_append  (GtkPandaTable *table,
-  gchar       *text[]);
 
 #ifdef __cplusplus
 }
