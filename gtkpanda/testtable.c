@@ -41,7 +41,16 @@ reset_data(GtkPandaTable *table)
       colors[i] = "azure";
     }
   }
-  gtk_panda_table_set_row_colors(table,colors);
+  gtk_panda_table_set_bgcolors(table,colors);
+
+  for(i=0;i<ROW_SIZE;i++){
+    if (i%2==0) {
+      colors[i] = "black";
+    } else {
+      colors[i] = "red";
+    }
+  }
+  gtk_panda_table_set_fgcolors(table,colors);
   num++;
 }
 
