@@ -532,6 +532,9 @@ gtk_panda_table_set_bgcolors(
 
   g_return_if_fail(table != NULL);
   g_return_if_fail(GTK_IS_PANDA_TABLE(table));
+  if (rdata == NULL) {
+    return;
+  }
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(table));
   if(!gtk_tree_model_get_iter_first(model,&iter)) {
@@ -556,6 +559,9 @@ gtk_panda_table_set_fgcolors(
 
   g_return_if_fail(table != NULL);
   g_return_if_fail(GTK_IS_PANDA_TABLE(table));
+  if (rdata == NULL) {
+    return;
+  }
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(table));
   if(!gtk_tree_model_get_iter_first(model,&iter)) {
