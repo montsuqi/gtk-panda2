@@ -34,7 +34,11 @@
 #include <gtk/gtk.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmarshal.h>
+#include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
+#include <gdk/gdkx.h>
+#include <X11/Xlib.h>
+
 #include "gtkpandaintl.h"
 #include "gtkpandatable.h"
 
@@ -67,6 +71,10 @@ static void  gtk_panda_table_get_property       (GObject         *object,
                        guint            prop_id,
                        GValue          *value,
                        GParamSpec      *pspec);
+
+static gboolean cb_button_release_event(GtkWidget *widget,
+                       GdkEvent *event,
+                       gpointer data);
 
 static void
 gtk_panda_table_class_init ( GtkPandaTableClass * klass)
@@ -158,6 +166,9 @@ gtk_panda_table_init ( GtkPandaTable * table)
   selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(table));
   gtk_tree_selection_set_mode(selection,GTK_SELECTION_NONE);
   GTK_WIDGET_SET_FLAGS(GTK_WIDGET(table), GTK_CAN_FOCUS);
+
+  g_signal_connect(G_OBJECT(table),"button-release-event",
+    G_CALLBACK(cb_button_release_event),NULL);
 }
 
 GType
@@ -744,4 +755,24 @@ gtk_panda_table_get_property (GObject         *object,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
     }
+}
+
+static gboolean
+cb_button_release_event(GtkWidget *widget,
+  GdkEvent *event,
+  gpointer data)
+{
+  GtkTreeView *view = GTK_TREE_VIEW(widget);
+  GtkTreePath *path;
+  GtkTreeViewColumn *column;
+
+  gtk_tree_view_get_cursor(view,&path,&column);
+  if (path != NULL && column != NULL) {
+    gtk_tree_view_set_cursor_on_cell(view,path,column, NULL,TRUE);
+  }
+
+  if (path != NULL) {
+    gtk_tree_path_free(path);
+  }
+  return FALSE;
 }
