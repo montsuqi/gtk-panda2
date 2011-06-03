@@ -36,7 +36,7 @@ reset_data(GtkPandaTable *table)
   colors[ROW_SIZE] = NULL;
   for(i=0;i<ROW_SIZE;i++){
     if (i%2==0) {
-      colors[i] = "white";
+      colors[i] = "";
     } else {
       colors[i] = "azure";
     }

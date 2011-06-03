@@ -161,7 +161,7 @@ gtk_panda_table_init ( GtkPandaTable * table)
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(table), FALSE );
   gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(table), FALSE );
   gtk_tree_view_set_reorderable(GTK_TREE_VIEW(table), FALSE );
-  gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(table), GTK_TREE_VIEW_GRID_LINES_BOTH);
+  gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(table), GTK_TREE_VIEW_GRID_LINES_VERTICAL);
 
   selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(table));
   gtk_tree_selection_set_mode(selection,GTK_SELECTION_NONE);
@@ -552,7 +552,11 @@ gtk_panda_table_set_bgcolors(
     return;
   }
   for(i=0;rdata[i]!=NULL;i++) {
-    gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns+1,rdata[i],-1);
+    if (strlen(rdata[i])==0) {
+      gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns+1,NULL,-1);
+    } else {
+      gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns+1,rdata[i],-1);
+    }
     if(!gtk_tree_model_iter_next(model,&iter)) {
       break;
     }
@@ -579,7 +583,11 @@ gtk_panda_table_set_fgcolors(
     return;
   }
   for(i=0;rdata[i]!=NULL;i++) {
-    gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns,rdata[i],-1);
+    if (strlen(rdata[i])==0) {
+      gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns,NULL,-1);
+    } else {
+      gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns,rdata[i],-1);
+    }
     if(!gtk_tree_model_iter_next(model,&iter)) {
       break;
     }
