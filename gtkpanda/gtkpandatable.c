@@ -289,7 +289,7 @@ apply_prop_types(GtkPandaTable *table)
   for(i = 0; i < table->columns; i++) {
     col = gtk_tree_view_column_new();
     gtk_tree_view_column_set_resizable(col,TRUE);
-    gtk_tree_view_column_set_sizing(col,GTK_TREE_VIEW_COLUMN_AUTOSIZE);
+    gtk_tree_view_column_set_sizing(col,GTK_TREE_VIEW_COLUMN_FIXED);
     gtk_tree_view_column_set_title(col, "");
     g_object_set(G_OBJECT(col), 
       "alignment", 0.5,

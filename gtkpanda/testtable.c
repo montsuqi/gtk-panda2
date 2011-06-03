@@ -26,7 +26,7 @@ reset_data(GtkPandaTable *table)
       rowdata[3] = "T";
     } else {
       rowdata[0] = GTK_STOCK_NO;
-      rowdata[1] = g_strdup_printf("odd%d",num);
+      rowdata[1] = g_strdup_printf("odddddddddddddddddddddddddddddddddddddd%d",num);
       rowdata[2] = "LABEL";
       rowdata[3] = "F";
     }
