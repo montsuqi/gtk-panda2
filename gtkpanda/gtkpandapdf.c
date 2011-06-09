@@ -107,6 +107,7 @@ void gtk_panda_pdf_prev_page(GtkPandaPDF *pdf);
 void gtk_panda_pdf_save(GtkPandaPDF *pdf);
 
 static void combo_changed_cb (GtkComboBox *combo, GtkPandaPDF *pdf);
+static void _gtk_panda_pdf_print(GtkPandaPDF *self);
 
 GType
 gtk_panda_pdf_get_type (void)
@@ -155,7 +156,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
   klass->page_next = gtk_panda_pdf_next_page;
   klass->page_prev = gtk_panda_pdf_prev_page;
   klass->save = gtk_panda_pdf_save;
-  klass->print = gtk_panda_pdf_print;
+  klass->print = _gtk_panda_pdf_print;
 
   signals[ZOOM_FIT_PAGE] =
   g_signal_new ("zoom_fit_page",
@@ -446,14 +447,21 @@ arrange_orientation(GtkPandaPDF *self, GtkPageSetup *ps)
   g_object_unref(page);
 }
 
-void
-gtk_panda_pdf_print(GtkPandaPDF *self)
+static void
+_gtk_panda_pdf_print(GtkPandaPDF *self)
 {
-  GtkWidget *main_window = NULL;
+  gtk_panda_pdf_print(self,TRUE);
+}
+
+void
+gtk_panda_pdf_print(GtkPandaPDF *self,
+  gboolean showdialog)
+{
   GtkPrintOperation *print;
   static GtkPrintSettings *settings = NULL;
   GtkPageSetup *page_setup;
   GtkPrintOperationResult r;
+  GtkPrintOperationAction action;
 
   if (self->doc == NULL) return;
 
@@ -478,8 +486,12 @@ gtk_panda_pdf_print(GtkPandaPDF *self)
   gtk_print_operation_set_job_name(print, "gtk_panda_pdf_print");
   gtk_print_operation_set_n_pages(print , 
     poppler_document_get_n_pages(self->doc));
-  r = gtk_print_operation_run(print, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
-                        GTK_WINDOW(main_window), NULL);
+  if (showdialog) {
+    action = GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG;
+  } else {
+    action = GTK_PRINT_OPERATION_ACTION_PRINT;
+  }
+  r = gtk_print_operation_run(print, action, NULL, NULL);
 
   if (r == GTK_PRINT_OPERATION_RESULT_APPLY)
   {   
@@ -652,7 +664,7 @@ save_clicked_cb (GtkButton *button, GtkPandaPDF *self)
 static void
 print_clicked_cb (GtkButton *button, GtkPandaPDF *self)
 {
-  gtk_panda_pdf_print(self);
+  _gtk_panda_pdf_print(self);
 }
 
 static void

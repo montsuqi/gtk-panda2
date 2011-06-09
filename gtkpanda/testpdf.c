@@ -32,8 +32,8 @@ int main( int   argc,
 
 #if 0
   GtkWidget *pdf = gtk_panda_pdf_new();
-  gtk_panda_pdf_load(GTK_PANDA_PDF(pdf),"/tmp/1.pdf");
-  gtk_panda_pdf_print(GTK_PANDA_PDF(pdf));
+  gtk_panda_pdf_load(GTK_PANDA_PDF(pdf),"/tmp/test.pdf");
+  gtk_panda_pdf_print(GTK_PANDA_PDF(pdf),FALSE);
   exit(0);
 #endif
 
