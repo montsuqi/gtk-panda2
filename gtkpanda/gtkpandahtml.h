@@ -29,11 +29,7 @@
 
 #include <glib-object.h>
 #include <gtk/gtk.h>
-#include <gtkmozembed.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+#include <webkit/webkit.h>
 
 #define GTK_PANDA_TYPE_HTML                  (gtk_panda_html_get_type ())
 #define GTK_PANDA_HTML(obj)                  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_HTML, GtkPandaHTML))
@@ -49,7 +45,7 @@ typedef struct _GtkPandaHTMLClass  GtkPandaHTMLClass;
 struct _GtkPandaHTML
 {
   GtkVBox parent;
-  GtkWidget *mozembed;
+  GtkWidget *webview;
 };
 
 struct _GtkPandaHTMLClass
@@ -63,9 +59,5 @@ GType gtk_panda_html_get_type (void);
 GtkWidget* gtk_panda_html_new (void);
 gchar *gtk_panda_html_get_uri (GtkPandaHTML *html);
 void gtk_panda_html_set_uri (GtkPandaHTML *html, const gchar *uri);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
 
 #endif /* __GTK_PANDA_HTML_H__ */

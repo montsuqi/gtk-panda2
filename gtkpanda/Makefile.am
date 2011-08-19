@@ -40,11 +40,9 @@ gtkpanda_c_sources = 		\
 	gtkpandapdf.c			\
 	gtkpandapixmap.c		\
 	gtkpandawindow.c		\
-	gtkpandatable.c
-
-gtkpanda_cpp_sources = 		\
-	gtkpandamain.cpp		\
-	gtkpandahtml.cpp
+	gtkpandatable.c			\
+	gtkpandamain.c			\
+	gtkpandahtml.c
 
 gtkpanda_private_h_sources =
 
@@ -59,7 +57,6 @@ libgtkpandainclude_HEADERS = $(gtkpanda_public_h_sources)
 lib_LTLIBRARIES = libgtkpanda-2.0.la
 libgtkpanda_2_0_la_SOURCES =		\
 	$(gtkpanda_c_sources)			\
-	$(gtkpanda_cpp_sources)			\
 	$(gtkpanda_public_h_sources)
 libgtkpanda_2_0_la_LDFLAGS = 			\
 	-version-info  $(LTVERSION) 		\

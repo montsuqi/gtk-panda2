@@ -63,8 +63,7 @@ create_window1 (char *uri)
 {
   GtkWidget *window1;
   GtkWidget *vbox;
-  GtkWidget *menubar;
-  GtkWidget *menu;
+  GtkWidget *scroll;
   GtkWidget *html1;
 
   window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -75,22 +74,17 @@ create_window1 (char *uri)
   vbox = gtk_vbox_new(FALSE, 0);
   gtk_container_add (GTK_CONTAINER (window1), vbox);
 
-  menubar = gtk_menu_bar_new();
-  gtk_box_pack_start(GTK_BOX(vbox),menubar,FALSE,FALSE,0);
-
-  menu = gtk_menu_item_new_with_label("File");
-  gtk_menu_bar_append(GTK_MENU_BAR(menubar),menu);
-  menu = gtk_menu_item_new_with_label("Config");
-  gtk_menu_bar_append(GTK_MENU_BAR(menubar),menu);
-
   html1 = gtk_panda_html_new ();
   gtk_panda_html_set_uri (GTK_PANDA_HTML (html1), uri);
-  gtk_box_pack_start(GTK_BOX(vbox),html1,TRUE,TRUE,0);
 
+  scroll = gtk_scrolled_window_new(NULL,NULL);
 #if 0
-  gtk_moz_embed_set_chrome_mask(GTK_MOZ_EMBED(html1),
-            GTK_MOZ_EMBED_FLAG_ALLCHROME);
+  gtk_container_add(GTK_CONTAINER(scroll),html1);
+#else
+  gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scroll),
+    html1);
 #endif
+  gtk_box_pack_start(GTK_BOX(vbox),scroll,TRUE,TRUE,0);
 
   gtk_window_set_default_size(GTK_WINDOW(window1), 300, 400);
   gtk_widget_show_all(window1);
