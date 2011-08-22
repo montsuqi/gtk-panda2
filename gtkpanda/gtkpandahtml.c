@@ -35,6 +35,14 @@
 #include "gtkpandaintl.h"
 #include "gtkpandahtml.h"
 
+enum
+{   
+  ACTIVATE,
+  LAST_SIGNAL
+};
+
+static guint signals [LAST_SIGNAL] = { 0 };
+
 enum {
   PROP_0,
   PROP_URI
@@ -107,6 +115,15 @@ gtk_panda_html_class_init (GtkPandaHTMLClass *klass)
     _("URI"),
     "",
     (GParamFlags)G_PARAM_READWRITE));
+  signals[ACTIVATE] =
+  g_signal_new ("activate",
+        G_TYPE_FROM_CLASS (gobject_class),
+        G_SIGNAL_RUN_LAST,
+        G_STRUCT_OFFSET (GtkPandaHTMLClass, activate),
+        NULL, NULL,
+        gtk_marshal_VOID__POINTER,
+        G_TYPE_NONE, 1,
+        G_TYPE_POINTER);
 }
 
 static gboolean
