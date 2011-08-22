@@ -45,6 +45,7 @@ typedef struct _GtkPandaHTMLClass  GtkPandaHTMLClass;
 struct _GtkPandaHTML
 {
   GtkVBox parent;
+  GtkWidget *scroll;
   GtkWidget *webview;
 };
 

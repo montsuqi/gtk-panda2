@@ -63,7 +63,6 @@ create_window1 (char *uri)
 {
   GtkWidget *window1;
   GtkWidget *vbox;
-  GtkWidget *scroll;
   GtkWidget *html1;
 
   window1 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -77,14 +76,7 @@ create_window1 (char *uri)
   html1 = gtk_panda_html_new ();
   gtk_panda_html_set_uri (GTK_PANDA_HTML (html1), uri);
 
-  scroll = gtk_scrolled_window_new(NULL,NULL);
-#if 0
-  gtk_container_add(GTK_CONTAINER(scroll),html1);
-#else
-  gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scroll),
-    html1);
-#endif
-  gtk_box_pack_start(GTK_BOX(vbox),scroll,TRUE,TRUE,0);
+  gtk_box_pack_start(GTK_BOX(vbox),html1,TRUE,TRUE,0);
 
   gtk_window_set_default_size(GTK_WINDOW(window1), 300, 400);
   gtk_widget_show_all(window1);

@@ -153,9 +153,15 @@ gtk_panda_html_init (GtkPandaHTML *self)
   g_signal_connect(WEBKIT_WEB_VIEW(self->webview), 
     "new-window-policy-decision-requested",
     G_CALLBACK(cb_new_window), NULL);
+  self->scroll = gtk_scrolled_window_new(NULL,NULL);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(self->scroll),
+    GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(self->scroll),
+    self->webview);
+  
   if (getenv("GTK_PANDA_HTML_DISABLE") == NULL) {
     gtk_box_pack_start(GTK_BOX (self), 
-      GTK_WIDGET(self->webview), TRUE, TRUE, 0);
+      GTK_WIDGET(self->scroll), TRUE, TRUE, 0);
   }
   gtk_widget_show_all(GTK_WIDGET(self));
 }
