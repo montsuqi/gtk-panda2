@@ -727,9 +727,7 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   GtkTreeIter      iter;
   guint i;
 
-#ifdef GTK_2_14
   g_object_set(gtk_settings_get_default(),"gtk-button-images",TRUE,NULL);
-#endif
 
   self->zoom = SCALE_ZOOM_FIT_WIDTH;
 
