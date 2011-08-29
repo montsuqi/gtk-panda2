@@ -41,6 +41,7 @@
 
 #include "gtkpandaintl.h"
 #include "gtkpandatable.h"
+#include "pandacellrenderertext.h"
 
 enum {
 PROP_0,
@@ -75,6 +76,9 @@ static void  gtk_panda_table_get_property       (GObject         *object,
 static gboolean cb_button_release_event(GtkWidget *widget,
                        GdkEvent *event,
                        gpointer data);
+static gboolean gtk_panda_table_key_press(
+  GtkWidget *widget,
+  GdkEventKey *event);
 
 static void
 gtk_panda_table_class_init ( GtkPandaTableClass * klass)
@@ -85,6 +89,7 @@ gtk_panda_table_class_init ( GtkPandaTableClass * klass)
 
   gtk_object_class = (GtkObjectClass *) klass;
   widget_class = (GtkWidgetClass *) klass;
+  widget_class->key_press_event = gtk_panda_table_key_press;
 
   parent_class = gtk_type_class (GTK_TYPE_TREE_VIEW);
 
@@ -205,6 +210,64 @@ gtk_panda_table_new ()
   return (GtkWidget*)g_object_new(GTK_PANDA_TYPE_TABLE, NULL);
 }
 
+static gboolean
+gtk_panda_table_key_press(GtkWidget *widget,
+  GdkEventKey *event)
+{
+  GtkTreeView *view;
+  GtkTreePath *path;
+  GtkTreeViewColumn *column;
+  GList *list;
+  GtkCellRenderer *cell;
+  int i;
+  gboolean hook = FALSE;
+
+  view = GTK_TREE_VIEW(widget);
+
+  if (!(event->state & GDK_SHIFT_MASK ) &&
+      !(event->state & GDK_CONTROL_MASK) &&
+      !(event->state & GDK_MOD1_MASK) 
+     ) {
+    if ((event->keyval >= GDK_space && event->keyval <= GDK_z) || 
+        (event->keyval >= GDK_KP_0 && event->keyval <= GDK_KP_9) ||
+        (event->keyval == GDK_BackSpace) ||
+        (event->keyval == GDK_Zenkaku_Hankaku)) {
+      hook = TRUE;
+    }
+  }
+
+  if ((event->state & GDK_SHIFT_MASK ) &&
+      !(event->state & GDK_CONTROL_MASK) &&
+      !(event->state & GDK_MOD1_MASK) &&
+      (event->keyval >= GDK_space && event->keyval <= GDK_z)
+     ) {
+      hook = TRUE;
+  }
+
+  if (hook) {
+    gtk_tree_view_get_cursor(view,&path,&column);
+    if (path != NULL && column != NULL) {
+      gtk_tree_view_set_cursor(view,path,column,TRUE);
+      list = gtk_tree_view_column_get_cell_renderers(column);
+      for(i=0;i<g_list_length(list);i++){
+        cell = GTK_CELL_RENDERER(g_list_nth_data(list,i));
+        if (PANDA_IS_CELL_RENDERER_TEXT(cell)) {
+          gtk_im_context_filter_keypress(
+            panda_cell_renderer_text_get_im(
+              PANDA_CELL_RENDERER_TEXT(cell)),
+              event);
+        }
+      }
+      g_list_free(list);
+    }
+    if (path != NULL) {
+      gtk_tree_path_free(path);
+    }
+    return TRUE;
+  } 
+  return GTK_WIDGET_CLASS(parent_class)->key_press_event(widget,event);
+}
+
 static void
 cb_text_renderer_edited(GtkCellRendererText *renderer,
 	gchar *path,
@@ -298,7 +361,7 @@ apply_prop_types(GtkPandaTable *table)
 
     switch(table->renderer_types[i]) {
     case GTK_PANDA_TABLE_RENDERER_TEXT:
-      renderer = gtk_cell_renderer_text_new();
+      renderer = panda_cell_renderer_text_new();
       gtk_tree_view_column_pack_start(col, renderer, TRUE);
       g_object_set(G_OBJECT(renderer),
         "editable",TRUE,
@@ -776,7 +839,7 @@ cb_button_release_event(GtkWidget *widget,
 
   gtk_tree_view_get_cursor(view,&path,&column);
   if (path != NULL && column != NULL) {
-    gtk_tree_view_set_cursor_on_cell(view,path,column, NULL,TRUE);
+    gtk_tree_view_set_cursor(view,path,column,TRUE);
   }
 
   if (path != NULL) {
@@ -784,3 +847,4 @@ cb_button_release_event(GtkWidget *widget,
   }
   return FALSE;
 }
+

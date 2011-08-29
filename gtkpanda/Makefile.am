@@ -22,7 +22,8 @@ gtkpanda_public_h_sources = \
 	gtkpandapdf.h			\
 	gtkpandapixmap.h		\
 	gtkpandawindow.h		\
-	gtkpandatable.h
+	gtkpandatable.h			\
+	pandacellrenderertext.h
 
 gtkpanda_c_sources = 		\
 	numeric.c 				\
@@ -42,7 +43,8 @@ gtkpanda_c_sources = 		\
 	gtkpandawindow.c		\
 	gtkpandatable.c			\
 	gtkpandamain.c			\
-	gtkpandahtml.c
+	gtkpandahtml.c			\
+	pandacellrenderertext.c
 
 gtkpanda_private_h_sources =
 

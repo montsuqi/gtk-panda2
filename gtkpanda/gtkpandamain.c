@@ -18,6 +18,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <gtk/gtk.h>
 #include "gtkpandaintl.h"
 #include "glib.h"
 
@@ -26,6 +27,9 @@ void gtk_panda_init (int *argc, char ***argv);
 void
 gtk_panda_init (int *argc, char ***argv)
 {
+  GtkSettings *set = gtk_settings_get_default();
+  gtk_settings_set_long_property(set, "gtk-entry-select-on-focus", 0, 
+  "gtk+panda2");
 #ifdef ENABLE_NLS
   bindtextdomain("gtkpanda2", LOCALEDIR);
 #endif

@@ -12,9 +12,6 @@
    language is requested. */
 #undef ENABLE_NLS
 
-/* "" */
-#undef GTK_2_14
-
 /* Define to 1 if you have `alloca', as a function or macro. */
 #undef HAVE_ALLOCA
 
@@ -298,9 +295,6 @@
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #undef LT_OBJDIR
-
-/* "" */
-#undef OLD_GTK
 
 /* "" */
 #undef OPEN_BROWSER_COMMAND
