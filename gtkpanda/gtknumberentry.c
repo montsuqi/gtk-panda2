@@ -99,11 +99,9 @@ static void
 gtk_number_entry_class_init (GtkNumberEntryClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-  GtkObjectClass *gtk_object_class;
   GtkWidgetClass *widget_class;
 
 dbgmsg(">gtk_number_entry_class_init");
-  gtk_object_class = (GtkObjectClass*) klass;
   widget_class = (GtkWidgetClass*) klass;
   parent_class = gtk_type_class (GTK_TYPE_ENTRY);
 
@@ -313,7 +311,7 @@ dbgmsg(">gtk_entry_key_press");
   editable = GTK_EDITABLE (widget);
   return_val = FALSE;
 
-  if (!GTK_WIDGET_HAS_FOCUS(widget)) return FALSE;
+  if (!gtk_widget_has_focus(widget)) return FALSE;
 
   if (!gtk_editable_get_editable(editable)) {
     switch(event->keyval){

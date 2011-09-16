@@ -140,11 +140,9 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GtkObjectClass *gtk_object_class;
-  GtkWidgetClass *widget_class;
   GtkBindingSet *binding_set;
 
   gtk_object_class = (GtkObjectClass *) klass;
-  widget_class = (GtkWidgetClass *) klass;
   parent_class = gtk_type_class (GTK_TYPE_CONTAINER);
 
   gtk_object_class->destroy = gtk_panda_pdf_destroy;
@@ -275,24 +273,27 @@ static double
 compute_zoom(GtkPandaPDF *self)
 {
   PopplerPage *page;
+  GtkAdjustment *adj;
   double doc_w, doc_h, scroll_w, scroll_h;
   double zoom;
 
   page = poppler_document_get_page(self->doc, self->pageno);
-  scroll_h = (gtk_scrolled_window_get_vadjustment(
-                GTK_SCROLLED_WINDOW(self->scroll)))->page_size;
-  scroll_w = (gtk_scrolled_window_get_hadjustment(
-                GTK_SCROLLED_WINDOW(self->scroll)))->page_size;
+
+  adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(self->scroll));
+  scroll_h = gtk_adjustment_get_page_size(adj);
+  adj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(self->scroll));
+  scroll_w = gtk_adjustment_get_page_size(adj);
+
   poppler_page_get_size(page, &doc_w, &doc_h);
   if (self->zoom == SCALE_ZOOM_FIT_PAGE) {
     double zoom_h, zoom_w;
     zoom_h = scroll_h / doc_h;
     zoom_w = scroll_w / doc_w;
     zoom = zoom_h < zoom_w ? zoom_h : zoom_w;
-	if (zoom < 0.2) zoom = 1.0;
+    if (zoom < 0.2) zoom = 1.0;
   } else if (self->zoom == SCALE_ZOOM_FIT_WIDTH) {
     zoom = scroll_w / doc_w;
-	if (zoom < 0.2) zoom = 1.0;
+    if (zoom < 0.2) zoom = 1.0;
   } else {
     zoom = self->zoom;
   }
@@ -340,7 +341,7 @@ render_page(GtkPandaPDF *self)
     (int)(doc_h * zoom));
 
   poppler_page_render_to_pixbuf(page, 0, 0, 
-    (int)(doc_w), (int)(doc_h), zoom, 0, self->pixbuf);
+    (int)(doc_w * zoom), (int)(doc_h * zoom), zoom, 0, self->pixbuf);
   gtk_image_clear(GTK_IMAGE(self->image));
   gtk_image_set_from_pixbuf(GTK_IMAGE(self->image), self->pixbuf);
   g_object_unref(page);
@@ -407,13 +408,10 @@ draw_page(GtkPrintOperation *print,
   PopplerPage *page;
   gdouble doc_w, doc_h;
   cairo_t *cr;
-  int w, h;
 
   page = poppler_document_get_page(self->doc, pageno);
   if (page == NULL) return;
   poppler_page_get_size(page, &doc_w, &doc_h);
-  w = (int)(doc_w); 
-  h = (int)(doc_h);
 
   cr = gtk_print_context_get_cairo_context(context);
 #if 0
@@ -844,10 +842,10 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   gtk_box_pack_start(GTK_BOX (self), self->scroll, TRUE, TRUE, 0);
   gtk_widget_show_all(GTK_WIDGET(self));
 
-  GTK_WIDGET_UNSET_FLAGS (save_button, GTK_CAN_FOCUS);
-  GTK_WIDGET_UNSET_FLAGS (print_button, GTK_CAN_FOCUS);
-  GTK_WIDGET_UNSET_FLAGS (self->scale, GTK_CAN_FOCUS);
-  GTK_WIDGET_SET_FLAGS (self, GTK_CAN_FOCUS);
+  gtk_widget_set_can_focus(save_button,FALSE);
+  gtk_widget_set_can_focus(print_button,FALSE);
+  gtk_widget_set_can_focus(self->scale,FALSE);
+  gtk_widget_set_can_focus(GTK_WIDGET(self),TRUE);
 }
 
 // public API

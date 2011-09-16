@@ -197,7 +197,6 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
 {
   GtkEntry *entry;
   GtkPandaEntry *pentry;
-  GtkEditable *editable;
   GtkIMMulticontext *mim;
 
   g_return_val_if_fail (widget != NULL, FALSE);
@@ -206,7 +205,6 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
 
   entry = GTK_ENTRY (widget);
   pentry = GTK_PANDA_ENTRY (widget);
-  editable = GTK_EDITABLE (widget);
   mim = GTK_IM_MULTICONTEXT(entry->im_context);
 
   if (force_im_disable) {
@@ -260,7 +258,7 @@ gtk_panda_entry_key_press (GtkWidget      *widget,
     {
       if (event->keyval == GDK_Return)
         {
-          start_pos = (GTK_ENTRY(entry)->text_length - 1);
+          start_pos = (gtk_entry_get_text_length(GTK_ENTRY(entry)) - 1);
           end_pos = -1;
           last_char = gtk_editable_get_chars(GTK_EDITABLE(entry),start_pos, end_pos);
           if ((last_char != NULL) && (last_char[0] == 'n' ))

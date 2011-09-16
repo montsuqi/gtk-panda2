@@ -73,18 +73,13 @@ gtk_panda_download_get_type (void)
 static void
 gtk_panda_download_class_init (GtkPandaDownloadClass *class)
 {
-  GtkObjectClass *object_class;
-  GtkWidgetClass *widget_class;
-
-  object_class = (GtkObjectClass*) class;
-  widget_class = (GtkWidgetClass*) class;
   parent_class = gtk_type_class (GTK_TYPE_WIDGET);
 }
 
 static void
 gtk_panda_download_init (GtkPandaDownload *download)
 {
-  GTK_WIDGET_SET_FLAGS (download, GTK_NO_WINDOW);
+  gtk_widget_set_has_window(GTK_WIDGET(download),FALSE);
 }
 
 GtkWidget*

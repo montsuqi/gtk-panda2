@@ -84,10 +84,8 @@ static void
 gtk_panda_table_class_init ( GtkPandaTableClass * klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-  GtkObjectClass *gtk_object_class;
   GtkWidgetClass *widget_class;
 
-  gtk_object_class = (GtkObjectClass *) klass;
   widget_class = (GtkWidgetClass *) klass;
   widget_class->key_press_event = gtk_panda_table_key_press;
 
@@ -170,7 +168,7 @@ gtk_panda_table_init ( GtkPandaTable * table)
 
   selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(table));
   gtk_tree_selection_set_mode(selection,GTK_SELECTION_NONE);
-  GTK_WIDGET_SET_FLAGS(GTK_WIDGET(table), GTK_CAN_FOCUS);
+  gtk_widget_set_can_focus(GTK_WIDGET(table),TRUE);
 
   g_signal_connect(G_OBJECT(table),"button-release-event",
     G_CALLBACK(cb_button_release_event),NULL);
@@ -279,7 +277,7 @@ cb_text_renderer_edited(GtkCellRendererText *renderer,
   gpointer data = g_object_get_data(G_OBJECT(renderer),"column_num");
   
   if (data == NULL) { return; }
-  column = (guint)(data);
+  column = GPOINTER_TO_UINT(data);
   row = atoi(path);
   
   g_signal_emit(table, signals[CELL_EDITED],0,row,column,new_text);
@@ -295,7 +293,7 @@ cb_toggle_renderer_toggled(GtkCellRendererToggle *renderer,
   gpointer data = g_object_get_data(G_OBJECT(renderer),"column_num");
   
   if (data == NULL) { return; }
-  column = (guint)(data);
+  column = GPOINTER_TO_UINT(data);
   row = atoi(path);
 
   g_signal_emit(table, signals[CELL_EDITED],0,row,column,
@@ -359,6 +357,7 @@ apply_prop_types(GtkPandaTable *table)
       NULL);
     gtk_tree_view_append_column(GTK_TREE_VIEW(table), col);
 
+    renderer = NULL;
     switch(table->renderer_types[i]) {
     case GTK_PANDA_TABLE_RENDERER_TEXT:
       renderer = panda_cell_renderer_text_new();
@@ -408,8 +407,10 @@ apply_prop_types(GtkPandaTable *table)
         NULL);
       break;
     }
-    gtk_tree_view_column_add_attribute(col, renderer, 
-      "cell-background",table->columns+1);
+    if (renderer != NULL) {
+      gtk_tree_view_column_add_attribute(col, renderer, 
+        "cell-background",table->columns+1);
+    }
   }
 }
 

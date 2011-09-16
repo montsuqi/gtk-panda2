@@ -126,7 +126,7 @@ static void
 set_focusable(GtkWidget *widget, gpointer data)
 {
   if (GTK_IS_BUTTON(widget)) {
-    GTK_WIDGET_UNSET_FLAGS(widget, GTK_CAN_FOCUS);
+    gtk_widget_set_can_focus(widget,FALSE);
   }
 }
 
@@ -135,7 +135,9 @@ gtk_panda_combo_init (GtkPandaCombo * combo)
 {
   GtkCellRenderer *renderer;
   combo->entry = gtk_panda_entry_new();
+#if 0
   GTK_ENTRY (combo->entry)->is_cell_renderer = TRUE;
+#endif
   gtk_container_add(GTK_CONTAINER(combo), combo->entry);
   gtk_widget_show (combo->entry);
 
@@ -309,7 +311,7 @@ complete_combo_entry (gpointer data)
   gint startpos;
 
   editable = GTK_EDITABLE (data);
-  combo = GTK_PANDA_COMBO (GTK_WIDGET(editable)->parent);
+  combo = GTK_PANDA_COMBO(gtk_widget_get_parent(GTK_WIDGET(editable)));
   model = gtk_combo_box_get_model(GTK_COMBO_BOX(combo));
   g_return_val_if_fail(
     gtk_tree_model_get_iter(model, &iter, gtk_tree_path_new_first()),
@@ -343,7 +345,7 @@ complete_combo_entry (gpointer data)
   } while(gtk_tree_model_iter_next(model, &iter));  
   g_free(prefix);
 
-  if (!GTK_WIDGET_HAS_FOCUS(combo->entry)
+  if (!gtk_widget_has_focus(combo->entry)
       && (gtk_editable_get_position (GTK_EDITABLE(combo->entry)) != 0)) {
     gtk_editable_set_position (GTK_EDITABLE(combo->entry), 0);
   }

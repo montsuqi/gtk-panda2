@@ -90,11 +90,9 @@ gtk_panda_file_entry_get_type (void)
 static void
 gtk_panda_file_entry_class_init (GtkPandaFileEntryClass *klass)
 {
-  GtkWidgetClass *widget_class;
   GtkObjectClass *gtk_object_class;
 
   gtk_object_class = (GtkObjectClass *) klass;
-  widget_class = (GtkWidgetClass *) klass;
   parent_class = gtk_type_class (GTK_TYPE_HBOX);
 
   gtk_object_class->destroy = gtk_panda_file_entry_destroy;
@@ -237,7 +235,7 @@ gtk_panda_file_entry_init (GtkPandaFileEntry *self)
   
   gtk_widget_show_all(GTK_WIDGET(self));
   gtk_panda_file_entry_set_mode(self,GTK_FILE_CHOOSER_ACTION_OPEN);
-  GTK_WIDGET_SET_FLAGS (self, GTK_CAN_FOCUS);
+  gtk_widget_set_can_focus(self,TRUE);
 }
 
 // public API

@@ -166,7 +166,7 @@ static void gtk_panda_timer_get_property (GObject         *object,
 static void
 gtk_panda_timer_init (GtkPandaTimer *timer)
 {
-  GTK_WIDGET_SET_FLAGS (timer, GTK_NO_WINDOW);
+  gtk_widget_set_has_window(GTK_WIDGET(timer),FALSE);
 }
 
 GtkWidget*
@@ -192,7 +192,7 @@ timeout_handler(gpointer object)
 {
   GtkPandaTimer *timer = object;
   GtkWidget *toplevel = gtk_widget_get_toplevel(GTK_WIDGET(timer));
-  if (GTK_WIDGET_VISIBLE(toplevel))
+  if (gtk_widget_get_visible(toplevel))
     g_signal_emit(timer, timer_signals[TIMEOUT], 0);
   return FALSE;
 }

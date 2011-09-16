@@ -75,11 +75,9 @@ static void
 gtk_panda_text_class_init ( GtkPandaTextClass * klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-  GtkObjectClass *oclass;
   GtkWidgetClass *widget_class;
   GtkBindingSet *binding_set;
 
-  oclass = (GtkObjectClass *) klass;
   widget_class = (GtkWidgetClass *) klass;
   widget_class->focus_in_event = gtk_panda_text_focus_in;
   parent_class = gtk_type_class (GTK_TYPE_TEXT_VIEW);

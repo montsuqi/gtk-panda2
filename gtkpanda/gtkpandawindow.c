@@ -141,7 +141,6 @@ gtk_panda_window_new (GtkWindowType type)
   GtkWidget *window;
 
   window = g_object_new (GTK_PANDA_TYPE_WINDOW, NULL);
-  GTK_WINDOW(window)->type = type;
   return window;
 }
 

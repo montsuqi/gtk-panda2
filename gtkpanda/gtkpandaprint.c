@@ -73,18 +73,13 @@ gtk_panda_print_get_type (void)
 static void
 gtk_panda_print_class_init (GtkPandaPrintClass *class)
 {
-  GtkObjectClass *object_class;
-  GtkWidgetClass *widget_class;
-
-  object_class = (GtkObjectClass*) class;
-  widget_class = (GtkWidgetClass*) class;
   parent_class = gtk_type_class (GTK_TYPE_WIDGET);
 }
 
 static void
 gtk_panda_print_init (GtkPandaPrint *print)
 {
-  GTK_WIDGET_SET_FLAGS (print, GTK_NO_WINDOW);
+  gtk_widget_set_has_window(GTK_WIDGET(print),FALSE);
 }
 
 GtkWidget*

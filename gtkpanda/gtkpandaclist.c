@@ -102,10 +102,8 @@ static void
 gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-  GtkObjectClass *gtk_object_class;
   GtkWidgetClass *widget_class;
 
-  gtk_object_class = (GtkObjectClass *) klass;
   widget_class = (GtkWidgetClass *) klass;
   widget_class->button_press_event = gtk_panda_clist_button_press;
   widget_class->key_press_event = gtk_panda_clist_key_press;
@@ -188,7 +186,7 @@ gtk_panda_clist_init ( GtkPandaCList * clist)
     G_CALLBACK(selection_changed), (gpointer)clist);
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(clist), FALSE );
   gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(clist), FALSE );
-  GTK_WIDGET_SET_FLAGS(GTK_WIDGET(clist), GTK_CAN_FOCUS);
+  gtk_widget_set_can_focus(GTK_WIDGET(clist),TRUE);
 }
 
 GType
