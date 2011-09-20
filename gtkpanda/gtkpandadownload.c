@@ -84,6 +84,6 @@ gtk_panda_download_new (void)
 {
   GtkWidget *download;
 
-  download = gtk_type_new (GTK_PANDA_TYPE_DOWNLOAD);
+  download = g_object_new (GTK_PANDA_TYPE_DOWNLOAD,NULL);
   return download;
 }

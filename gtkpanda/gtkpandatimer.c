@@ -172,7 +172,7 @@ gtk_panda_timer_new (void)
 {
   GtkWidget *timer;
 
-  timer = gtk_type_new (GTK_PANDA_TYPE_TIMER);
+  timer = g_object_new (GTK_PANDA_TYPE_TIMER,NULL);
   GTK_PANDA_TIMER(timer)->tag = 0;
   gtk_panda_timer_set(GTK_PANDA_TIMER(timer), 0);
 

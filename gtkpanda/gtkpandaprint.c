@@ -85,6 +85,6 @@ gtk_panda_print_new (void)
 {
   GtkWidget *print;
 
-  print = gtk_type_new (GTK_PANDA_TYPE_PRINT);
+  print = g_object_new (GTK_PANDA_TYPE_PRINT,NULL);
   return print;
 }
