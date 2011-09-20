@@ -46,6 +46,8 @@ AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_CHECK_FUNCS([dup2 memset putenv setlocale strcasecmp strchr strdup strrchr strtol])
 
+AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+
 AC_SUBST(GTK_REQUIRED, 2.0.0)
 AC_SUBST(GLIB_REQUIRED, 2.0.0)
 AC_SUBST(POPPLER_REQUIRED, 0.6.4)

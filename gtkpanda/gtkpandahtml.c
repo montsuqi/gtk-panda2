@@ -34,6 +34,7 @@
 
 #include "gtkpandaintl.h"
 #include "gtkpandahtml.h"
+#include "pandamarshal.h"
 
 enum
 {   
@@ -97,12 +98,8 @@ static void
 gtk_panda_html_class_init (GtkPandaHTMLClass *klass)
 {
   GObjectClass *gobject_class;
-  GtkObjectClass *gtk_object_class;
-  GtkWidgetClass *widget_class;
 
   gobject_class = G_OBJECT_CLASS(klass);
-  gtk_object_class = (GtkObjectClass*) klass;
-  widget_class = (GtkWidgetClass*) klass;
   parent_class = (GtkVBoxClass *)gtk_type_class (GTK_TYPE_VBOX);
 
   gobject_class->set_property = gtk_panda_html_set_property;
@@ -121,7 +118,7 @@ gtk_panda_html_class_init (GtkPandaHTMLClass *klass)
         G_SIGNAL_RUN_LAST,
         G_STRUCT_OFFSET (GtkPandaHTMLClass, activate),
         NULL, NULL,
-        gtk_marshal_VOID__POINTER,
+        panda_marshal_VOID__POINTER,
         G_TYPE_NONE, 1,
         G_TYPE_POINTER);
 }

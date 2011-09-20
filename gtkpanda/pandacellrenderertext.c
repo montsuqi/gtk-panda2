@@ -25,7 +25,6 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkmarshal.h>
 
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>

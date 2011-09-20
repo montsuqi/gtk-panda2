@@ -33,8 +33,8 @@ on_combo_entry1_activate               (GtkEditable     *editable,
     gchar *text;
 
     text = gtk_editable_get_chars(editable, 0, -1);
-    printf("on_combo_entry1_activate() : combo1(0x%08x) = %s\n",
-       (int)GTK_WIDGET(editable)->parent, text);
+    printf("on_combo_entry1_activate() : combo1(%p) = %s\n",
+       gtk_widget_get_parent(GTK_WIDGET(editable)), text);
 }
 
 static void
@@ -44,8 +44,8 @@ on_combo_entry1_changed                (GtkEditable     *editable,
     gchar *text;
 
     text = gtk_editable_get_chars(editable, 0, -1);
-    printf("on_combo_entry1_changed()  : combo1(0x%08x) = %s\n",
-       (int)GTK_WIDGET(editable)->parent, text);
+    printf("on_combo_entry1_changed()  : combo1(%p) = %s\n",
+       gtk_widget_get_parent(GTK_WIDGET(editable)), text);
 }
 
 static void
@@ -55,8 +55,8 @@ on_combo_entry2_activate               (GtkEditable     *editable,
     gchar *text;
 
     text = gtk_editable_get_chars(editable, 0, -1);
-    printf("on_combo_entry2_activate() : combo2(0x%08x) = %s\n",
-       (int)GTK_WIDGET(editable)->parent, text);
+    printf("on_combo_entry2_activate() : combo2(%p) = %s\n",
+       gtk_widget_get_parent(GTK_WIDGET(editable)), text);
 }
 
 static void
@@ -66,8 +66,8 @@ on_combo_entry2_changed                (GtkEditable     *editable,
     gchar *text;
 
     text = gtk_editable_get_chars(editable, 0, -1);
-    printf("on_combo_entry2_changed()  : combo2(0x%08x) = %s\n",
-       (int)GTK_WIDGET(editable)->parent, text);
+    printf("on_combo_entry2_changed()  : combo2(%p) = %s\n",
+       gtk_widget_get_parent(GTK_WIDGET(editable)), text);
 }
 
 static void
@@ -129,9 +129,10 @@ main (int argc, char *argv[])
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (cb_dialog_ok_button),
 		      NULL);
-  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window1)->action_area), 
-		      button, TRUE, TRUE, 0);
+  gtk_widget_set_can_default(button,TRUE);
+  gtk_box_pack_start (
+    GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(window1))), 
+    button, TRUE, TRUE, 0);
   gtk_widget_grab_default (button);
   gtk_widget_show (button);
 
@@ -139,16 +140,18 @@ main (int argc, char *argv[])
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (cb_dialog_test_button),
 		      NULL);
-  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window1)->action_area),
-			  button, TRUE, TRUE, 0);
+  gtk_widget_set_can_default(button,TRUE);
+  gtk_box_pack_start (
+    GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(window1))), 
+    button, TRUE, TRUE, 0);
   gtk_widget_show (button);
 
   combo1 = gtk_panda_combo_new ();
   gtk_widget_ref (combo1);
   gtk_widget_show (combo1);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window1)->vbox), 
-		      combo1, TRUE, TRUE, 0);
+  gtk_box_pack_start (
+    GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(window1))), 
+    combo1, TRUE, TRUE, 0);
   items1[0] = "item1";
   items1[1] = "item2_____________________________________________";
   items1[2] = "item3";
@@ -162,8 +165,9 @@ main (int argc, char *argv[])
   combo2 = gtk_panda_combo_new ();
   gtk_widget_ref (combo2);
   gtk_widget_show (combo2);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window1)->vbox), 
-		      combo2, TRUE, TRUE, 0);
+  gtk_box_pack_start (
+    GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(window1))), 
+    combo2, TRUE, TRUE, 0);
   items2[0] = "item21";
   items2[1] = "item22";
   items2[2] = "item23";

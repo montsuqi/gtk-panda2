@@ -124,11 +124,13 @@ main (int argc, char *argv[])
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		      GTK_SIGNAL_FUNC (cb_dialog_ok_button),
 		      NULL);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window1)->action_area), 
+  gtk_box_pack_start (
+    GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG (window1))), 
 		      button, TRUE, TRUE, 0);
 
   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window1)->vbox), 
+  gtk_box_pack_start (
+    GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG (window1))), 
 		      scrolledwindow1, TRUE, TRUE, 0);
   text1 = gtk_panda_text_new();
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), text1);
@@ -138,7 +140,8 @@ main (int argc, char *argv[])
     G_CALLBACK(cb_text1_changed), NULL);
 
   scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window1)->vbox), 
+  gtk_box_pack_start (
+    GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG (window1))), 
 		      scrolledwindow2, TRUE, TRUE, 0);
   text2 = gtk_panda_text_new();
   gtk_panda_text_set_xim_enabled(GTK_PANDA_TEXT(text2), TRUE);

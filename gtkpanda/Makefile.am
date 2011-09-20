@@ -5,10 +5,10 @@ AUTOMAKE_OPTIONS = 1.4
 LTVERSION = 2:1:0
 
 gtkpanda_public_h_sources = \
-	debug.h 				\
-	numeric.h 				\
+	debug.h 			\
+	numeric.h 			\
 	gtknumberentry.h		\
-	gtkpanda.h 				\
+	gtkpanda.h 			\
 	gtkpandaclist.h			\
 	gtkpandacombo.h			\
 	gtkpandafileentry.h		\
@@ -18,15 +18,16 @@ gtkpanda_public_h_sources = \
 	gtkpandatimer.h			\
 	gtkpandadownload.h		\
 	gtkpandaprint.h			\
-	imcontrol.h				\
+	imcontrol.h			\
 	gtkpandapdf.h			\
 	gtkpandapixmap.h		\
 	gtkpandawindow.h		\
 	gtkpandatable.h			\
-	pandacellrenderertext.h
+	pandacellrenderertext.h		\
+	pandamarshal.h
 
-gtkpanda_c_sources = 		\
-	numeric.c 				\
+gtkpanda_c_sources = 			\
+	numeric.c 			\
 	gtkpandaclist.c			\
 	gtkpandacombo.c			\
 	gtkpandafileentry.c		\
@@ -36,15 +37,16 @@ gtkpanda_c_sources = 		\
 	gtkpandatimer.c			\
 	gtkpandadownload.c		\
 	gtkpandaprint.c			\
-	imcontrol.h				\
-	imcontrol.c				\
+	imcontrol.h			\
+	imcontrol.c			\
 	gtkpandapdf.c			\
 	gtkpandapixmap.c		\
 	gtkpandawindow.c		\
 	gtkpandatable.c			\
 	gtkpandamain.c			\
 	gtkpandahtml.c			\
-	pandacellrenderertext.c
+	pandacellrenderertext.c		\
+	pandamarshal.c
 
 gtkpanda_private_h_sources =
 
@@ -64,12 +66,25 @@ libgtkpanda_2_0_la_LDFLAGS = 			\
 	-version-info  $(LTVERSION) 		\
 	-export-dynamic 					\
 	$(GTK_PANDA_LIBS)
+
+BUILT_SOURCES = pandamarshal.h pandamarshal.c
+gen_sources = pandamarshal.h pandamarshal.c
+CLEANFILES = $(gen_sources)
+pandamarshal.h: pandamarshal.list
+	$(GLIB_GENMARSHAL) --prefix=panda_marshal \
+		pandamarshal.list --header > $(@F)
+pandamarshal.c: pandamarshal.list
+	$(GLIB_GENMARSHAL) --prefix=panda_marshal \
+		pandamarshal.list --body > $(@F)
+
 EXTRA_HEADERS =
-EXTRA_DIST = 						\
+EXTRA_DIST = 				\
 	$(gtkpanda_private_h_sources) 	\
-	gtkpanda.def makefile.msc 		\
-	tree_plus.xpm 					\
-	tree_minus.xpm
+	gtkpanda.def makefile.msc 	\
+	tree_plus.xpm 			\
+	tree_minus.xpm			\
+	pandamarshal.h
+
 
 # test programs, not to be installed
 

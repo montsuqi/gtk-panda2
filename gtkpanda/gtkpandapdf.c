@@ -37,11 +37,11 @@
 #include <gtk/gtk.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkbindings.h>
-#include <gtk/gtkmarshal.h>
 #include <gdk/gdkkeysyms.h>
 
 #include "gtkpandaintl.h"
 #include "gtkpandapdf.h"
+#include "pandamarshal.h"
 
 static void gtk_panda_pdf_class_init    (GtkPandaPDFClass *klass);
 static void gtk_panda_pdf_init          (GtkPandaPDF      *pdf);
@@ -162,7 +162,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, zoom_fit_page),
         NULL, NULL,
-        g_cclosure_marshal_VOID__VOID,
+        panda_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[ZOOM_FIT_WIDTH] =
@@ -171,7 +171,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, zoom_fit_width),
         NULL, NULL,
-        g_cclosure_marshal_VOID__VOID,
+        panda_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[ZOOM_IN] =
@@ -180,7 +180,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, zoom_in),
         NULL, NULL,
-        g_cclosure_marshal_VOID__VOID,
+        panda_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[ZOOM_OUT] =
@@ -189,7 +189,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, zoom_out),
         NULL, NULL,
-        g_cclosure_marshal_VOID__VOID,
+        panda_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[PAGE_NEXT] =
@@ -198,7 +198,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, page_next),
         NULL, NULL,
-        g_cclosure_marshal_VOID__VOID,
+        panda_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[PAGE_PREV] =
@@ -207,7 +207,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, page_prev),
         NULL, NULL,
-        g_cclosure_marshal_VOID__VOID,
+        panda_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[SAVE] =
@@ -216,7 +216,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, save),
         NULL, NULL,
-        g_cclosure_marshal_VOID__VOID,
+        panda_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[PRINT] =
@@ -225,7 +225,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, print),
         NULL, NULL,
-        g_cclosure_marshal_VOID__VOID,
+        panda_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   binding_set = gtk_binding_set_by_class (klass);

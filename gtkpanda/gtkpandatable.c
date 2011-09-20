@@ -33,7 +33,6 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkmarshal.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
@@ -42,6 +41,7 @@
 #include "gtkpandaintl.h"
 #include "gtkpandatable.h"
 #include "pandacellrenderertext.h"
+#include "pandamarshal.h"
 
 enum {
 PROP_0,
@@ -97,7 +97,7 @@ gtk_panda_table_class_init ( GtkPandaTableClass * klass)
         G_SIGNAL_RUN_FIRST,
         G_STRUCT_OFFSET (GtkPandaTableClass, cell_edited),
         NULL, NULL,
-        gtk_marshal_VOID__INT_INT_POINTER,
+        panda_marshal_VOID__INT_INT_POINTER,
         G_TYPE_NONE, 3,
         G_TYPE_INT,
         G_TYPE_INT,

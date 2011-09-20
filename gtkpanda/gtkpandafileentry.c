@@ -37,11 +37,11 @@
 #include <gtk/gtk.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkbindings.h>
-#include <gtk/gtkmarshal.h>
 #include <gdk/gdkkeysyms.h>
 
 #include "gtkpandaintl.h"
 #include "gtkpandafileentry.h"
+#include "pandamarshal.h"
 
 static void gtk_panda_file_entry_class_init    (GtkPandaFileEntryClass *klass);
 static void gtk_panda_file_entry_init          (GtkPandaFileEntry      *fileentry);
@@ -104,7 +104,7 @@ gtk_panda_file_entry_class_init (GtkPandaFileEntryClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaFileEntryClass, browse_clicked),
         NULL, NULL,
-        g_cclosure_marshal_VOID__VOID,
+        panda_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[DONE_ACTION] =
@@ -113,7 +113,7 @@ gtk_panda_file_entry_class_init (GtkPandaFileEntryClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaFileEntryClass, done_action),
         NULL, NULL,
-        g_cclosure_marshal_VOID__VOID,
+        panda_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 }
 

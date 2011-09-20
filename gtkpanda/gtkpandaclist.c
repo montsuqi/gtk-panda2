@@ -33,10 +33,10 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtkmarshal.h>
 #include <gdk/gdkkeysyms.h>
 #include "gtkpandaintl.h"
 #include "gtkpandaclist.h"
+#include "pandamarshal.h"
 
 enum {
 PROP_0,
@@ -116,7 +116,7 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
         G_SIGNAL_RUN_FIRST,
         G_STRUCT_OFFSET (GtkPandaCListClass, select_row),
         NULL, NULL,
-        gtk_marshal_VOID__INT_INT,
+        panda_marshal_VOID__INT_INT,
         G_TYPE_NONE, 2,
         G_TYPE_INT,
         G_TYPE_INT);
@@ -127,7 +127,7 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
         G_SIGNAL_RUN_FIRST,
         G_STRUCT_OFFSET (GtkPandaCListClass, unselect_row),
         NULL, NULL,
-        gtk_marshal_VOID__INT_INT,
+        panda_marshal_VOID__INT_INT,
         G_TYPE_NONE, 2,
         G_TYPE_INT,
         G_TYPE_INT);
