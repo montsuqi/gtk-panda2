@@ -35,9 +35,9 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define GTK_PANDA_TYPE_TABLE			(gtk_panda_table_get_type ())
-#define GTK_PANDA_TABLE(obj)			GTK_CHECK_CAST (obj, gtk_panda_table_get_type (), GtkPandaTable)
-#define GTK_PANDA_TABLE_CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, gtk_panda_table_get_type (), GtkPandaTableClass)
-#define GTK_IS_PANDA_TABLE(obj)			GTK_CHECK_TYPE (obj, gtk_panda_table_get_type ())
+#define GTK_PANDA_TABLE(obj)			G_TYPE_CHECK_INSTANCE_CAST (obj, gtk_panda_table_get_type (), GtkPandaTable)
+#define GTK_PANDA_TABLE_CLASS(klass)	G_TYPE_CHECK_CLASS_CAST (klass, gtk_panda_table_get_type (), GtkPandaTableClass)
+#define GTK_IS_PANDA_TABLE(obj)			G_TYPE_CHECK_INSTANCE_TYPE (obj, gtk_panda_table_get_type ())
 
 #define GTK_PANDA_TABLE_MAX_COLS 100
 #define GTK_PANDA_TABLE_MAX_ROWS 1000

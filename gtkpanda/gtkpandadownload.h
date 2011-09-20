@@ -35,10 +35,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define GTK_PANDA_TYPE_DOWNLOAD                  (gtk_panda_download_get_type ())
-#define GTK_PANDA_DOWNLOAD(obj)                  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_DOWNLOAD, GtkPandaDownload))
-#define GTK_PANDA_DOWNLOAD_CLASS(klass)          (GTK_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_DOWNLOAD, GtkPandaDownloadClass))
-#define GTK_IS_PANDA_DOWNLOAD(obj)               (GTK_CHECK_TYPE ((obj), GTK_PANDA_TYPE_DOWNLOAD))
-#define GTK_IS_PANDA_DOWNLOAD_CLASS(klass)       (GTK_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_DOWNLOAD))
+#define GTK_PANDA_DOWNLOAD(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_DOWNLOAD, GtkPandaDownload))
+#define GTK_PANDA_DOWNLOAD_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_DOWNLOAD, GtkPandaDownloadClass))
+#define GTK_IS_PANDA_DOWNLOAD(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_DOWNLOAD))
+#define GTK_IS_PANDA_DOWNLOAD_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_DOWNLOAD))
 
 typedef struct _GtkPandaDownload       GtkPandaDownload;
 typedef struct _GtkPandaDownloadClass  GtkPandaDownloadClass;

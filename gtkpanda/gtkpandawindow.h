@@ -36,10 +36,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define GTK_PANDA_TYPE_WINDOW                  (gtk_panda_window_get_type ())
-#define GTK_PANDA_WINDOW(obj)                  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_WINDOW, GtkPandaWindow))
-#define GTK_PANDA_WINDOW_CLASS(klass)          (GTK_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_WINDOW, GtkPandaWindowClass))
-#define GTK_IS_PANDA_WINDOW(obj)               (GTK_CHECK_TYPE ((obj), GTK_PANDA_TYPE_WINDOW))
-#define GTK_IS_PANDA_WINDOW_CLASS(klass)       (GTK_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_WINDOW))
+#define GTK_PANDA_WINDOW(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_WINDOW, GtkPandaWindow))
+#define GTK_PANDA_WINDOW_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_WINDOW, GtkPandaWindowClass))
+#define GTK_IS_PANDA_WINDOW(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_WINDOW))
+#define GTK_IS_PANDA_WINDOW_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_WINDOW))
 
 typedef struct _GtkPandaWindow       GtkPandaWindow;
 typedef struct _GtkPandaWindowClass  GtkPandaWindowClass;

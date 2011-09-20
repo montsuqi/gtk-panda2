@@ -36,10 +36,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define GTK_PANDA_TYPE_PIXMAP                  (gtk_panda_pixmap_get_type ())
-#define GTK_PANDA_PIXMAP(obj)                  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_PIXMAP, GtkPandaPixmap))
-#define GTK_PANDA_PIXMAP_CLASS(klass)          (GTK_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_PIXMAP, GtkPandaPixmapClass))
-#define GTK_IS_PANDA_PIXMAP(obj)               (GTK_CHECK_TYPE ((obj), GTK_PANDA_TYPE_PIXMAP))
-#define GTK_IS_PANDA_PIXMAP_CLASS(klass)       (GTK_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_PIXMAP))
+#define GTK_PANDA_PIXMAP(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_PIXMAP, GtkPandaPixmap))
+#define GTK_PANDA_PIXMAP_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_PIXMAP, GtkPandaPixmapClass))
+#define GTK_IS_PANDA_PIXMAP(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_PIXMAP))
+#define GTK_IS_PANDA_PIXMAP_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_PIXMAP))
 
 typedef struct _GtkPandaPixmap       GtkPandaPixmap;
 typedef struct _GtkPandaPixmapClass  GtkPandaPixmapClass;

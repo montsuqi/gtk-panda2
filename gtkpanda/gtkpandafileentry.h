@@ -36,13 +36,13 @@ extern "C" {
 #define GTK_PANDA_TYPE_FILE_ENTRY \
   (gtk_panda_file_entry_get_type ())
 #define GTK_PANDA_FILE_ENTRY(obj) \
-  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_FILE_ENTRY, GtkPandaFileEntry))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_FILE_ENTRY, GtkPandaFileEntry))
 #define GTK_PANDA_FILE_ENTRY_CLASS(klass) \
-  (GTK_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_FILE_ENTRY, GtkPandaFileEntryClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_FILE_ENTRY, GtkPandaFileEntryClass))
 #define GTK_IS_PANDA_FILE_ENTRY(obj) \
-  (GTK_CHECK_TYPE ((obj), GTK_PANDA_TYPE_FILE_ENTRY))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_FILE_ENTRY))
 #define GTK_IS_PANDA_FILE_ENTRY_CLASS(klass) \
-  (GTK_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_FILE_ENTRY))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_FILE_ENTRY))
 
 typedef struct _GtkPandaFileEntry       GtkPandaFileEntry;
 typedef struct _GtkPandaFileEntryClass  GtkPandaFileEntryClass;

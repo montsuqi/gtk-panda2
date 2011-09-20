@@ -37,13 +37,13 @@ extern "C" {
 #define GTK_PANDA_TYPE_PDF \
   (gtk_panda_pdf_get_type ())
 #define GTK_PANDA_PDF(obj) \
-  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_PDF, GtkPandaPDF))
+  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_PDF, GtkPandaPDF))
 #define GTK_PANDA_PDF_CLASS(klass) \
-  (GTK_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_PDF, GtkPandaPDFClass))
+  (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_PDF, GtkPandaPDFClass))
 #define GTK_IS_PANDA_PDF(obj) \
-  (GTK_CHECK_TYPE ((obj), GTK_PANDA_TYPE_PDF))
+  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_PDF))
 #define GTK_IS_PANDA_PDF_CLASS(klass) \
-  (GTK_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_PDF))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_PDF))
 
 typedef struct _GtkPandaPDF       GtkPandaPDF;
 typedef struct _GtkPandaPDFClass  GtkPandaPDFClass;

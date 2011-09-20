@@ -38,9 +38,9 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define GTK_PANDA_TYPE_COMBO			(gtk_panda_combo_get_type ())
-#define GTK_PANDA_COMBO(obj)			GTK_CHECK_CAST (obj, gtk_panda_combo_get_type (), GtkPandaCombo)
-#define GTK_PANDA_COMBO_CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, gtk_panda_combo_get_type (), GtkPandaComboClass)
-#define GTK_IS_PANDA_COMBO(obj)			GTK_CHECK_TYPE (obj, gtk_panda_combo_get_type ())
+#define GTK_PANDA_COMBO(obj)			G_TYPE_CHECK_INSTANCE_CAST (obj, gtk_panda_combo_get_type (), GtkPandaCombo)
+#define GTK_PANDA_COMBO_CLASS(klass)	G_TYPE_CHECK_CLASS_CAST (klass, gtk_panda_combo_get_type (), GtkPandaComboClass)
+#define GTK_IS_PANDA_COMBO(obj)			G_TYPE_CHECK_INSTANCE_TYPE (obj, gtk_panda_combo_get_type ())
 
 typedef struct _GtkPandaCombo		GtkPandaCombo;
 typedef struct _GtkPandaComboClass	GtkPandaComboClass;

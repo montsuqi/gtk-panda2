@@ -34,15 +34,15 @@ extern "C" {
 #define GTK_TYPE_NUMBER_ENTRY \
   (gtk_number_entry_get_type ())
 #define GTK_NUMBER_ENTRY(obj) \
-  (GTK_CHECK_CAST (obj, gtk_number_entry_get_type (), GtkNumberEntry))
+  (G_TYPE_CHECK_INSTANCE_CAST (obj, gtk_number_entry_get_type (), GtkNumberEntry))
 #define GTK_NUMBER_ENTRY_CLASS(klass) \
-  (GTK_CHECK_CLASS_CAST (klass,	\
+  (G_TYPE_CHECK_CLASS_CAST (klass,	\
     gtk_number_entry_get_type (), \
     GtkNumberEntryClass))
 #define GTK_IS_NUMBER_ENTRY(obj) \
-  (GTK_CHECK_TYPE (obj, gtk_number_entry_get_type ()))
+  (G_TYPE_CHECK_INSTANCE_TYPE (obj, gtk_number_entry_get_type ()))
 #define GTK_IS_NUMBER_ENTRY_CLASS(klass) \
-  (GTK_CHECK_CLASS_TYPE ((klass), GTK_TYPE_ENTRY))
+  (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_ENTRY))
 
 typedef struct _GtkNumberEntry       GtkNumberEntry;
 typedef struct _GtkNumberEntryClass  GtkNumberEntryClass;

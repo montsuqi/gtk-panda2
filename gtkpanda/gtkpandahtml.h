@@ -32,10 +32,10 @@
 #include <webkit/webkit.h>
 
 #define GTK_PANDA_TYPE_HTML                  (gtk_panda_html_get_type ())
-#define GTK_PANDA_HTML(obj)                  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_HTML, GtkPandaHTML))
-#define GTK_PANDA_HTML_CLASS(klass)          (GTK_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_HTML, GtkPandaHTMLClass))
-#define GTK_IS_PANDA_HTML(obj)               (GTK_CHECK_TYPE ((obj), GTK_PANDA_TYPE_HTML))
-#define GTK_IS_PANDA_HTML_CLASS(klass)       (GTK_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_HTML))
+#define GTK_PANDA_HTML(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_HTML, GtkPandaHTML))
+#define GTK_PANDA_HTML_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_HTML, GtkPandaHTMLClass))
+#define GTK_IS_PANDA_HTML(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_HTML))
+#define GTK_IS_PANDA_HTML_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_HTML))
 
 #define MAX_HTML_SIZE   1048576 /* 1M */
 

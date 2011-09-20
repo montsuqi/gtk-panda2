@@ -35,10 +35,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define GTK_PANDA_TYPE_PRINT                  (gtk_panda_print_get_type ())
-#define GTK_PANDA_PRINT(obj)                  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_PRINT, GtkPandaPrint))
-#define GTK_PANDA_PRINT_CLASS(klass)          (GTK_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_PRINT, GtkPandaPrintClass))
-#define GTK_IS_PANDA_PRINT(obj)               (GTK_CHECK_TYPE ((obj), GTK_PANDA_TYPE_PRINT))
-#define GTK_IS_PANDA_PRINT_CLASS(klass)       (GTK_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_PRINT))
+#define GTK_PANDA_PRINT(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_PRINT, GtkPandaPrint))
+#define GTK_PANDA_PRINT_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_PRINT, GtkPandaPrintClass))
+#define GTK_IS_PANDA_PRINT(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_PRINT))
+#define GTK_IS_PANDA_PRINT_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_PRINT))
 
 typedef struct _GtkPandaPrint       GtkPandaPrint;
 typedef struct _GtkPandaPrintClass  GtkPandaPrintClass;

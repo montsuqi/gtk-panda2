@@ -35,10 +35,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define GTK_PANDA_TYPE_TIMER                  (gtk_panda_timer_get_type ())
-#define GTK_PANDA_TIMER(obj)                  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_TIMER, GtkPandaTimer))
-#define GTK_PANDA_TIMER_CLASS(klass)          (GTK_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_TIMER, GtkPandaTimerClass))
-#define GTK_IS_PANDA_TIMER(obj)               (GTK_CHECK_TYPE ((obj), GTK_PANDA_TYPE_TIMER))
-#define GTK_IS_PANDA_TIMER_CLASS(klass)       (GTK_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_TIMER))
+#define GTK_PANDA_TIMER(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_TIMER, GtkPandaTimer))
+#define GTK_PANDA_TIMER_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_TIMER, GtkPandaTimerClass))
+#define GTK_IS_PANDA_TIMER(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_TIMER))
+#define GTK_IS_PANDA_TIMER_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_TIMER))
 
 typedef struct _GtkPandaTimer       GtkPandaTimer;
 typedef struct _GtkPandaTimerClass  GtkPandaTimerClass;

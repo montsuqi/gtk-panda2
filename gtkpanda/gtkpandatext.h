@@ -39,11 +39,11 @@ extern "C" {
 #define GTK_PANDA_TYPE_TEXT \
   (gtk_panda_text_get_type ())
 #define GTK_PANDA_TEXT(obj)	\
-  GTK_CHECK_CAST (obj, gtk_panda_text_get_type (), GtkPandaText)
+  G_TYPE_CHECK_INSTANCE_CAST (obj, gtk_panda_text_get_type (), GtkPandaText)
 #define GTK_PANDA_TEXT_CLASS(klass)	\
-  GTK_CHECK_CLASS_CAST (klass, gtk_panda_text_get_type (), GtkPandaTextClass)
+  G_TYPE_CHECK_CLASS_CAST (klass, gtk_panda_text_get_type (), GtkPandaTextClass)
 #define GTK_IS_PANDA_TEXT(obj) \
-  GTK_CHECK_TYPE (obj, gtk_panda_text_get_type ())
+  G_TYPE_CHECK_INSTANCE_TYPE (obj, gtk_panda_text_get_type ())
 
 typedef struct _GtkPandaText		GtkPandaText;
 typedef struct _GtkPandaTextClass	GtkPandaTextClass;
