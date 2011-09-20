@@ -129,7 +129,7 @@ gtk_panda_entry_class_init (GtkPandaEntryClass *klass)
   GtkWidgetClass *widget_class;
   GObjectClass *gobject_class;
 
-  parent_class = gtk_type_class (GTK_TYPE_ENTRY);
+  parent_class = g_type_class_ref (GTK_TYPE_ENTRY);
 
   widget_class = (GtkWidgetClass*) klass;
   widget_class->hide = gtk_panda_entry_hide;

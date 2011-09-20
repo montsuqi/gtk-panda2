@@ -93,7 +93,7 @@ gtk_panda_file_entry_class_init (GtkPandaFileEntryClass *klass)
   GtkObjectClass *gtk_object_class;
 
   gtk_object_class = (GtkObjectClass *) klass;
-  parent_class = gtk_type_class (GTK_TYPE_HBOX);
+  parent_class = g_type_class_ref (GTK_TYPE_HBOX);
 
   gtk_object_class->destroy = gtk_panda_file_entry_destroy;
   klass->browse_clicked = gtk_panda_file_entry_browse_clicked;

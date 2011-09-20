@@ -80,7 +80,7 @@ gtk_panda_text_class_init ( GtkPandaTextClass * klass)
 
   widget_class = (GtkWidgetClass *) klass;
   widget_class->focus_in_event = gtk_panda_text_focus_in;
-  parent_class = gtk_type_class (GTK_TYPE_TEXT_VIEW);
+  parent_class = g_type_class_ref(GTK_TYPE_TEXT_VIEW);
 
   klass->activate = gtk_panda_text_activate;
 

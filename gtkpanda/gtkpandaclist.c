@@ -71,7 +71,7 @@ gtk_panda_type_selection_mode_get_type (void)
   return type;
 }
 
-static GtkTreeViewClass *parent_class = NULL;
+static GtkWidgetClass *parent_class = NULL;
 static guint clist_signals [LAST_SIGNAL] = { 0 };
 
 static void gtk_panda_clist_class_init (GtkPandaCListClass *klass);
@@ -108,7 +108,7 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
   widget_class->button_press_event = gtk_panda_clist_button_press;
   widget_class->key_press_event = gtk_panda_clist_key_press;
 
-  parent_class = gtk_type_class (GTK_TYPE_TREE_VIEW);
+  parent_class = g_type_class_ref(GTK_TYPE_TREE_VIEW);
 
   clist_signals[SELECT_ROW] =
   g_signal_new ("select_row",

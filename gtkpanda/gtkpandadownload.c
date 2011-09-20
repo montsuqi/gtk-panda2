@@ -39,8 +39,6 @@
 static void gtk_panda_download_class_init    (GtkPandaDownloadClass *klass);
 static void gtk_panda_download_init          (GtkPandaDownload      *download);
 
-static GtkWidgetClass *parent_class = NULL;
-
 GType
 gtk_panda_download_get_type (void)
 {
@@ -73,7 +71,6 @@ gtk_panda_download_get_type (void)
 static void
 gtk_panda_download_class_init (GtkPandaDownloadClass *class)
 {
-  parent_class = gtk_type_class (GTK_TYPE_WIDGET);
 }
 
 static void

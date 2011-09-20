@@ -37,11 +37,11 @@
 #include <gtk/gtk.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkbindings.h>
+#include <gtk/gtkmarshal.h>
 #include <gdk/gdkkeysyms.h>
 
 #include "gtkpandaintl.h"
 #include "gtkpandapdf.h"
-#include "pandamarshal.h"
 
 static void gtk_panda_pdf_class_init    (GtkPandaPDFClass *klass);
 static void gtk_panda_pdf_init          (GtkPandaPDF      *pdf);
@@ -143,7 +143,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
   GtkBindingSet *binding_set;
 
   gtk_object_class = (GtkObjectClass *) klass;
-  parent_class = gtk_type_class (GTK_TYPE_CONTAINER);
+  parent_class = g_type_class_ref (GTK_TYPE_CONTAINER);
 
   gtk_object_class->destroy = gtk_panda_pdf_destroy;
 
@@ -162,7 +162,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, zoom_fit_page),
         NULL, NULL,
-        panda_marshal_VOID__VOID,
+        g_cclosure_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[ZOOM_FIT_WIDTH] =
@@ -171,7 +171,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, zoom_fit_width),
         NULL, NULL,
-        panda_marshal_VOID__VOID,
+        g_cclosure_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[ZOOM_IN] =
@@ -180,7 +180,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, zoom_in),
         NULL, NULL,
-        panda_marshal_VOID__VOID,
+        g_cclosure_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[ZOOM_OUT] =
@@ -189,7 +189,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, zoom_out),
         NULL, NULL,
-        panda_marshal_VOID__VOID,
+        g_cclosure_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[PAGE_NEXT] =
@@ -198,7 +198,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, page_next),
         NULL, NULL,
-        panda_marshal_VOID__VOID,
+        g_cclosure_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[PAGE_PREV] =
@@ -207,7 +207,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, page_prev),
         NULL, NULL,
-        panda_marshal_VOID__VOID,
+        g_cclosure_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[SAVE] =
@@ -216,7 +216,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, save),
         NULL, NULL,
-        panda_marshal_VOID__VOID,
+        g_cclosure_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   signals[PRINT] =
@@ -225,7 +225,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
         G_STRUCT_OFFSET (GtkPandaPDFClass, print),
         NULL, NULL,
-        panda_marshal_VOID__VOID,
+        g_cclosure_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
 
   binding_set = gtk_binding_set_by_class (klass);
@@ -341,7 +341,7 @@ render_page(GtkPandaPDF *self)
     (int)(doc_h * zoom));
 
   poppler_page_render_to_pixbuf(page, 0, 0, 
-    (int)(doc_w * zoom), (int)(doc_h * zoom), zoom, 0, self->pixbuf);
+    (int)(doc_w), (int)(doc_h), zoom, 0, self->pixbuf);
   gtk_image_clear(GTK_IMAGE(self->image));
   gtk_image_set_from_pixbuf(GTK_IMAGE(self->image), self->pixbuf);
   g_object_unref(page);
@@ -723,6 +723,7 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   GtkCellRenderer *renderer;
   GtkListStore    *store;
   GtkTreeIter      iter;
+  GtkRequisition   req;
   guint i;
 
   g_object_set(gtk_settings_get_default(),"gtk-button-images",TRUE,NULL);
@@ -775,11 +776,9 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   self->page_entry = gtk_entry_new();
   g_signal_connect (G_OBJECT(self->page_entry), "activate",
     G_CALLBACK (page_entry_activated_cb), self);
-  gtk_widget_set_usize(self->page_entry, 40,40);
 
   /* page label */
   self->page_label = gtk_label_new("");
-  gtk_widget_set_usize(self->page_label, 40,40);
 
   /* save button */
   save_button = gtk_button_new_from_stock(GTK_STOCK_SAVE);
@@ -834,6 +833,11 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
 
   gtk_box_pack_start(GTK_BOX (hbox), save_button, FALSE, FALSE, 2);
   gtk_box_pack_start(GTK_BOX (hbox), print_button, FALSE, FALSE, 2);
+
+  req.width = req.height = 40;
+  gtk_widget_size_request(self->page_entry,&req);
+  req.width = req.height = 40;
+  gtk_widget_size_request(self->page_label,&req);
 
   gtk_box_set_spacing(GTK_BOX(self), 2);
   gtk_box_set_homogeneous(GTK_BOX(self), FALSE);

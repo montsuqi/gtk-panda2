@@ -76,8 +76,6 @@ static void  gtk_panda_combo_get_property       (GObject         *object,
                        GValue          *value,
                        GParamSpec      *pspec);
 
-static GtkComboBoxClass *parent_class = NULL;
-
 static void
 gtk_panda_combo_class_init (GtkPandaComboClass * klass)
 {
@@ -89,7 +87,6 @@ gtk_panda_combo_class_init (GtkPandaComboClass * klass)
   widget_class->mnemonic_activate = gtk_panda_combo_mnemonic_activate;
   widget_class->grab_focus = gtk_panda_combo_grab_focus;
 
-  parent_class = gtk_type_class (GTK_TYPE_COMBO_BOX);
   combo_class = (GtkComboBoxClass *)klass;
   combo_class->get_active_text = gtk_panda_combo_get_active_text;
 
@@ -686,17 +683,19 @@ gtk_panda_combo_set_loop_selection (GtkPandaCombo * combo, gboolean val)
 void
 gtk_panda_combo_set_popdown_strings (GtkPandaCombo * combo, gchar **strs)
 {
-  GtkListStore *store;
+  GtkListStore *model;
+  GtkTreeIter iter;
   int i;
   
   g_return_if_fail (combo != NULL);
   g_return_if_fail (GTK_IS_PANDA_COMBO (combo));
   g_return_if_fail (strs != NULL);
-  store = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(combo)));
-  gtk_list_store_clear(store);
+  model = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(combo)));
+  gtk_list_store_clear(model);
 
   for(i=0;strs[i]!=NULL;i++) {
-    gtk_combo_box_append_text(GTK_COMBO_BOX(combo), strs[i]);
+    gtk_list_store_append(model,&iter);
+    gtk_list_store_set(model,&iter,0,strs[i],-1);
   }
   gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 }

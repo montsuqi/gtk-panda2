@@ -38,12 +38,10 @@
 #include "gtkpandaintl.h"
 #include "gtkpandapixmap.h"
 
-static GtkWidgetClass *parent_class = NULL;
 
 static void
 gtk_panda_pixmap_class_init (GtkPandaPixmapClass *klass)
 {
-  parent_class = gtk_type_class (GTK_TYPE_IMAGE);
 }
 
 static void

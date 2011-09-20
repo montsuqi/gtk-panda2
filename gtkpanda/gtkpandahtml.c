@@ -49,7 +49,6 @@ enum {
   PROP_URI
 };
 
-static GtkVBoxClass *parent_class = NULL;
 
 static void gtk_panda_html_class_init(GtkPandaHTMLClass *klass);
 static void gtk_panda_html_init(GtkPandaHTML     *html);
@@ -100,7 +99,6 @@ gtk_panda_html_class_init (GtkPandaHTMLClass *klass)
   GObjectClass *gobject_class;
 
   gobject_class = G_OBJECT_CLASS(klass);
-  parent_class = (GtkVBoxClass *)gtk_type_class (GTK_TYPE_VBOX);
 
   gobject_class->set_property = gtk_panda_html_set_property;
   gobject_class->get_property = gtk_panda_html_get_property;

@@ -118,7 +118,7 @@ main (int argc, char *argv[])
 
   gtk_window_set_title (GTK_WINDOW (window1), "testtext");
   gtk_container_set_border_width (GTK_CONTAINER (window1), 0);
-  gtk_widget_set_usize (window1, 200, 400);
+  gtk_window_set_default_size (GTK_WINDOW(window1), 200, 400);
 
   button = gtk_button_new_with_label ("OK");
   gtk_signal_connect (GTK_OBJECT (button), "clicked",

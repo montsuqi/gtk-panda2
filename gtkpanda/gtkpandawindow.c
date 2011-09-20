@@ -55,7 +55,6 @@ static void  gtk_panda_window_get_property       (GObject         *object,
                        GValue          *value,
                        GParamSpec      *pspec);
 
-static GtkWidgetClass *parent_class = NULL;
 
 GType
 gtk_panda_window_get_type (void)
@@ -91,7 +90,6 @@ gtk_panda_window_class_init (GtkPandaWindowClass *klass)
 {
   GObjectClass *gobject_class;
 
-  parent_class = gtk_type_class (GTK_TYPE_WINDOW);
 
   gobject_class = (GObjectClass*) klass;
   gobject_class->set_property = gtk_panda_window_set_property; 

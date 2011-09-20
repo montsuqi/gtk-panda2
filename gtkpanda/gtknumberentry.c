@@ -102,8 +102,7 @@ gtk_number_entry_class_init (GtkNumberEntryClass *klass)
   GtkWidgetClass *widget_class;
 
 dbgmsg(">gtk_number_entry_class_init");
-  widget_class = (GtkWidgetClass*) klass;
-  parent_class = gtk_type_class (GTK_TYPE_ENTRY);
+  widget_class = parent_class = (GtkWidgetClass*) klass;
 
   widget_class->key_press_event = gtk_number_entry_key_press;
 

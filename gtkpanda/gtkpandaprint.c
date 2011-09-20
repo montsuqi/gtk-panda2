@@ -39,7 +39,6 @@
 static void gtk_panda_print_class_init    (GtkPandaPrintClass *klass);
 static void gtk_panda_print_init          (GtkPandaPrint      *print);
 
-static GtkWidgetClass *parent_class = NULL;
 
 GType
 gtk_panda_print_get_type (void)
@@ -73,7 +72,6 @@ gtk_panda_print_get_type (void)
 static void
 gtk_panda_print_class_init (GtkPandaPrintClass *class)
 {
-  parent_class = gtk_type_class (GTK_TYPE_WIDGET);
 }
 
 static void

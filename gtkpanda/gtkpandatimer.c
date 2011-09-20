@@ -47,7 +47,6 @@ enum {
 };
 
 static guint timer_signals[LAST_SIGNAL] = {0,};
-static GtkWidgetClass *parent_class = NULL;
 
 static void gtk_panda_timer_class_init    (GtkPandaTimerClass *klass);
 static void gtk_panda_timer_init          (GtkPandaTimer      *timer);
@@ -95,7 +94,6 @@ gtk_panda_timer_class_init (GtkPandaTimerClass *klass)
   GObjectClass *gobject_class;
 
   gobject_class = G_OBJECT_CLASS(klass);
-  parent_class = gtk_type_class (GTK_TYPE_WIDGET);
 
   gobject_class->set_property = gtk_panda_timer_set_property; 
   gobject_class->get_property = gtk_panda_timer_get_property; 

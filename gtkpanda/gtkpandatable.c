@@ -89,7 +89,7 @@ gtk_panda_table_class_init ( GtkPandaTableClass * klass)
   widget_class = (GtkWidgetClass *) klass;
   widget_class->key_press_event = gtk_panda_table_key_press;
 
-  parent_class = gtk_type_class (GTK_TYPE_TREE_VIEW);
+  parent_class = g_type_class_ref(GTK_TYPE_TREE_VIEW);
 
   signals[CELL_EDITED] =
   g_signal_new ("cell-edited",
@@ -246,7 +246,7 @@ gtk_panda_table_key_press(GtkWidget *widget,
     gtk_tree_view_get_cursor(view,&path,&column);
     if (path != NULL && column != NULL) {
       gtk_tree_view_set_cursor(view,path,column,TRUE);
-      list = gtk_tree_view_column_get_cell_renderers(column);
+      list = gtk_cell_layout_get_cells(GTK_CELL_LAYOUT(column));
       for(i=0;i<g_list_length(list);i++){
         cell = GTK_CELL_RENDERER(g_list_nth_data(list,i));
         if (PANDA_IS_CELL_RENDERER_TEXT(cell)) {
