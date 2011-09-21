@@ -23,8 +23,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
-#include <gdk/gdkx.h>
-#include <X11/Xlib.h>
 
 #include "config.h"
 #include "imcontrol.h"
@@ -72,34 +70,10 @@ set_im_state_post_focus(
   GtkIMMulticontext *mim,
   gboolean enabled)
 {
-  GtkIMContextXIM *xim;
   GtkIMContext *im;
   gboolean *state;
 
-  if (!strcmp("xim", mim->context_id)) {
-    xim = (GtkIMContextXIM *)mim->slave;
-    if (xim == NULL || xim->ic == NULL) {
-      return;
-    }
-    if (enabled)
-    {
-      XVaNestedList *preedit_attr =
-        XVaCreateNestedList (0,
-          XNPreeditState, XIMPreeditEnable,
-          NULL);
-      XSetICValues (xim->ic,
-        XNPreeditAttributes, preedit_attr, NULL);
-      XFree(preedit_attr);
-    } else {
-      XVaNestedList *preedit_attr =
-        XVaCreateNestedList (0,
-          XNPreeditState, XIMPreeditDisable,
-          NULL);
-      XSetICValues (xim->ic,
-        XNPreeditAttributes, preedit_attr, NULL);
-      XFree(preedit_attr);
-    }
-  } else if (!strcmp("ibus", mim->context_id)) {
+  if (!strcmp("ibus", mim->context_id)) {
     im = mim->slave;
     state = (gboolean *)g_object_get_data(G_OBJECT(im), "im-state");
     if (state != NULL) {
