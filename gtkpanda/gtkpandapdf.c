@@ -303,33 +303,63 @@ arrange_scale_combo(GtkPandaPDF *self)
   }
 }
 
-static void
+static gboolean
 render_page(GtkPandaPDF *self)
 {
-  double doc_w, doc_h;
+  static cairo_surface_t *surface = NULL;
+  cairo_t *cr;
+  double width, height;
   double zoom;
   PopplerPage *page;
 
 
-  g_return_if_fail(self->doc);
-  if (self->pixbuf) {
-    g_object_unref(self->pixbuf);
-    self->pixbuf = NULL;
+  if (self->doc == NULL) {
+    return FALSE;
   }
+  if (surface != NULL) {
+    cairo_surface_destroy(surface);
+    surface = NULL;
+  }
+
   page = poppler_document_get_page(self->doc, self->pageno);
 
   zoom = compute_zoom(self);
-  poppler_page_get_size(page, &doc_w, &doc_h);
+  poppler_page_get_size(page, &width, &height);
+ 
+  width *= zoom;
+  height *= zoom;
 
-  self->pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 
-    (int)(doc_w * zoom),
-    (int)(doc_h * zoom));
+  gdk_window_clear(gtk_widget_get_window(self->drawingarea));
+  gtk_widget_set_size_request(self->drawingarea,(int)width,(int)height);
 
-  poppler_page_render_to_pixbuf(page, 0, 0, 
-    (int)(doc_w), (int)(doc_h), zoom, 0, self->pixbuf);
-  gtk_image_clear(GTK_IMAGE(self->image));
-  gtk_image_set_from_pixbuf(GTK_IMAGE(self->image), self->pixbuf);
+  surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+    width,height);
+  cr = cairo_create(surface);
+  cairo_save(cr);
+  cairo_scale(cr,zoom,zoom);
+  poppler_page_render(page,cr);
+  cairo_restore(cr);
+
+  cairo_set_operator (cr, CAIRO_OPERATOR_DEST_OVER);
+  cairo_set_source_rgb (cr, 1., 1., 1.);
+  cairo_paint (cr);
+  cairo_destroy (cr);
+
+  cr = gdk_cairo_create(gtk_widget_get_window(self->drawingarea));
+  cairo_set_source_surface(cr,surface,0,0);
+  cairo_paint(cr);
+  cairo_destroy(cr);
+
   g_object_unref(page);
+  return FALSE;
+}
+
+static gboolean
+cb_expose(GtkWidget *widget,
+  GdkEventExpose *event,
+  GtkPandaPDF *self)
+{
+  return render_page(self);
 }
 
 void
@@ -708,14 +738,16 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   GtkCellRenderer *renderer;
   GtkListStore    *store;
   GtkTreeIter      iter;
-  GtkRequisition   req;
   guint i;
 
   g_object_set(gtk_settings_get_default(),"gtk-button-images",TRUE,NULL);
 
   self->zoom = SCALE_ZOOM_FIT_WIDTH;
 
-  self->image = gtk_image_new();
+  self->drawingarea = gtk_drawing_area_new();
+  g_signal_connect (G_OBJECT(self->drawingarea), "expose_event",
+    G_CALLBACK (cb_expose),
+    (gpointer)self);
 
   self->scroll = gtk_scrolled_window_new(NULL, NULL);
 #if 0 // for glclient2 thread failure ; gtk2 bug?
@@ -726,7 +758,7 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
     GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
 #endif
   gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(self->scroll), 
-    self->image);
+    self->drawingarea);
   child = gtk_bin_get_child(GTK_BIN(self->scroll));
   gtk_widget_add_events(child,
     GDK_BUTTON_PRESS_MASK
@@ -741,7 +773,6 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   g_signal_connect (GTK_OBJECT (child), "motion_notify_event",
 		      G_CALLBACK (motion_cb), self);
 
-  self->pixbuf = NULL;
   self->doc = NULL;
   self->data = NULL;
   self->size = 0;
@@ -761,9 +792,11 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   self->page_entry = gtk_entry_new();
   g_signal_connect (G_OBJECT(self->page_entry), "activate",
     G_CALLBACK (page_entry_activated_cb), self);
+  gtk_widget_set_size_request(self->page_entry,40,40);
 
   /* page label */
   self->page_label = gtk_label_new("");
+  gtk_widget_set_size_request(self->page_label,40,40);
 
   /* save button */
   save_button = gtk_button_new_from_stock(GTK_STOCK_SAVE);
@@ -819,11 +852,6 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   gtk_box_pack_start(GTK_BOX (hbox), save_button, FALSE, FALSE, 2);
   gtk_box_pack_start(GTK_BOX (hbox), print_button, FALSE, FALSE, 2);
 
-  req.width = req.height = 40;
-  gtk_widget_size_request(self->page_entry,&req);
-  req.width = req.height = 40;
-  gtk_widget_size_request(self->page_label,&req);
-
   gtk_box_set_spacing(GTK_BOX(self), 2);
   gtk_box_set_homogeneous(GTK_BOX(self), FALSE);
   
@@ -850,7 +878,7 @@ gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
   GError *error = NULL;
   gchar buf[8];
 
-  gtk_widget_hide(GTK_WIDGET(self->image));
+  gtk_widget_hide(GTK_WIDGET(self->drawingarea));
   if (self->doc) {
     g_object_unref(self->doc);
     self->doc = NULL;
@@ -863,14 +891,13 @@ gtk_panda_pdf_set (GtkPandaPDF *self, int size, char *data)
   if (data == NULL || size <= 0) {
     return FALSE;
   }
-  gtk_widget_show(GTK_WIDGET(self->image));
+  gtk_widget_show(GTK_WIDGET(self->drawingarea));
   self->data = g_memdup(data, size);
   self->size = size;
   self->doc = poppler_document_new_from_data(self->data, self->size, 
     NULL, &error);
   if (error != NULL) {
     fprintf(stderr, "%s\n", error->message);
-    gtk_image_set_from_pixbuf(GTK_IMAGE(self->image), NULL);
     g_error_free (error);
     return FALSE;
   }

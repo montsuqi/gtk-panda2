@@ -54,10 +54,9 @@ struct _GtkPandaPDF
 
   GtkWidget *scale;
   GtkWidget *scroll;
-  GtkWidget *image;
+  GtkWidget *drawingarea;
   GtkWidget *page_entry;
   GtkWidget *page_label;
-  GdkPixbuf *pixbuf;
   PopplerDocument *doc;
   double zoom;
   int pageno;
