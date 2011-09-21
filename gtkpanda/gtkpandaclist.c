@@ -434,20 +434,20 @@ gtk_panda_clist_row_is_selected (GtkPandaCList *clist,
   return gtk_tree_selection_path_is_selected(select, path);
 }
 
-GtkVisibility 
+gboolean
 gtk_panda_clist_row_is_visible (GtkPandaCList *clist,
   gint      row)
 {
   GtkTreePath *start;
   GtkTreePath *end;
   gint *indices;
-  GtkVisibility ret; 
+  gboolean ret; 
 
-  ret = GTK_VISIBILITY_NONE;
+  ret = FALSE;
   if (gtk_tree_view_get_visible_range(GTK_TREE_VIEW(clist), &start, &end)) {
     indices = gtk_tree_path_get_indices(start);
     if (indices != NULL && indices[0] <= row)
-      ret = GTK_VISIBILITY_FULL;
+      ret = TRUE;
   }
   gtk_tree_path_free(start);
   gtk_tree_path_free(end);

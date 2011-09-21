@@ -86,7 +86,7 @@ void gtk_panda_clist_moveto (GtkPandaCList *clist,
 gint gtk_panda_clist_get_n_rows(GtkPandaCList *clist);
 gint gtk_panda_clist_get_columns(GtkPandaCList *clist);
 
-GtkVisibility gtk_panda_clist_row_is_visible (GtkPandaCList *clist, gint row);
+gboolean gtk_panda_clist_row_is_visible (GtkPandaCList *clist, gint row);
 
 gboolean gtk_panda_clist_row_is_selected (GtkPandaCList *clist, gint row);
 
