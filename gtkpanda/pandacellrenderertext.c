@@ -24,12 +24,9 @@
 
 #include <glib-object.h>
 #include <gtk/gtk.h>
-#include <gtk/gtksignal.h>
 
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
-#include <gdk/gdkx.h>
-#include <X11/Xlib.h>
 #include "pandacellrenderertext.h"
 
 static void panda_cell_renderer_text_class_init

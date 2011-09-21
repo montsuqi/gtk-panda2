@@ -32,7 +32,6 @@
 #include <gtk/gtk.h>
 #include <glib-object.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtksignal.h>
 
 #include "config.h"
 #include "gtkpandaintl.h"

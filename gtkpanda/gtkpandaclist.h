@@ -30,7 +30,7 @@
 #ifndef __GTK_PANDA_CLIST_H__
 #define __GTK_PANDA_CLIST_H__
 
-#include <gtk/gtktreeview.h>
+#include <gtk/gtk.h>
 
 #ifdef __cplusplus
 extern "C" {
