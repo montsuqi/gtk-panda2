@@ -223,7 +223,7 @@ gtk_panda_file_entry_init (GtkPandaFileEntry *self)
   
   gtk_widget_show_all(GTK_WIDGET(self));
   gtk_panda_file_entry_set_mode(self,GTK_FILE_CHOOSER_ACTION_OPEN);
-  gtk_widget_set_can_focus(self,TRUE);
+  gtk_widget_set_can_focus(GTK_WIDGET(self),TRUE);
 }
 
 // public API
