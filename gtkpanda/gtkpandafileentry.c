@@ -45,7 +45,6 @@
 
 static void gtk_panda_file_entry_class_init    (GtkPandaFileEntryClass *klass);
 static void gtk_panda_file_entry_init          (GtkPandaFileEntry      *fileentry);
-static void gtk_panda_file_entry_destroy       (GtkObject      *fileentry);
 
 static GtkHBoxClass *parent_class = NULL;
 
@@ -90,12 +89,7 @@ gtk_panda_file_entry_get_type (void)
 static void
 gtk_panda_file_entry_class_init (GtkPandaFileEntryClass *klass)
 {
-  GtkObjectClass *gtk_object_class;
-
-  gtk_object_class = (GtkObjectClass *) klass;
   parent_class = g_type_class_ref (GTK_TYPE_HBOX);
-
-  gtk_object_class->destroy = gtk_panda_file_entry_destroy;
   klass->browse_clicked = gtk_panda_file_entry_browse_clicked;
 
   signals[BROWSE_CLICKED] =
@@ -115,12 +109,6 @@ gtk_panda_file_entry_class_init (GtkPandaFileEntryClass *klass)
         NULL, NULL,
         panda_marshal_VOID__VOID,
         G_TYPE_NONE, 0);
-}
-
-static void
-gtk_panda_file_entry_destroy(GtkObject *object)
-{
-  GTK_OBJECT_CLASS(parent_class)->destroy(object);
 }
 
 void

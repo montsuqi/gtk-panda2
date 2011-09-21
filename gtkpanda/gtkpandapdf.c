@@ -45,7 +45,6 @@
 
 static void gtk_panda_pdf_class_init    (GtkPandaPDFClass *klass);
 static void gtk_panda_pdf_init          (GtkPandaPDF      *pdf);
-static void gtk_panda_pdf_destroy       (GtkObject      *pdf);
 
 static GtkContainerClass *parent_class = NULL;
 
@@ -139,13 +138,9 @@ static void
 gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-  GtkObjectClass *gtk_object_class;
   GtkBindingSet *binding_set;
 
-  gtk_object_class = (GtkObjectClass *) klass;
   parent_class = g_type_class_ref (GTK_TYPE_CONTAINER);
-
-  gtk_object_class->destroy = gtk_panda_pdf_destroy;
 
   klass->zoom_fit_page = gtk_panda_pdf_zoom_fit_page;
   klass->zoom_fit_width = gtk_panda_pdf_zoom_fit_width;
@@ -257,16 +252,6 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
     "save", 0);
   gtk_binding_entry_add_signal (binding_set, GDK_p, GDK_CONTROL_MASK,
     "print", 0);
-}
-
-static void
-gtk_panda_pdf_destroy(GtkObject *object)
-{
-#if 0
-  GtkPandaPDF *self = GTK_PANDA_PDF(object);
-  g_free(self->data);
-#endif
-  GTK_OBJECT_CLASS(parent_class)->destroy(object);
 }
 
 static double
