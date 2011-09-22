@@ -47,7 +47,6 @@ enum {
 static void gtk_panda_combo_class_init(GtkPandaComboClass *klass);
 static void gtk_panda_combo_init(GtkPandaCombo *combo);
 
-static gchar *gtk_panda_combo_get_active_text (GtkComboBox *combo_box);
 static void gtk_panda_combo_contents_changed (GtkEntry *entry,
   gpointer user_data);
 static void gtk_panda_combo_active_changed (GtkComboBox *combo_box,
@@ -81,14 +80,10 @@ gtk_panda_combo_class_init (GtkPandaComboClass * klass)
 {
   GObjectClass *gobject_class;
   GtkWidgetClass *widget_class;
-  GtkComboBoxClass *combo_class;
 
   widget_class = (GtkWidgetClass *) klass;
   widget_class->mnemonic_activate = gtk_panda_combo_mnemonic_activate;
   widget_class->grab_focus = gtk_panda_combo_grab_focus;
-
-  combo_class = (GtkComboBoxClass *)klass;
-  combo_class->get_active_text = gtk_panda_combo_get_active_text;
 
   gobject_class = G_OBJECT_CLASS(klass);
   gobject_class->set_property = gtk_panda_combo_set_property; 
@@ -210,15 +205,6 @@ gtk_panda_combo_new (void)
   g_object_unref (store);
 
   return ret;
-}
-
-static gchar *gtk_panda_combo_get_active_text (GtkComboBox *combo_box)
-{
-  GtkPandaCombo *combo = GTK_PANDA_COMBO(combo_box);
-   if (combo->entry)
-    return g_strdup (gtk_entry_get_text (GTK_ENTRY (combo->entry)));
-
-  return NULL;
 }
 
 static void
