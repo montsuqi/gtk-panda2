@@ -326,7 +326,6 @@ render_page(GtkPandaPDF *self)
   width *= zoom;
   height *= zoom;
 
-  gdk_window_clear(gtk_widget_get_window(self->drawingarea));
   gtk_widget_set_size_request(self->drawingarea,(int)width,(int)height);
 
   surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
