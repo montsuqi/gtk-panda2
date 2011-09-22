@@ -28,7 +28,7 @@
 #ifndef __GTK_PANDA_TABLE_H__
 #define __GTK_PANDA_TABLE_H__
 
-#include <gtk/gtktreeview.h>
+#include <gtk/gtk.h>
 
 #ifdef __cplusplus
 extern "C" {
