@@ -23,7 +23,6 @@
 #define __GTK_NUMBER_ENTRY_H__
 
 #include	<glib-object.h>
-#include	<gtk/gtkentry.h>
 #include	<gtkpanda/numeric.h>
 
 #ifdef __cplusplus

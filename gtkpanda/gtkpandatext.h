@@ -30,7 +30,7 @@
 #ifndef __GTK_PANDA_TEXT_H__
 #define __GTK_PANDA_TEXT_H__
 
-#include <gtk/gtktextview.h>
+#include <gtk/gtk.h>
 
 #ifdef __cplusplus
 extern "C" {
