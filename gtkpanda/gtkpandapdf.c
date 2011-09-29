@@ -308,7 +308,7 @@ render_page(GtkPandaPDF *self)
   double width, height;
   double zoom;
   PopplerPage *page;
-
+  GdkWindow *window;
 
   if (self->doc == NULL) {
     return FALSE;
@@ -341,11 +341,13 @@ render_page(GtkPandaPDF *self)
   cairo_paint (cr);
   cairo_destroy (cr);
 
-  cr = gdk_cairo_create(gtk_widget_get_window(self->drawingarea));
-  cairo_set_source_surface(cr,surface,0,0);
-  cairo_paint(cr);
-  cairo_destroy(cr);
-
+  window = gtk_widget_get_window(self->drawingarea);
+  if (window != NULL) {
+    cr = gdk_cairo_create(window);
+    cairo_set_source_surface(cr,surface,0,0);
+    cairo_paint(cr);
+    cairo_destroy(cr);
+  }
   g_object_unref(page);
   return FALSE;
 }
