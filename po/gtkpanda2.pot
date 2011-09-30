@@ -1,0 +1,176 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-11-05 15:17+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gtkpanda/gtknumberentry.c:118
+msgid "Format"
+msgstr ""
+
+#: gtkpanda/gtknumberentry.c:119
+msgid "The format of the entry"
+msgstr ""
+
+#: gtkpanda/gtkpandaclist.c:138
+msgid "Show header title"
+msgstr ""
+
+#: gtkpanda/gtkpandaclist.c:139
+msgid "Whether show header title"
+msgstr ""
+
+#: gtkpanda/gtkpandaclist.c:146 gtkpanda/gtkpandaclist.c:147
+msgid "Number of columns"
+msgstr ""
+
+#: gtkpanda/gtkpandaclist.c:156
+msgid "The list of column width"
+msgstr ""
+
+#: gtkpanda/gtkpandaclist.c:157
+msgid "The list of column width(comma separated string)"
+msgstr ""
+
+#: gtkpanda/gtkpandaclist.c:164
+msgid "Selection Mode"
+msgstr ""
+
+#: gtkpanda/gtkpandaclist.c:165
+msgid "The mode of selection"
+msgstr ""
+
+#: gtkpanda/gtkpandacombo.c:102 gtkpanda/gtkpandacombo.c:103
+msgid "Case Sensitive"
+msgstr ""
+
+#: gtkpanda/gtkpandacombo.c:110 gtkpanda/gtkpandacombo.c:111
+msgid "Use Arrows"
+msgstr ""
+
+#: gtkpanda/gtkpandacombo.c:118 gtkpanda/gtkpandacombo.c:119
+msgid "Loop Selection"
+msgstr ""
+
+#: gtkpanda/gtkpandaentry.c:146
+msgid "Input Mode"
+msgstr ""
+
+#: gtkpanda/gtkpandaentry.c:147
+msgid "The mode of input"
+msgstr ""
+
+#: gtkpanda/gtkpandaentry.c:155
+msgid "Enable Input Method"
+msgstr ""
+
+#: gtkpanda/gtkpandaentry.c:156
+msgid "Whether enable input method controll"
+msgstr ""
+
+#: gtkpanda/gtkpandafileentry.c:156
+msgid "Specify filename..."
+msgstr ""
+
+#: gtkpanda/gtkpandafileentry.c:190
+#, c-format
+msgid "Succeeded in writing %s"
+msgstr ""
+
+#: gtkpanda/gtkpandahtml.cpp:126 gtkpanda/gtkpandahtml.cpp:127
+msgid "URI"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:63
+msgid "Fit Page"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:64
+msgid "Fit Page Width"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:66
+msgid "50%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:67
+msgid "75%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:68
+msgid "100%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:69
+msgid "125%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:70
+msgid "150%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:71
+msgid "175%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:72
+msgid "200%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:73
+msgid "300%"
+msgstr ""
+
+#: gtkpanda/gtkpandapdf.c:74
+msgid "400%"
+msgstr ""
+
+#: gtkpanda/numeric.c:1348
+#, c-format
+msgid "Cannot convert NaN to int4"
+msgstr ""
+
+#: gtkpanda/numeric.c:1566 gtkpanda/numeric.c:1585 gtkpanda/numeric.c:1589
+#: gtkpanda/numeric.c:1599
+#, c-format
+msgid "Bad numeric input format '%s'"
+msgstr ""
+
+#: gtkpanda/numeric.c:1851
+#, c-format
+msgid ""
+"overflow on numeric \n"
+"ABS(value) >= 10^%d for field with precision %d scale %d"
+msgstr ""
+
+#: gtkpanda/numeric.c:2095
+#, c-format
+msgid "division by zero on numeric"
+msgstr ""
+
+#: gtkpanda/numeric.c:2331
+#, c-format
+msgid "math error on numeric - cannot compute SQRT of negative value"
+msgstr ""
+
+#: gtkpanda/numeric.c:2407
+#, c-format
+msgid "argument for EXP() too big"
+msgstr ""
+
+#: gtkpanda/numeric.c:2468
+#, c-format
+msgid "math error on numeric - cannot compute LN of value <= zero"
+msgstr ""
