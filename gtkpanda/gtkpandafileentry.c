@@ -206,7 +206,7 @@ gtk_panda_file_entry_init (GtkPandaFileEntry *self)
   self->mode = GTK_FILE_CHOOSER_ACTION_OPEN;
   self->size = 0;
   self->data = NULL;
-  self->folder = NULL;
+  self->folder = g_strdup("");
 
   g_signal_connect(G_OBJECT(self->entry), "activate",
     G_CALLBACK(entry_activate_cb), self);
@@ -284,6 +284,8 @@ gtk_panda_file_entry_set_folder (GtkPandaFileEntry *self,
 
   if (str != NULL) {
     self->folder = g_strdup(str);
+  } else {
+    self->folder = g_strdup("");
   }
 }
 
