@@ -18,10 +18,6 @@ gtkpanda_public_h_sources = \
 	gtkpandatimer.h			\
 	gtkpandadownload.h		\
 	gtkpandaprint.h			\
-<<<<<<< .mine
-=======
-	imcontrol.h			\
->>>>>>> .r162
 	gtkpandapdf.h			\
 	gtkpandapixmap.h		\
 	gtkpandawindow.h		\
@@ -29,13 +25,8 @@ gtkpanda_public_h_sources = \
 	pandacellrenderertext.h		\
 	pandamarshal.h
 
-<<<<<<< .mine
 gtkpanda_c_sources = 		\
 	numeric.c 			\
-=======
-gtkpanda_c_sources = 			\
-	numeric.c 			\
->>>>>>> .r162
 	gtkpandaclist.c			\
 	gtkpandacombo.c			\
 	gtkpandafileentry.c		\
@@ -45,11 +36,6 @@ gtkpanda_c_sources = 			\
 	gtkpandatimer.c			\
 	gtkpandadownload.c		\
 	gtkpandaprint.c			\
-<<<<<<< .mine
-=======
-	imcontrol.h			\
-	imcontrol.c			\
->>>>>>> .r162
 	gtkpandapdf.c			\
 	gtkpandapixmap.c		\
 	gtkpandawindow.c		\
@@ -100,17 +86,10 @@ pandamarshal.c: pandamarshal.list
 EXTRA_HEADERS =
 EXTRA_DIST = 				\
 	$(gtkpanda_private_h_sources) 	\
-<<<<<<< .mine
 	gtkpanda.def makefile.msc 	\
 	tree_plus.xpm 			\
 	tree_minus.xpm			\
 	diamarshal.list
-=======
-	gtkpanda.def makefile.msc 	\
-	tree_plus.xpm 			\
-	tree_minus.xpm			\
-	pandamarshal.h
->>>>>>> .r162
 
 
 # test programs, not to be installed
