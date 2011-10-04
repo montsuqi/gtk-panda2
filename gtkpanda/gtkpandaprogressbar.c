@@ -220,7 +220,7 @@ gtk_panda_progress_bar_set_value(
   GtkPandaProgressBar *pbar,
   gint value)
 {
-  int l,u,v;
+  int u,v;
   if (pbar->lower < 0) {
     g_warning("lower(%d) < 0",pbar->lower);
     return;
@@ -239,7 +239,6 @@ gtk_panda_progress_bar_set_value(
   }
 
   pbar->value = value;
-  l = 0; 
   u = pbar->upper - pbar->lower;
   v = value - pbar->lower;
   gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(pbar),

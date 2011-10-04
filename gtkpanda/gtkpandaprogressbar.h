@@ -46,7 +46,7 @@ extern "C" {
    GtkPandaProgressBarClass))
 #define GTK_IS_PANDA_PROGRESS_BAR(obj) \
   (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_PROGRESS_BAR))
-#define GTK_IS_PANDA_ENTRY_CLASS(klass) \
+#define GTK_IS_PANDA_PROGRESS_BAR_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_PROGRESS_BAR))
 
 typedef struct _GtkPandaProgressBar       GtkPandaProgressBar;
@@ -89,4 +89,4 @@ gint gtk_panda_progress_bar_get_value(
 #endif /* __cplusplus */
 
 
-#endif /* __GTK_PANDA_ENTRY_H__ */
+#endif /* __GTK_PANDA_PROGRESS_BAR_H__ */
