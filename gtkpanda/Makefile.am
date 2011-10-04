@@ -21,6 +21,7 @@ gtkpanda_public_h_sources = \
 	gtkpandapdf.h			\
 	gtkpandapixmap.h		\
 	gtkpandawindow.h		\
+	gtkpandaprogressbar.h		\
 	gtkpandatable.h			\
 	pandacellrenderertext.h		\
 	pandamarshal.h
@@ -42,6 +43,7 @@ gtkpanda_c_sources = 		\
 	gtkpandatable.c			\
 	gtkpandamain.c			\
 	gtkpandahtml.c			\
+	gtkpandaprogressbar.c		\
 	pandacellrenderertext.c		\
 	pandamarshal.c
 

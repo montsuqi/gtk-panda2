@@ -98,7 +98,8 @@ am__objects_1 = numeric.lo gtkpandaclist.lo gtkpandacombo.lo \
 	gtkpandatext.lo gtkpandatimer.lo gtkpandadownload.lo \
 	gtkpandaprint.lo gtkpandapdf.lo gtkpandapixmap.lo \
 	gtkpandawindow.lo gtkpandatable.lo gtkpandamain.lo \
-	gtkpandahtml.lo pandacellrenderertext.lo pandamarshal.lo
+	gtkpandahtml.lo gtkpandaprogressbar.lo \
+	pandacellrenderertext.lo pandamarshal.lo
 am__objects_2 =
 am_libgtkpanda_2_0_la_OBJECTS = $(am__objects_1) $(am__objects_2)
 libgtkpanda_2_0_la_OBJECTS = $(am_libgtkpanda_2_0_la_OBJECTS)
@@ -346,6 +347,7 @@ gtkpanda_public_h_sources = \
 	gtkpandapdf.h			\
 	gtkpandapixmap.h		\
 	gtkpandawindow.h		\
+	gtkpandaprogressbar.h		\
 	gtkpandatable.h			\
 	pandacellrenderertext.h		\
 	pandamarshal.h
@@ -367,6 +369,7 @@ gtkpanda_c_sources = \
 	gtkpandatable.c			\
 	gtkpandamain.c			\
 	gtkpandahtml.c			\
+	gtkpandaprogressbar.c		\
 	pandacellrenderertext.c		\
 	pandamarshal.c
 
@@ -555,6 +558,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkpandapdf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkpandapixmap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkpandaprint.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkpandaprogressbar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkpandatable.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkpandatext.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gtkpandatimer.Plo@am__quote@
@@ -833,6 +837,12 @@ pandamarshal.h: pandamarshal.list
 	$(GLIB_GENMARSHAL) --prefix=panda_marshal pandamarshal.list --header > $(@F)
 pandamarshal.c: pandamarshal.list
 	$(GLIB_GENMARSHAL) --prefix=panda_marshal pandamarshal.list --body > $(@F)
+pandamarshal.h: pandamarshal.list
+	$(GLIB_GENMARSHAL) --prefix=panda_marshal \
+		pandamarshal.list --header > $(@F)
+pandamarshal.c: pandamarshal.list
+	$(GLIB_GENMARSHAL) --prefix=panda_marshal \
+		pandamarshal.list --body > $(@F)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
