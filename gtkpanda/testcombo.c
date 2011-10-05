@@ -78,10 +78,10 @@ cb_dialog_ok_button(GtkButton *button, gpointer user_data)
     printf("cb_dialog_ok_button():\n");
 
     text = gtk_editable_get_chars(
-      GTK_EDITABLE(gtk_panda_combo_get_entry(combo1)), 0, -1);
+      GTK_EDITABLE(gtk_panda_combo_get_entry(GTK_PANDA_COMBO(combo1))), 0, -1);
     printf(" combo1 = %s\n", text);
     text = gtk_editable_get_chars(
-      GTK_EDITABLE(gtk_panda_combo_get_entry(combo2)), 0, -1);
+      GTK_EDITABLE(gtk_panda_combo_get_entry(GTK_PANDA_COMBO(combo2))), 0, -1);
     printf(" combo2 = %s\n", text);
     gtk_main_quit();
 }
@@ -94,10 +94,10 @@ cb_dialog_test_button(GtkButton *button, gpointer user_data)
     printf("cb_dialog_test_button():\n");
 
     text = gtk_editable_get_chars(
-      GTK_EDITABLE(gtk_panda_combo_get_entry(combo1)), 0, -1);
+      GTK_EDITABLE(gtk_panda_combo_get_entry(GTK_PANDA_COMBO(combo1))), 0, -1);
     printf(" combo1 = %s\n", text);
     text = gtk_editable_get_chars(
-      GTK_EDITABLE(gtk_panda_combo_get_entry(combo2)), 0, -1);
+      GTK_EDITABLE(gtk_panda_combo_get_entry(GTK_PANDA_COMBO(combo2))), 0, -1);
     printf(" combo2 = %s\n", text);
 }
 
@@ -163,6 +163,7 @@ main (int argc, char *argv[])
     G_CALLBACK(on_combo_entry1_changed), NULL);
 
   combo2 = gtk_panda_combo_new ();
+  gtk_widget_set_size_request(combo2,126,24);
   gtk_widget_show (combo2);
   gtk_box_pack_start (
     GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(window1))), 

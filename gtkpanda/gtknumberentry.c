@@ -97,12 +97,15 @@ static void
 gtk_number_entry_class_init (GtkNumberEntryClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-  GtkWidgetClass *widget_class;
+  GtkWidgetClass *widget_class,*base_widget_class;
 
-dbgmsg(">gtk_number_entry_class_init");
   widget_class = parent_class = (GtkWidgetClass*) klass;
 
+  base_widget_class = g_type_class_ref(GTK_TYPE_WIDGET);
+
   widget_class->key_press_event = gtk_number_entry_key_press;
+  widget_class->get_preferred_width = base_widget_class->get_preferred_width;
+  widget_class->get_preferred_height = base_widget_class->get_preferred_height;
 
   gobject_class->set_property = gtk_number_entry_set_property;
   gobject_class->get_property = gtk_number_entry_get_property;
@@ -114,7 +117,6 @@ dbgmsg(">gtk_number_entry_class_init");
     _("The format of the entry"),
     "",
     G_PARAM_READWRITE));
-dbgmsg("<gtk_number_entry_class_init");
 }
 
 static void

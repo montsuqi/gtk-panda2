@@ -59,7 +59,20 @@ static void  gtk_panda_combo_get_property       (GObject         *object,
 static void
 gtk_panda_combo_class_init (GtkPandaComboClass * klass)
 {
+  GtkWidgetClass *widget_class,*base_widget_class;
   GObjectClass *gobject_class;
+
+  base_widget_class = g_type_class_ref(GTK_TYPE_WIDGET);
+  widget_class = (GtkWidgetClass*) klass;
+
+  widget_class->get_preferred_width = base_widget_class->get_preferred_width;
+  widget_class->get_preferred_height = base_widget_class->get_preferred_height;
+#if 0
+  widget_class->get_preferred_height_for_width = 
+    base_widget_class->get_preferred_height_for_width;
+  widget_class->get_preferred_width_for_height = 
+    base_widget_class->get_preferred_width_for_height;
+#endif
 
   gobject_class = G_OBJECT_CLASS(klass);
   gobject_class->set_property = gtk_panda_combo_set_property; 
@@ -96,6 +109,7 @@ gtk_panda_combo_init (GtkPandaCombo * combo)
   combo->case_sensitive = FALSE;
   combo->use_arrows = TRUE;
   combo->loop_selection = FALSE;
+  gtk_widget_set_margin(GTK_WIDGET(combo),0);
 }
 
 GType
@@ -161,6 +175,8 @@ gtk_panda_combo_new (void)
     G_CALLBACK(cb_entry_focus_out),NULL);
 
   g_object_unref (store);
+  gtk_combo_box_set_row_span_column(GTK_COMBO_BOX(ret),0);
+  gtk_combo_box_set_wrap_width(GTK_COMBO_BOX(ret),0);
 
   return ret;
 }
