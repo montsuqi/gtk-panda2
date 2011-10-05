@@ -109,7 +109,10 @@ gtk_panda_combo_init (GtkPandaCombo * combo)
   combo->case_sensitive = FALSE;
   combo->use_arrows = TRUE;
   combo->loop_selection = FALSE;
-  gtk_widget_set_margin(GTK_WIDGET(combo),0);
+  gtk_widget_set_margin_top(GTK_WIDGET(combo),0);
+  gtk_widget_set_margin_left(GTK_WIDGET(combo),0);
+  gtk_widget_set_margin_right(GTK_WIDGET(combo),0);
+  gtk_widget_set_margin_bottom(GTK_WIDGET(combo),0);
 }
 
 GType
