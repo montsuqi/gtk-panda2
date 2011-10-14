@@ -45,8 +45,6 @@ enum {
   PROP_FORMAT
 };
 
-static GtkWidgetClass *parent_class = NULL;
-
 static void gtk_number_entry_class_init (GtkNumberEntryClass     *klass);
 static void gtk_number_entry_init       (GtkNumberEntry          *entry);
 static void gtk_number_entry_set_property (
@@ -99,7 +97,7 @@ gtk_number_entry_class_init (GtkNumberEntryClass *klass)
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class,*base_widget_class;
 
-  widget_class = parent_class = (GtkWidgetClass*) klass;
+  widget_class = (GtkWidgetClass*) klass;
 
   base_widget_class = g_type_class_ref(GTK_TYPE_WIDGET);
 
@@ -355,15 +353,14 @@ dbgmsg(">gtk_entry_key_press");
       break;
     case GDK_KEY_Left:
     case GDK_KEY_Right:
-      return_val = TRUE;
-      break;
     case GDK_KEY_Shift_L:
     case GDK_KEY_Shift_R:
     case GDK_KEY_Tab:
     case GDK_KEY_Escape:
     case GDK_KEY_Up:
     case GDK_KEY_Down:
-      return (* GTK_WIDGET_CLASS (parent_class)->key_press_event) (widget, event);
+      return_val = TRUE;
+      break;
     case GDK_KEY_Return:
     case GDK_KEY_KP_Enter:
       return_val = TRUE;

@@ -60,11 +60,6 @@ PKG_CHECK_MODULES(GTK_PANDA,
 	webkitgtk-3.0		>=	$WEBKIT_REQUIRED
 ])
 
-dnl ***************************************************************************
-dnl gtk version check
-dnl ***************************************************************************
-PKG_CHECK_MODULES(CHECK_GTK_VER,gtk+-3.0 >= 2.14.0)
-
 AC_CONFIG_FILES([	Makefile 
 					docs/Makefile 
 					gtkpanda/Makefile 
