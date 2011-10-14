@@ -354,15 +354,14 @@ dbgmsg(">gtk_entry_key_press");
       break;
     case GDK_Left:
     case GDK_Right:
-      return_val = TRUE;
-      break;
     case GDK_Shift_L:
     case GDK_Shift_R:
     case GDK_Tab:
     case GDK_Escape:
     case GDK_Up:
     case GDK_Down:
-      return (* GTK_WIDGET_CLASS (parent_class)->key_press_event) (widget, event);
+      return_val = TRUE;
+      break;
     case GDK_Return:
     case GDK_KP_Enter:
       return_val = TRUE;
