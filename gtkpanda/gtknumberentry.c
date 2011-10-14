@@ -46,8 +46,6 @@ enum {
   PROP_FORMAT
 };
 
-static GtkWidgetClass *parent_class = NULL;
-
 static void gtk_number_entry_class_init (GtkNumberEntryClass     *klass);
 static void gtk_number_entry_init       (GtkNumberEntry          *entry);
 static void gtk_number_entry_set_property (
@@ -101,7 +99,7 @@ gtk_number_entry_class_init (GtkNumberEntryClass *klass)
   GtkWidgetClass *widget_class;
 
 dbgmsg(">gtk_number_entry_class_init");
-  widget_class = parent_class = (GtkWidgetClass*) klass;
+  widget_class = (GtkWidgetClass*) klass;
 
   widget_class->key_press_event = gtk_number_entry_key_press;
 
