@@ -209,15 +209,59 @@ static gboolean
 gtk_panda_table_key_press(GtkWidget *widget,
   GdkEventKey *event)
 {
+  GtkPandaTable *table;
   GtkTreeView *view;
   GtkTreePath *path;
+  GtkTreeIter iter;
+  GtkTreeModel *model;
   GtkTreeViewColumn *column;
   GList *list;
   GtkCellRenderer *cell;
   int i;
   gboolean hook = FALSE;
+  int nrow,ncol;
 
   view = GTK_TREE_VIEW(widget);
+  table = GTK_PANDA_TABLE(widget);
+  model = gtk_tree_view_get_model(view);
+
+  /* 非編集モードでEnterキーを押した場合は確定 */
+  if (!(event->state & GDK_SHIFT_MASK ) &&
+      !(event->state & GDK_CONTROL_MASK) &&
+      !(event->state & GDK_MOD1_MASK) 
+     ) {
+    if ((event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_KP_Enter)){
+      gtk_tree_view_get_cursor(view,&path,&column);
+      if (path != NULL && column != NULL) {
+        nrow = atoi(gtk_tree_path_to_string(path));
+        ncol = GPOINTER_TO_INT(
+          g_object_get_data(G_OBJECT(column),"column_num"));
+        gtk_tree_model_get_iter(model,&iter,path);
+        if (table->model_types[ncol] == G_TYPE_STRING) {
+           gchar *text;
+
+           gtk_tree_model_get(model,&iter,ncol,&text,-1);
+           g_signal_emit(G_OBJECT(widget),signals[CELL_EDITED],0,
+             nrow,ncol,text);
+           if (text != NULL) {
+             g_free(text);
+           }
+        } else if (table->model_types[ncol] == G_TYPE_BOOLEAN) {
+           gboolean check;
+
+           gtk_tree_model_get(model,&iter,ncol,&check,-1);
+           g_signal_emit(G_OBJECT(widget),signals[CELL_EDITED],0,
+            nrow,ncol,check ? "F":"T");
+        }
+
+        if (path != NULL) {
+          gtk_tree_path_free(path);
+        }
+        return TRUE;
+      }
+      return GTK_WIDGET_CLASS(parent_class)->key_press_event(widget,event);
+    }
+  }
 
   if (!(event->state & GDK_SHIFT_MASK ) &&
       !(event->state & GDK_CONTROL_MASK) &&
@@ -239,6 +283,8 @@ gtk_panda_table_key_press(GtkWidget *widget,
       hook = TRUE;
   }
 
+  /* 非編集モードでその他の文字キーを押した場合、編集モードにした上で
+     その文字をエントリーに送る */
   if (hook) {
     gtk_tree_view_get_cursor(view,&path,&column);
     if (path != NULL && column != NULL) {
@@ -265,9 +311,9 @@ gtk_panda_table_key_press(GtkWidget *widget,
 
 static void
 cb_text_renderer_edited(GtkCellRendererText *renderer,
-	gchar *path,
-	gchar *new_text,
-	gpointer user_data)
+  gchar *path,
+  gchar *new_text,
+  gpointer user_data)
 {
   GtkPandaTable *table = GTK_PANDA_TABLE(user_data);
   guint row,column;
@@ -282,8 +328,8 @@ cb_text_renderer_edited(GtkCellRendererText *renderer,
 
 static void
 cb_toggle_renderer_toggled(GtkCellRendererToggle *renderer,
-	gchar *path,
-	gpointer user_data)
+  gchar *path,
+  gpointer user_data)
 {
   GtkPandaTable *table = GTK_PANDA_TABLE(user_data);
   guint row,column;
@@ -353,6 +399,8 @@ apply_prop_types(GtkPandaTable *table)
       "alignment", 0.5,
       NULL);
     gtk_tree_view_append_column(GTK_TREE_VIEW(table), col);
+    g_object_set_data(G_OBJECT(col),
+      "column_num", GUINT_TO_POINTER(i));
 
     renderer = NULL;
     switch(table->renderer_types[i]) {
@@ -366,8 +414,6 @@ apply_prop_types(GtkPandaTable *table)
         "text",i,
         "foreground",table->columns,
         NULL);
-	  g_object_set_data(G_OBJECT(renderer),
-		"column_num", GUINT_TO_POINTER(i));
       g_signal_connect(G_OBJECT(renderer),"edited",
         G_CALLBACK(cb_text_renderer_edited),table);
       break;
@@ -391,8 +437,6 @@ apply_prop_types(GtkPandaTable *table)
       gtk_tree_view_column_set_attributes(col, renderer, 
         "active", i,
         NULL);
-	  g_object_set_data(G_OBJECT(renderer),
-		"column_num", GUINT_TO_POINTER(i));
       g_signal_connect(G_OBJECT(renderer),"toggled",
         G_CALLBACK(cb_toggle_renderer_toggled),table);
       break;
@@ -405,6 +449,8 @@ apply_prop_types(GtkPandaTable *table)
       break;
     }
     if (renderer != NULL) {
+      g_object_set_data(G_OBJECT(renderer),
+       "column_num", GUINT_TO_POINTER(i));
       gtk_tree_view_column_add_attribute(col, renderer, 
         "cell-background",table->columns+1);
     }
@@ -754,7 +800,7 @@ gtk_panda_table_moveto (
 
   gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,FALSE);
   gtk_tree_view_scroll_to_cell(
-	GTK_TREE_VIEW(table), path, col, use_align, row_align, col_align);
+    GTK_TREE_VIEW(table), path, col, use_align, row_align, col_align);
   gtk_tree_path_free(path);
 }
 
@@ -773,10 +819,10 @@ gtk_panda_table_set_property (GObject *object,
     {
     case PROP_ROWS:
       gtk_panda_table_set_rows(table,g_value_get_int(value));
-	  break;
+      break;
     case PROP_COLUMNS:
       gtk_panda_table_set_columns(table,g_value_get_int(value));
-	  break;
+      break;
     case PROP_TYPES:
       gtk_panda_table_set_types(table,g_value_get_string(value));
       break;
@@ -794,9 +840,9 @@ gtk_panda_table_set_property (GObject *object,
 
 static void 
 gtk_panda_table_get_property (GObject         *object,
-				  guint            prop_id,
-				  GValue          *value,
-				  GParamSpec      *pspec)
+  guint            prop_id,
+  GValue          *value,
+  GParamSpec      *pspec)
 {
   GtkPandaTable *table;
 
