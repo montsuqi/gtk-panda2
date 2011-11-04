@@ -1,0 +1,14 @@
+.libs
+.deps
+*.la
+*.lo
+Makefile
+Makefile.in
+testclist
+testcombo
+testentry
+testhtml
+testnumeric
+testtree
+testps
+testps2

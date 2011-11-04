@@ -1,0 +1,9 @@
+# List of source files which contain translatable strings.
+gtkpanda/gtkpandaclist.c
+gtkpanda/gtkpandacombo.c
+gtkpanda/gtkpandaentry.c
+gtkpanda/gtkpandafileentry.c
+gtkpanda/gtkpandahtml.c
+gtkpanda/gtkpandapdf.c
+gtkpanda/gtkpandaps.c
+gtkpanda/numeric.c

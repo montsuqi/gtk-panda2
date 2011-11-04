@@ -1,0 +1,19 @@
+2010-04-22 yusuke mihara <mihara@netlab.jp>
+
+	* gtkpandapsを削除
+	* xulrunner-1.9に依存
+
+2010-02-18 yusuke mihara <mihara@netlab.jp>
+
+	* 2.0.1リリース
+
+2008-11-18 Hiroyuki Ikegami <ikegam@netlab.jp>
+
+	* GtkIMContextのサンプルコード追加
+	* configureオプションの--enable-popplerを廃し、--enable-testcodeを追加
+	* gtkmozembedのために必要なpcファイルを探すように変更
+
+2008-06-XX  yusuke mihara  <mihara@netlab.jp>
+
+	* バージョン0.0.1リリース
+
