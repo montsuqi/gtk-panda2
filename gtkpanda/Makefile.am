@@ -21,7 +21,8 @@ gtkpanda_public_h_sources = \
 	imcontrol.h				\
 	gtkpandapdf.h			\
 	gtkpandapixmap.h		\
-	gtkpandawindow.h
+	gtkpandawindow.h		\
+	pandamarshal.h
 
 gtkpanda_c_sources = 		\
 	numeric.c 				\
@@ -38,11 +39,10 @@ gtkpanda_c_sources = 		\
 	imcontrol.c				\
 	gtkpandapdf.c			\
 	gtkpandapixmap.c		\
-	gtkpandawindow.c
-
-gtkpanda_cpp_sources = 		\
-	gtkpandamain.cpp		\
-	gtkpandahtml.cpp
+	gtkpandawindow.c		\
+	gtkpandamain.c			\
+	gtkpandahtml.c			\
+	pandamarshal.c
 
 gtkpanda_private_h_sources =
 
@@ -57,18 +57,29 @@ libgtkpandainclude_HEADERS = $(gtkpanda_public_h_sources)
 lib_LTLIBRARIES = libgtkpanda-2.0.la
 libgtkpanda_2_0_la_SOURCES =		\
 	$(gtkpanda_c_sources)			\
-	$(gtkpanda_cpp_sources)			\
 	$(gtkpanda_public_h_sources)
 libgtkpanda_2_0_la_LDFLAGS = 			\
 	-version-info  $(LTVERSION) 		\
 	-export-dynamic 					\
 	$(GTK_PANDA_LIBS)
+
+BUILT_SOURCES = pandamarshal.h pandamarshal.c
+gen_sources = pandamarshal.h pandamarshal.c
+CLEANFILES = $(gen_sources)
+pandamarshal.h: pandamarshal.list
+	$(GLIB_GENMARSHAL) --prefix=panda_marshal \
+		pandamarshal.list --header > $(@F)
+pandamarshal.c: pandamarshal.list
+	$(GLIB_GENMARSHAL) --prefix=panda_marshal \
+		pandamarshal.list --body > $(@F)
+
 EXTRA_HEADERS =
 EXTRA_DIST = 						\
 	$(gtkpanda_private_h_sources) 	\
 	gtkpanda.def makefile.msc 		\
 	tree_plus.xpm 					\
-	tree_minus.xpm
+	tree_minus.xpm					\
+	pandamarshal.h
 
 # test programs, not to be installed
 
