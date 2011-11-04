@@ -19,6 +19,7 @@ gtkpanda_public_h_sources = \
 	gtkpandadownload.h		\
 	gtkpandaprint.h			\
 	imcontrol.h				\
+	pandamarshal.h			\
 	gtkpandapdf.h
 
 gtkpanda_c_sources = 		\
@@ -34,11 +35,21 @@ gtkpanda_c_sources = 		\
 	gtkpandaprint.c			\
 	imcontrol.h				\
 	imcontrol.c				\
-	gtkpandapdf.c
+	gtkpandapdf.c			\
+	gtkpandahtml.c			\
+	pandamarshal.c			\
+	gtkpandamain.c	
 
-gtkpanda_cpp_sources = 		\
-	gtkpandamain.cpp		\
-	gtkpandahtml.cpp
+BUILT_SOURCES = pandamarshal.h pandamarshal.c
+gen_sources = pandamarshal.h pandamarshal.c
+CLEANFILES = $(gen_sources)
+pandamarshal.h: pandamarshal.list
+	$(GLIB_GENMARSHAL) --prefix=panda_marshal \
+		pandamarshal.list --header > $(@F)
+pandamarshal.c: pandamarshal.list
+	$(GLIB_GENMARSHAL) --prefix=panda_marshal \
+		pandamarshal.list --body > $(@F)
+
 
 gtkpanda_private_h_sources =
 
@@ -53,7 +64,6 @@ libgtkpandainclude_HEADERS = $(gtkpanda_public_h_sources)
 lib_LTLIBRARIES = libgtkpanda-2.0.la
 libgtkpanda_2_0_la_SOURCES =		\
 	$(gtkpanda_c_sources)			\
-	$(gtkpanda_cpp_sources)			\
 	$(gtkpanda_public_h_sources)
 libgtkpanda_2_0_la_LDFLAGS = 			\
 	-version-info  $(LTVERSION) 		\

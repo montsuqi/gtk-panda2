@@ -29,17 +29,13 @@
 
 #include <glib-object.h>
 #include <gtk/gtk.h>
-#include <gtkmozembed.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+#include <webkit/webkit.h>
 
 #define GTK_PANDA_TYPE_HTML                  (gtk_panda_html_get_type ())
-#define GTK_PANDA_HTML(obj)                  (GTK_CHECK_CAST ((obj), GTK_PANDA_TYPE_HTML, GtkPandaHTML))
-#define GTK_PANDA_HTML_CLASS(klass)          (GTK_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_HTML, GtkPandaHTMLClass))
-#define GTK_IS_PANDA_HTML(obj)               (GTK_CHECK_TYPE ((obj), GTK_PANDA_TYPE_HTML))
-#define GTK_IS_PANDA_HTML_CLASS(klass)       (GTK_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_HTML))
+#define GTK_PANDA_HTML(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_HTML, GtkPandaHTML))
+#define GTK_PANDA_HTML_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_HTML, GtkPandaHTMLClass))
+#define GTK_IS_PANDA_HTML(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_HTML))
+#define GTK_IS_PANDA_HTML_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_HTML))
 
 #define MAX_HTML_SIZE   1048576 /* 1M */
 
@@ -48,23 +44,21 @@ typedef struct _GtkPandaHTMLClass  GtkPandaHTMLClass;
 
 struct _GtkPandaHTML
 {
-  GtkMozEmbed html;
+  GtkVBox parent;
+  GtkWidget *scroll;
+  GtkWidget *webview;
 };
 
 struct _GtkPandaHTMLClass
 {
-  GtkMozEmbedClass parent_class;
+  GtkVBoxClass parent_class;
 
   void (*activate) (GtkPandaHTML *html, gpointer data);
 };
 
 GType gtk_panda_html_get_type (void);
 GtkWidget* gtk_panda_html_new (void);
-char *gtk_panda_html_get_uri (GtkPandaHTML *html);
-void gtk_panda_html_set_uri (GtkPandaHTML *html, const char *uri);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+gchar *gtk_panda_html_get_uri (GtkPandaHTML *html);
+void gtk_panda_html_set_uri (GtkPandaHTML *html, const gchar *uri);
 
 #endif /* __GTK_PANDA_HTML_H__ */

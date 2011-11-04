@@ -46,17 +46,19 @@ AC_TYPE_SIGNAL
 AC_FUNC_STAT
 AC_CHECK_FUNCS([dup2 memset putenv setlocale strcasecmp strchr strdup strrchr strtol])
 
+AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+
 AC_SUBST(GTK_REQUIRED, 2.0.0)
 AC_SUBST(GLIB_REQUIRED, 2.0.0)
 AC_SUBST(POPPLER_REQUIRED, 0.6.4)
-AC_SUBST(LIBXUL_REQUIRED, 1.9)
+AC_SUBST(WEBKIT_REQUIRED, 1.2.5)
 
 PKG_CHECK_MODULES(GTK_PANDA,
 [
 	glib-2.0					>=	$GLIB_REQUIRED
 	gtk+-2.0 					>=	$GTK_REQUIRED
 	poppler-glib 				>=	$POPPLER_REQUIRED
-	libxul-embedding-unstable	>=	$LIBXUL_REQUIRED
+	webkit-1.0					>=	$WEBKIT_REQUIRED
 ])
 
 dnl ***************************************************************************
