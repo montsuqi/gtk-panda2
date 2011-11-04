@@ -33,6 +33,7 @@
 #include <gtk/gtk.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmarshal.h>
+#include <gdk/gdkkeysyms.h>
 #include "gtkpandaintl.h"
 #include "gtkpandaclist.h"
 
@@ -42,6 +43,9 @@ static void gtk_panda_clist_init (GtkPandaCList *clist);
 static gboolean
 gtk_panda_clist_button_press (GtkWidget      *widget,
   GdkEventButton *event);
+static gboolean
+gtk_panda_clist_key_press (GtkWidget      *widget,
+  GdkEventKey *event);
 static void preserve_selection (GtkPandaCList *clist,
   GList *selection);
 static void selection_changed (GtkTreeSelection *selection, 
@@ -67,6 +71,7 @@ gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
   gtk_object_class = (GtkObjectClass *) klass;
   widget_class = (GtkWidgetClass *) klass;
   widget_class->button_press_event = gtk_panda_clist_button_press;
+  widget_class->key_press_event = gtk_panda_clist_key_press;
 
   parent_class = gtk_type_class (GTK_TYPE_TREE_VIEW);
 
@@ -103,6 +108,7 @@ gtk_panda_clist_init ( GtkPandaCList * clist)
   g_signal_connect (G_OBJECT(selection), "changed",
     G_CALLBACK(selection_changed), (gpointer)clist);
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(clist), FALSE );
+  gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(clist), FALSE );
   GTK_WIDGET_SET_FLAGS(GTK_WIDGET(clist), GTK_CAN_FOCUS);
 }
 
@@ -407,6 +413,48 @@ gtk_panda_clist_button_press (GtkWidget *widget,
   } else {
     return ((GtkWidgetClass *)parent_class)->button_press_event(widget, event);
   }
+}
+
+static gboolean
+gtk_panda_clist_key_press (GtkWidget   *widget,
+			 GdkEventKey *event)
+{
+  GtkTreeView *tree;
+  GtkTreeViewColumn *column;
+  GtkTreePath *path;
+  GtkTreeSelection *select;
+
+  g_return_val_if_fail (widget != NULL, TRUE);
+  g_return_val_if_fail (GTK_IS_TREE_VIEW (widget), TRUE);
+
+  tree = GTK_TREE_VIEW(widget);
+
+  switch (event->keyval) {
+  case GDK_space:
+  case GDK_Return:
+  case GDK_KP_Space:
+  case GDK_KP_Enter:
+    gtk_tree_view_get_cursor(tree, &path, &column);
+    if (path != NULL) {
+      select = gtk_tree_view_get_selection(tree);
+      if (gtk_tree_selection_get_mode(select) == GTK_SELECTION_MULTIPLE) {
+        if (gtk_tree_selection_path_is_selected(select, path)) {
+          gtk_tree_selection_unselect_path(select, path);
+        } else {
+          gtk_tree_selection_select_path(select, path);
+        }
+      } else {
+        gtk_tree_selection_select_path(select, path);
+      }
+    }
+    break;
+  default:
+    event->state |= GDK_CONTROL_MASK;
+    if (GTK_WIDGET_CLASS (parent_class)->key_press_event &&
+        GTK_WIDGET_CLASS (parent_class)->key_press_event (widget, event))
+    break;
+  }
+  return TRUE;
 }
 
 static void 

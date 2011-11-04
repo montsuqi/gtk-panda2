@@ -276,7 +276,8 @@ complete_combo_entry (gpointer data)
 
   prefix = gtk_editable_get_chars(editable, 0, -1);
   prefixlen = strlen(prefix);
-  pos = startpos = gtk_editable_get_position(editable);
+  startpos = gtk_editable_get_position(editable);
+  pos = -1;
 
   do {
     gtk_tree_model_get(model, &iter, 0, &label, -1);

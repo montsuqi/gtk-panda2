@@ -77,6 +77,7 @@ set_im_state_post_focus(
   gboolean *state;
 
   if (!strcmp("xim", mim->context_id)) {
+#if 0
     xim = (GtkIMContextXIM *)mim->slave;
     if (xim == NULL || xim->ic == NULL) {
       return;
@@ -99,6 +100,7 @@ set_im_state_post_focus(
         XNPreeditAttributes, preedit_attr, NULL);
       XFree(preedit_attr);
     }
+#endif
   } else if (!strcmp("ibus", mim->context_id)) {
     im = mim->slave;
     state = (gboolean *)g_object_get_data(G_OBJECT(im), "im-state");
