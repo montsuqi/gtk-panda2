@@ -497,8 +497,11 @@ gtk_panda_clist_select_row (
   g_return_if_fail (GTK_IS_PANDA_CLIST (clist));
 
   select = gtk_tree_view_get_selection (GTK_TREE_VIEW (clist));
-  path = gtk_tree_path_new_from_indices(row, -1);
-  gtk_tree_selection_select_path(select, path);
+  if (row >= 0) {
+    path = gtk_tree_path_new_from_indices(row, -1);
+    gtk_tree_selection_select_path(select, path);
+    gtk_tree_path_free(path);
+  }
 }
 
 void 
