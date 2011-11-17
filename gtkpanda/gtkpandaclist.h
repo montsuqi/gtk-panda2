@@ -42,6 +42,8 @@ extern "C" {
 #define GTK_PANDA_CLIST_CLASS(klass)	G_TYPE_CHECK_CLASS_CAST (klass, gtk_panda_clist_get_type (), GtkPandaCListClass)
 #define GTK_IS_PANDA_CLIST(obj)			G_TYPE_CHECK_INSTANCE_TYPE (obj, gtk_panda_clist_get_type ())
 
+#define GTK_PANDA_CLIST_MAX_COLS 100
+
 typedef struct _GtkPandaCList		GtkPandaCList;
 typedef struct _GtkPandaCListClass	GtkPandaCListClass;
 
@@ -53,6 +55,7 @@ struct _GtkPandaCList {
   gboolean show_titles;
   gint columns;
   gchar *column_widths;
+  gchar *titles;
   GtkSelectionMode selection_mode;
 };
 
@@ -104,6 +107,8 @@ void gtk_panda_clist_unselect_row (GtkPandaCList *clist,
   gint      column);
 void gtk_panda_clist_set_show_titles(GtkPandaCList *clist,
   gboolean show_titles);
+void gtk_panda_clist_set_titles(GtkPandaCList *clist,
+  const gchar *titles);
 
 #ifdef __cplusplus
 }

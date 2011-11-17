@@ -136,7 +136,7 @@ gtk_panda_table_class_init ( GtkPandaTableClass * klass)
     g_param_spec_string ("column_titles",
       _("The list of column title"),
       _("The list of column title(comma separated string)"),
-      "",
+      "col1,col2,col3,col4,col5,col6,col7,col8,col9,col10",
       G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
@@ -144,7 +144,7 @@ gtk_panda_table_class_init ( GtkPandaTableClass * klass)
     g_param_spec_string ("column_widths",
       _("The list of column width"),
       _("The list of column width(comma separated string)"),
-      "",
+      "80,80,80,80,80,80,80,80,80,80,80,80,80,80,80",
       G_PARAM_READWRITE));
 }
 
