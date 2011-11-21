@@ -1,8 +1,8 @@
 ## Makefile.am for gtk+panda
 
 SUBDIRS = intl po 	\
-	test			\
-	gtkpanda 
+	gtkpanda 		\
+	test
 
 pkgconfigdir = 					\
 	$(libdir)/pkgconfig
