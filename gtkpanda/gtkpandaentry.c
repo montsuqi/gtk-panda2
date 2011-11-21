@@ -120,18 +120,15 @@ gtk_panda_entry_get_type (void)
 static void
 gtk_panda_entry_class_init (GtkPandaEntryClass *klass)
 {
-  GtkWidgetClass *widget_class,*base_widget_class;
+  GtkWidgetClass *widget_class;
   GObjectClass *gobject_class;
 
   parent_class = g_type_class_ref (GTK_TYPE_ENTRY);
-  base_widget_class = g_type_class_ref(GTK_TYPE_WIDGET);
 
   widget_class = (GtkWidgetClass*) klass;
   widget_class->hide = gtk_panda_entry_hide;
   widget_class->focus_in_event = gtk_panda_entry_focus_in;
   widget_class->focus_out_event = gtk_panda_entry_focus_out;
-  widget_class->get_preferred_width = base_widget_class->get_preferred_width;
-  widget_class->get_preferred_height = base_widget_class->get_preferred_height;
 
   gobject_class = (GObjectClass*) klass;
   gobject_class->set_property = gtk_panda_entry_set_property; 

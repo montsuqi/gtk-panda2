@@ -48,21 +48,21 @@ AC_CHECK_FUNCS([dup2 memset putenv setlocale strcasecmp strchr strdup strrchr st
 
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 
-AC_SUBST(GTK_REQUIRED, 2.0.0)
-AC_SUBST(GLIB_REQUIRED, 2.0.0)
+AC_SUBST(GTK_REQUIRED, 3.2.0)
 AC_SUBST(POPPLER_REQUIRED, 0.6.4)
 AC_SUBST(WEBKIT_REQUIRED, 1.3.4)
 
 PKG_CHECK_MODULES(GTK_PANDA,
 [
-	gtk+-3.0 		>=	$GTK_REQUIRED
-	poppler-glib 		>=	$POPPLER_REQUIRED
-	webkitgtk-3.0		>=	$WEBKIT_REQUIRED
+	gtk+-3.0 			>=	3.2.0
+	poppler-glib 		>=	0.6.4
+	webkitgtk-3.0		>=	1.3.4
+	gmodule-2.0			>=	2.30.0
 ])
 
 AC_CONFIG_FILES([	Makefile 
-					docs/Makefile 
 					gtkpanda/Makefile 
+					test/Makefile 
 					gtkpanda2.pc 
 					intl/Makefile 
 					po/Makefile.in ])

@@ -1,9 +1,8 @@
 ## Makefile.am for gtk+panda
 
-SUBDIRS = intl po 					\
-	gtkpanda 				\
-	docs
-
+SUBDIRS = intl po 	\
+	test			\
+	gtkpanda 
 
 pkgconfigdir = 					\
 	$(libdir)/pkgconfig
@@ -11,7 +10,7 @@ pkgconfigdir = 					\
 pkgconfig_DATA = 				\
 	gtkpanda2.pc
 
-EXTRA_DIST = config.rpath 					\
+EXTRA_DIST = config.rpath 		\
 	config.h.win32				\
 	gtkpanda2.pc.in
 

@@ -614,8 +614,6 @@ ac_header_list=
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
-CHECK_GTK_VER_LIBS
-CHECK_GTK_VER_CFLAGS
 GTK_PANDA_LIBS
 GTK_PANDA_CFLAGS
 PKG_CONFIG_LIBDIR
@@ -623,7 +621,6 @@ PKG_CONFIG_PATH
 PKG_CONFIG
 WEBKIT_REQUIRED
 POPPLER_REQUIRED
-GLIB_REQUIRED
 GTK_REQUIRED
 GLIB_GENMARSHAL
 LIBOBJS
@@ -826,9 +823,7 @@ PKG_CONFIG
 PKG_CONFIG_PATH
 PKG_CONFIG_LIBDIR
 GTK_PANDA_CFLAGS
-GTK_PANDA_LIBS
-CHECK_GTK_VER_CFLAGS
-CHECK_GTK_VER_LIBS'
+GTK_PANDA_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1508,10 +1503,6 @@ Some influential environment variables:
               C compiler flags for GTK_PANDA, overriding pkg-config
   GTK_PANDA_LIBS
               linker flags for GTK_PANDA, overriding pkg-config
-  CHECK_GTK_VER_CFLAGS
-              C compiler flags for CHECK_GTK_VER, overriding pkg-config
-  CHECK_GTK_VER_LIBS
-              linker flags for CHECK_GTK_VER, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -20974,9 +20965,7 @@ fi
 
 
 
-GTK_REQUIRED=2.0.0
-
-GLIB_REQUIRED=2.0.0
+GTK_REQUIRED=3.2.0
 
 POPPLER_REQUIRED=0.6.4
 
@@ -21113,22 +21102,25 @@ if test -n "$GTK_PANDA_CFLAGS"; then
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"
-	gtk+-3.0 		>=	\$GTK_REQUIRED
-	poppler-glib 		>=	\$POPPLER_REQUIRED
-	webkitgtk-3.0		>=	\$WEBKIT_REQUIRED
+	gtk+-3.0 			>=	3.2.0
+	poppler-glib 		>=	0.6.4
+	webkitgtk-3.0		>=	1.3.4
+	gmodule-2.0			>=	2.30.0
 \""; } >&5
   ($PKG_CONFIG --exists --print-errors "
-	gtk+-3.0 		>=	$GTK_REQUIRED
-	poppler-glib 		>=	$POPPLER_REQUIRED
-	webkitgtk-3.0		>=	$WEBKIT_REQUIRED
+	gtk+-3.0 			>=	3.2.0
+	poppler-glib 		>=	0.6.4
+	webkitgtk-3.0		>=	1.3.4
+	gmodule-2.0			>=	2.30.0
 ") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTK_PANDA_CFLAGS=`$PKG_CONFIG --cflags "
-	gtk+-3.0 		>=	$GTK_REQUIRED
-	poppler-glib 		>=	$POPPLER_REQUIRED
-	webkitgtk-3.0		>=	$WEBKIT_REQUIRED
+	gtk+-3.0 			>=	3.2.0
+	poppler-glib 		>=	0.6.4
+	webkitgtk-3.0		>=	1.3.4
+	gmodule-2.0			>=	2.30.0
 " 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
@@ -21142,22 +21134,25 @@ if test -n "$GTK_PANDA_LIBS"; then
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"
-	gtk+-3.0 		>=	\$GTK_REQUIRED
-	poppler-glib 		>=	\$POPPLER_REQUIRED
-	webkitgtk-3.0		>=	\$WEBKIT_REQUIRED
+	gtk+-3.0 			>=	3.2.0
+	poppler-glib 		>=	0.6.4
+	webkitgtk-3.0		>=	1.3.4
+	gmodule-2.0			>=	2.30.0
 \""; } >&5
   ($PKG_CONFIG --exists --print-errors "
-	gtk+-3.0 		>=	$GTK_REQUIRED
-	poppler-glib 		>=	$POPPLER_REQUIRED
-	webkitgtk-3.0		>=	$WEBKIT_REQUIRED
+	gtk+-3.0 			>=	3.2.0
+	poppler-glib 		>=	0.6.4
+	webkitgtk-3.0		>=	1.3.4
+	gmodule-2.0			>=	2.30.0
 ") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GTK_PANDA_LIBS=`$PKG_CONFIG --libs "
-	gtk+-3.0 		>=	$GTK_REQUIRED
-	poppler-glib 		>=	$POPPLER_REQUIRED
-	webkitgtk-3.0		>=	$WEBKIT_REQUIRED
+	gtk+-3.0 			>=	3.2.0
+	poppler-glib 		>=	0.6.4
+	webkitgtk-3.0		>=	1.3.4
+	gmodule-2.0			>=	2.30.0
 " 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
@@ -21180,24 +21175,27 @@ else
 fi
         if test $_pkg_short_errors_supported = yes; then
 	        GTK_PANDA_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "
-	gtk+-3.0 		>=	$GTK_REQUIRED
-	poppler-glib 		>=	$POPPLER_REQUIRED
-	webkitgtk-3.0		>=	$WEBKIT_REQUIRED
+	gtk+-3.0 			>=	3.2.0
+	poppler-glib 		>=	0.6.4
+	webkitgtk-3.0		>=	1.3.4
+	gmodule-2.0			>=	2.30.0
 " 2>&1`
         else
 	        GTK_PANDA_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "
-	gtk+-3.0 		>=	$GTK_REQUIRED
-	poppler-glib 		>=	$POPPLER_REQUIRED
-	webkitgtk-3.0		>=	$WEBKIT_REQUIRED
+	gtk+-3.0 			>=	3.2.0
+	poppler-glib 		>=	0.6.4
+	webkitgtk-3.0		>=	1.3.4
+	gmodule-2.0			>=	2.30.0
 " 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GTK_PANDA_PKG_ERRORS" >&5
 
 	as_fn_error $? "Package requirements (
-	gtk+-3.0 		>=	$GTK_REQUIRED
-	poppler-glib 		>=	$POPPLER_REQUIRED
-	webkitgtk-3.0		>=	$WEBKIT_REQUIRED
+	gtk+-3.0 			>=	3.2.0
+	poppler-glib 		>=	0.6.4
+	webkitgtk-3.0		>=	1.3.4
+	gmodule-2.0			>=	2.30.0
 ) were not met:
 
 $GTK_PANDA_PKG_ERRORS
@@ -21231,99 +21229,7 @@ $as_echo "yes" >&6; }
 
 fi
 
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for CHECK_GTK_VER" >&5
-$as_echo_n "checking for CHECK_GTK_VER... " >&6; }
-
-if test -n "$CHECK_GTK_VER_CFLAGS"; then
-    pkg_cv_CHECK_GTK_VER_CFLAGS="$CHECK_GTK_VER_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtk+-3.0 >= 2.14.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtk+-3.0 >= 2.14.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_CHECK_GTK_VER_CFLAGS=`$PKG_CONFIG --cflags "gtk+-3.0 >= 2.14.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$CHECK_GTK_VER_LIBS"; then
-    pkg_cv_CHECK_GTK_VER_LIBS="$CHECK_GTK_VER_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gtk+-3.0 >= 2.14.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "gtk+-3.0 >= 2.14.0") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_CHECK_GTK_VER_LIBS=`$PKG_CONFIG --libs "gtk+-3.0 >= 2.14.0" 2>/dev/null`
-		      test "x$?" != "x0" && pkg_failed=yes
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        CHECK_GTK_VER_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "gtk+-3.0 >= 2.14.0" 2>&1`
-        else
-	        CHECK_GTK_VER_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "gtk+-3.0 >= 2.14.0" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$CHECK_GTK_VER_PKG_ERRORS" >&5
-
-	as_fn_error $? "Package requirements (gtk+-3.0 >= 2.14.0) were not met:
-
-$CHECK_GTK_VER_PKG_ERRORS
-
-Consider adjusting the PKG_CONFIG_PATH environment variable if you
-installed software in a non-standard prefix.
-
-Alternatively, you may set the environment variables CHECK_GTK_VER_CFLAGS
-and CHECK_GTK_VER_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details." "$LINENO" 5
-elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
-is in your PATH or set the PKG_CONFIG environment variable to the full
-path to pkg-config.
-
-Alternatively, you may set the environment variables CHECK_GTK_VER_CFLAGS
-and CHECK_GTK_VER_LIBS to avoid the need to call pkg-config.
-See the pkg-config man page for more details.
-
-To get pkg-config, see <http://pkg-config.freedesktop.org/>.
-See \`config.log' for more details" "$LINENO" 5; }
-else
-	CHECK_GTK_VER_CFLAGS=$pkg_cv_CHECK_GTK_VER_CFLAGS
-	CHECK_GTK_VER_LIBS=$pkg_cv_CHECK_GTK_VER_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
-
-ac_config_files="$ac_config_files Makefile docs/Makefile gtkpanda/Makefile gtkpanda2.pc intl/Makefile po/Makefile.in"
+ac_config_files="$ac_config_files Makefile gtkpanda/Makefile test/Makefile gtkpanda2.pc intl/Makefile po/Makefile.in"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -22451,8 +22357,8 @@ do
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "po-directories") CONFIG_COMMANDS="$CONFIG_COMMANDS po-directories" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "docs/Makefile") CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
     "gtkpanda/Makefile") CONFIG_FILES="$CONFIG_FILES gtkpanda/Makefile" ;;
+    "test/Makefile") CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
     "gtkpanda2.pc") CONFIG_FILES="$CONFIG_FILES gtkpanda2.pc" ;;
     "intl/Makefile") CONFIG_FILES="$CONFIG_FILES intl/Makefile" ;;
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;

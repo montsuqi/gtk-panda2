@@ -158,8 +158,6 @@ CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CFLAG_VISIBILITY = @CFLAG_VISIBILITY@
-CHECK_GTK_VER_CFLAGS = @CHECK_GTK_VER_CFLAGS@
-CHECK_GTK_VER_LIBS = @CHECK_GTK_VER_LIBS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -183,7 +181,6 @@ GENCAT = @GENCAT@
 GLIBC2 = @GLIBC2@
 GLIBC21 = @GLIBC21@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
-GLIB_REQUIRED = @GLIB_REQUIRED@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNOME_MOZ_REMOTE_PROG = @GNOME_MOZ_REMOTE_PROG@
@@ -318,9 +315,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = intl po 					\
-	gtkpanda 				\
-	docs
+SUBDIRS = intl po 	\
+	test			\
+	gtkpanda 
 
 pkgconfigdir = \
 	$(libdir)/pkgconfig
@@ -328,7 +325,7 @@ pkgconfigdir = \
 pkgconfig_DATA = \
 	gtkpanda2.pc
 
-EXTRA_DIST = config.rpath 					\
+EXTRA_DIST = config.rpath 		\
 	config.h.win32				\
 	gtkpanda2.pc.in
 
