@@ -59,20 +59,7 @@ static void  gtk_panda_combo_get_property       (GObject         *object,
 static void
 gtk_panda_combo_class_init (GtkPandaComboClass * klass)
 {
-  GtkWidgetClass *widget_class,*base_widget_class;
   GObjectClass *gobject_class;
-
-  base_widget_class = g_type_class_ref(GTK_TYPE_WIDGET);
-  widget_class = (GtkWidgetClass*) klass;
-
-  widget_class->get_preferred_width = base_widget_class->get_preferred_width;
-  widget_class->get_preferred_height = base_widget_class->get_preferred_height;
-#if 0
-  widget_class->get_preferred_height_for_width = 
-    base_widget_class->get_preferred_height_for_width;
-  widget_class->get_preferred_width_for_height = 
-    base_widget_class->get_preferred_width_for_height;
-#endif
 
   gobject_class = G_OBJECT_CLASS(klass);
   gobject_class->set_property = gtk_panda_combo_set_property; 
@@ -109,10 +96,6 @@ gtk_panda_combo_init (GtkPandaCombo * combo)
   combo->case_sensitive = FALSE;
   combo->use_arrows = TRUE;
   combo->loop_selection = FALSE;
-  gtk_widget_set_margin_top(GTK_WIDGET(combo),0);
-  gtk_widget_set_margin_left(GTK_WIDGET(combo),0);
-  gtk_widget_set_margin_right(GTK_WIDGET(combo),0);
-  gtk_widget_set_margin_bottom(GTK_WIDGET(combo),0);
 }
 
 GType
@@ -274,6 +257,8 @@ gtk_panda_combo_set_popdown_strings (GtkPandaCombo * combo, gchar **strs)
 {
   GtkListStore *model;
   GtkTreeIter iter;
+  GtkEntry *entry;
+  static GtkEntryCompletion *comp = NULL;
   int i;
   
   g_return_if_fail (combo != NULL);
@@ -287,6 +272,16 @@ gtk_panda_combo_set_popdown_strings (GtkPandaCombo * combo, gchar **strs)
     gtk_list_store_set(model,&iter,0,strs[i],-1);
   }
   gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
+
+  if (comp == NULL) {
+    comp = gtk_entry_completion_new();
+    gtk_entry_completion_set_model(comp,GTK_TREE_MODEL(model));
+    gtk_entry_completion_set_text_column(comp,0);
+    entry = gtk_panda_combo_get_entry(combo);
+    gtk_entry_set_completion(entry,comp);
+    g_signal_connect(G_OBJECT(entry),"focus-out-event",
+    G_CALLBACK(cb_entry_focus_out),NULL);
+  }
 }
 
 GtkEntry *

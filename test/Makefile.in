@@ -35,7 +35,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 noinst_PROGRAMS = testpandaentry$(EXEEXT) testnumberentry$(EXEEXT) \
-	testpandatext$(EXEEXT)
+	testpandatext$(EXEEXT) testpandacombo$(EXEEXT) \
+	testpandaclist$(EXEEXT)
 subdir = test
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -74,6 +75,18 @@ testnumberentry_DEPENDENCIES = $(am__DEPENDENCIES_2)
 testnumberentry_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testnumberentry_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_testpandaclist_OBJECTS = testpandaclist-testpandaclist.$(OBJEXT)
+testpandaclist_OBJECTS = $(am_testpandaclist_OBJECTS)
+testpandaclist_DEPENDENCIES = $(am__DEPENDENCIES_2)
+testpandaclist_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandaclist_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_testpandacombo_OBJECTS = testpandacombo-testpandacombo.$(OBJEXT)
+testpandacombo_OBJECTS = $(am_testpandacombo_OBJECTS)
+testpandacombo_DEPENDENCIES = $(am__DEPENDENCIES_2)
+testpandacombo_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandacombo_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_testpandaentry_OBJECTS = testpandaentry-testpandaentry.$(OBJEXT)
 testpandaentry_OBJECTS = $(am_testpandaentry_OBJECTS)
 testpandaentry_DEPENDENCIES = $(am__DEPENDENCIES_2)
@@ -99,9 +112,11 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(testnumberentry_SOURCES) $(testpandaentry_SOURCES) \
+SOURCES = $(testnumberentry_SOURCES) $(testpandaclist_SOURCES) \
+	$(testpandacombo_SOURCES) $(testpandaentry_SOURCES) \
 	$(testpandatext_SOURCES)
-DIST_SOURCES = $(testnumberentry_SOURCES) $(testpandaentry_SOURCES) \
+DIST_SOURCES = $(testnumberentry_SOURCES) $(testpandaclist_SOURCES) \
+	$(testpandacombo_SOURCES) $(testpandaentry_SOURCES) \
 	$(testpandatext_SOURCES)
 ETAGS = etags
 CTAGS = ctags
@@ -294,6 +309,12 @@ testnumberentry_LDADD = $(BASE_LIBS)
 testpandatext_SOURCES = testpandatext.c
 testpandatext_CFLAGS = $(BASE_CFLAGS)
 testpandatext_LDADD = $(BASE_LIBS)
+testpandacombo_SOURCES = testpandacombo.c
+testpandacombo_CFLAGS = $(BASE_CFLAGS)
+testpandacombo_LDADD = $(BASE_LIBS)
+testpandaclist_SOURCES = testpandaclist.c
+testpandaclist_CFLAGS = $(BASE_CFLAGS)
+testpandaclist_LDADD = $(BASE_LIBS)
 all: all-am
 
 .SUFFIXES:
@@ -340,6 +361,12 @@ clean-noinstPROGRAMS:
 testnumberentry$(EXEEXT): $(testnumberentry_OBJECTS) $(testnumberentry_DEPENDENCIES) 
 	@rm -f testnumberentry$(EXEEXT)
 	$(testnumberentry_LINK) $(testnumberentry_OBJECTS) $(testnumberentry_LDADD) $(LIBS)
+testpandaclist$(EXEEXT): $(testpandaclist_OBJECTS) $(testpandaclist_DEPENDENCIES) 
+	@rm -f testpandaclist$(EXEEXT)
+	$(testpandaclist_LINK) $(testpandaclist_OBJECTS) $(testpandaclist_LDADD) $(LIBS)
+testpandacombo$(EXEEXT): $(testpandacombo_OBJECTS) $(testpandacombo_DEPENDENCIES) 
+	@rm -f testpandacombo$(EXEEXT)
+	$(testpandacombo_LINK) $(testpandacombo_OBJECTS) $(testpandacombo_LDADD) $(LIBS)
 testpandaentry$(EXEEXT): $(testpandaentry_OBJECTS) $(testpandaentry_DEPENDENCIES) 
 	@rm -f testpandaentry$(EXEEXT)
 	$(testpandaentry_LINK) $(testpandaentry_OBJECTS) $(testpandaentry_LDADD) $(LIBS)
@@ -354,6 +381,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testnumberentry-testnumberentry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpandaclist-testpandaclist.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpandacombo-testpandacombo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpandaentry-testpandaentry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpandatext-testpandatext.Po@am__quote@
 
@@ -391,6 +420,34 @@ testnumberentry-testnumberentry.obj: testnumberentry.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='testnumberentry.c' object='testnumberentry-testnumberentry.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testnumberentry_CFLAGS) $(CFLAGS) -c -o testnumberentry-testnumberentry.obj `if test -f 'testnumberentry.c'; then $(CYGPATH_W) 'testnumberentry.c'; else $(CYGPATH_W) '$(srcdir)/testnumberentry.c'; fi`
+
+testpandaclist-testpandaclist.o: testpandaclist.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandaclist_CFLAGS) $(CFLAGS) -MT testpandaclist-testpandaclist.o -MD -MP -MF $(DEPDIR)/testpandaclist-testpandaclist.Tpo -c -o testpandaclist-testpandaclist.o `test -f 'testpandaclist.c' || echo '$(srcdir)/'`testpandaclist.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/testpandaclist-testpandaclist.Tpo $(DEPDIR)/testpandaclist-testpandaclist.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='testpandaclist.c' object='testpandaclist-testpandaclist.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandaclist_CFLAGS) $(CFLAGS) -c -o testpandaclist-testpandaclist.o `test -f 'testpandaclist.c' || echo '$(srcdir)/'`testpandaclist.c
+
+testpandaclist-testpandaclist.obj: testpandaclist.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandaclist_CFLAGS) $(CFLAGS) -MT testpandaclist-testpandaclist.obj -MD -MP -MF $(DEPDIR)/testpandaclist-testpandaclist.Tpo -c -o testpandaclist-testpandaclist.obj `if test -f 'testpandaclist.c'; then $(CYGPATH_W) 'testpandaclist.c'; else $(CYGPATH_W) '$(srcdir)/testpandaclist.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/testpandaclist-testpandaclist.Tpo $(DEPDIR)/testpandaclist-testpandaclist.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='testpandaclist.c' object='testpandaclist-testpandaclist.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandaclist_CFLAGS) $(CFLAGS) -c -o testpandaclist-testpandaclist.obj `if test -f 'testpandaclist.c'; then $(CYGPATH_W) 'testpandaclist.c'; else $(CYGPATH_W) '$(srcdir)/testpandaclist.c'; fi`
+
+testpandacombo-testpandacombo.o: testpandacombo.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandacombo_CFLAGS) $(CFLAGS) -MT testpandacombo-testpandacombo.o -MD -MP -MF $(DEPDIR)/testpandacombo-testpandacombo.Tpo -c -o testpandacombo-testpandacombo.o `test -f 'testpandacombo.c' || echo '$(srcdir)/'`testpandacombo.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/testpandacombo-testpandacombo.Tpo $(DEPDIR)/testpandacombo-testpandacombo.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='testpandacombo.c' object='testpandacombo-testpandacombo.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandacombo_CFLAGS) $(CFLAGS) -c -o testpandacombo-testpandacombo.o `test -f 'testpandacombo.c' || echo '$(srcdir)/'`testpandacombo.c
+
+testpandacombo-testpandacombo.obj: testpandacombo.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandacombo_CFLAGS) $(CFLAGS) -MT testpandacombo-testpandacombo.obj -MD -MP -MF $(DEPDIR)/testpandacombo-testpandacombo.Tpo -c -o testpandacombo-testpandacombo.obj `if test -f 'testpandacombo.c'; then $(CYGPATH_W) 'testpandacombo.c'; else $(CYGPATH_W) '$(srcdir)/testpandacombo.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/testpandacombo-testpandacombo.Tpo $(DEPDIR)/testpandacombo-testpandacombo.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='testpandacombo.c' object='testpandacombo-testpandacombo.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandacombo_CFLAGS) $(CFLAGS) -c -o testpandacombo-testpandacombo.obj `if test -f 'testpandacombo.c'; then $(CYGPATH_W) 'testpandacombo.c'; else $(CYGPATH_W) '$(srcdir)/testpandacombo.c'; fi`
 
 testpandaentry-testpandaentry.o: testpandaentry.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandaentry_CFLAGS) $(CFLAGS) -MT testpandaentry-testpandaentry.o -MD -MP -MF $(DEPDIR)/testpandaentry-testpandaentry.Tpo -c -o testpandaentry-testpandaentry.o `test -f 'testpandaentry.c' || echo '$(srcdir)/'`testpandaentry.c

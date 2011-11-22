@@ -1,7 +1,9 @@
 noinst_PROGRAMS = \
 	testpandaentry \
 	testnumberentry	\
-	testpandatext
+	testpandatext \
+	testpandacombo \
+	testpandaclist
 
 BASE_CFLAGS = \
 	-I $(top_builddir)/gtkpanda \
@@ -22,3 +24,11 @@ testnumberentry_LDADD = $(BASE_LIBS)
 testpandatext_SOURCES = testpandatext.c
 testpandatext_CFLAGS = $(BASE_CFLAGS)
 testpandatext_LDADD = $(BASE_LIBS)
+
+testpandacombo_SOURCES = testpandacombo.c
+testpandacombo_CFLAGS = $(BASE_CFLAGS)
+testpandacombo_LDADD = $(BASE_LIBS)
+
+testpandaclist_SOURCES = testpandaclist.c
+testpandaclist_CFLAGS = $(BASE_CFLAGS)
+testpandaclist_LDADD = $(BASE_LIBS)
