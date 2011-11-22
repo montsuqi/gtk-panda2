@@ -3,7 +3,8 @@ noinst_PROGRAMS = \
 	testnumberentry	\
 	testpandatext \
 	testpandacombo \
-	testpandaclist
+	testpandaclist \
+	testpandapixmap
 
 BASE_CFLAGS = \
 	-I $(top_builddir)/gtkpanda \
@@ -32,3 +33,7 @@ testpandacombo_LDADD = $(BASE_LIBS)
 testpandaclist_SOURCES = testpandaclist.c
 testpandaclist_CFLAGS = $(BASE_CFLAGS)
 testpandaclist_LDADD = $(BASE_LIBS)
+
+testpandapixmap_SOURCES = testpandapixmap.c
+testpandapixmap_CFLAGS = $(BASE_CFLAGS)
+testpandapixmap_LDADD = $(BASE_LIBS)
