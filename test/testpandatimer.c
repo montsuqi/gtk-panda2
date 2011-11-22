@@ -6,28 +6,25 @@
 #include <string.h>
 #include <sys/stat.h>
 #include "gtkpanda.h"
-#include "debug.h"
 
 G_MODULE_EXPORT void
-cb_activate(
-  GtkEntry *w,
-  gpointer data)
+cb_timeout(
+  GtkPandaTimer *timer,
+  GtkButton *button)
 {
-  fprintf(stderr,"activate %s[%s]\n",
-    gtk_buildable_get_name(GTK_BUILDABLE(w)),
-    gtk_entry_get_text(GTK_ENTRY(w))
-  );
+  printf("timeout\n");
+  gtk_button_set_label(button,"idle");
 }
 
 G_MODULE_EXPORT void
-cb_changed(
-  GtkEditable *w,
-  gpointer data)
+cb_clicked(
+  GtkButton *w,
+  GtkPandaTimer *timer)
 {
-  fprintf(stderr,"changed %s[%s]\n",
-    gtk_buildable_get_name(GTK_BUILDABLE(w)),
-    gtk_editable_get_chars(w,0,-1)
-  );
+  printf("timer start\n");
+  gtk_panda_timer_set(timer,5);
+  gtk_panda_timer_reset(timer);
+  gtk_button_set_label(w,"timeout waiting ...");
 }
 
 int
@@ -40,7 +37,7 @@ main (int argc, char **argv)
   gtk_panda_init(&argc,&argv);
 
   builder = gtk_builder_new();
-  gtk_builder_add_from_file(builder, "pandaentry.ui", NULL);
+  gtk_builder_add_from_file(builder, "pandatimer.ui", NULL);
   gtk_builder_connect_signals(builder, NULL);
 
   window1 = gtk_builder_get_object(builder, "window1");

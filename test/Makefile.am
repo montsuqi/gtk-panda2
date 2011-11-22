@@ -4,7 +4,10 @@ noinst_PROGRAMS = \
 	testpandatext \
 	testpandacombo \
 	testpandaclist \
-	testpandapixmap
+	testpandapixmap \
+	testpandapdf \
+	testpandahtml \
+	testpandatimer
 
 BASE_CFLAGS = \
 	-I $(top_builddir)/gtkpanda \
@@ -37,3 +40,15 @@ testpandaclist_LDADD = $(BASE_LIBS)
 testpandapixmap_SOURCES = testpandapixmap.c
 testpandapixmap_CFLAGS = $(BASE_CFLAGS)
 testpandapixmap_LDADD = $(BASE_LIBS)
+
+testpandapdf_SOURCES = testpandapdf.c
+testpandapdf_CFLAGS = $(BASE_CFLAGS)
+testpandapdf_LDADD = $(BASE_LIBS)
+
+testpandahtml_SOURCES = testpandahtml.c
+testpandahtml_CFLAGS = $(BASE_CFLAGS)
+testpandahtml_LDADD = $(BASE_LIBS)
+
+testpandatimer_SOURCES = testpandatimer.c
+testpandatimer_CFLAGS = $(BASE_CFLAGS)
+testpandatimer_LDADD = $(BASE_LIBS)

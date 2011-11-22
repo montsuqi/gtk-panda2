@@ -36,7 +36,9 @@ build_triplet = @build@
 host_triplet = @host@
 noinst_PROGRAMS = testpandaentry$(EXEEXT) testnumberentry$(EXEEXT) \
 	testpandatext$(EXEEXT) testpandacombo$(EXEEXT) \
-	testpandaclist$(EXEEXT) testpandapixmap$(EXEEXT)
+	testpandaclist$(EXEEXT) testpandapixmap$(EXEEXT) \
+	testpandapdf$(EXEEXT) testpandahtml$(EXEEXT) \
+	testpandatimer$(EXEEXT)
 subdir = test
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -93,6 +95,18 @@ testpandaentry_DEPENDENCIES = $(am__DEPENDENCIES_2)
 testpandaentry_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandaentry_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_testpandahtml_OBJECTS = testpandahtml-testpandahtml.$(OBJEXT)
+testpandahtml_OBJECTS = $(am_testpandahtml_OBJECTS)
+testpandahtml_DEPENDENCIES = $(am__DEPENDENCIES_2)
+testpandahtml_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandahtml_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_testpandapdf_OBJECTS = testpandapdf-testpandapdf.$(OBJEXT)
+testpandapdf_OBJECTS = $(am_testpandapdf_OBJECTS)
+testpandapdf_DEPENDENCIES = $(am__DEPENDENCIES_2)
+testpandapdf_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandapdf_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_testpandapixmap_OBJECTS =  \
 	testpandapixmap-testpandapixmap.$(OBJEXT)
 testpandapixmap_OBJECTS = $(am_testpandapixmap_OBJECTS)
@@ -105,6 +119,12 @@ testpandatext_OBJECTS = $(am_testpandatext_OBJECTS)
 testpandatext_DEPENDENCIES = $(am__DEPENDENCIES_2)
 testpandatext_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandatext_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_testpandatimer_OBJECTS = testpandatimer-testpandatimer.$(OBJEXT)
+testpandatimer_OBJECTS = $(am_testpandatimer_OBJECTS)
+testpandatimer_DEPENDENCIES = $(am__DEPENDENCIES_2)
+testpandatimer_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandatimer_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -121,10 +141,14 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(testnumberentry_SOURCES) $(testpandaclist_SOURCES) \
 	$(testpandacombo_SOURCES) $(testpandaentry_SOURCES) \
-	$(testpandapixmap_SOURCES) $(testpandatext_SOURCES)
+	$(testpandahtml_SOURCES) $(testpandapdf_SOURCES) \
+	$(testpandapixmap_SOURCES) $(testpandatext_SOURCES) \
+	$(testpandatimer_SOURCES)
 DIST_SOURCES = $(testnumberentry_SOURCES) $(testpandaclist_SOURCES) \
 	$(testpandacombo_SOURCES) $(testpandaentry_SOURCES) \
-	$(testpandapixmap_SOURCES) $(testpandatext_SOURCES)
+	$(testpandahtml_SOURCES) $(testpandapdf_SOURCES) \
+	$(testpandapixmap_SOURCES) $(testpandatext_SOURCES) \
+	$(testpandatimer_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -325,6 +349,15 @@ testpandaclist_LDADD = $(BASE_LIBS)
 testpandapixmap_SOURCES = testpandapixmap.c
 testpandapixmap_CFLAGS = $(BASE_CFLAGS)
 testpandapixmap_LDADD = $(BASE_LIBS)
+testpandapdf_SOURCES = testpandapdf.c
+testpandapdf_CFLAGS = $(BASE_CFLAGS)
+testpandapdf_LDADD = $(BASE_LIBS)
+testpandahtml_SOURCES = testpandahtml.c
+testpandahtml_CFLAGS = $(BASE_CFLAGS)
+testpandahtml_LDADD = $(BASE_LIBS)
+testpandatimer_SOURCES = testpandatimer.c
+testpandatimer_CFLAGS = $(BASE_CFLAGS)
+testpandatimer_LDADD = $(BASE_LIBS)
 all: all-am
 
 .SUFFIXES:
@@ -380,12 +413,21 @@ testpandacombo$(EXEEXT): $(testpandacombo_OBJECTS) $(testpandacombo_DEPENDENCIES
 testpandaentry$(EXEEXT): $(testpandaentry_OBJECTS) $(testpandaentry_DEPENDENCIES) 
 	@rm -f testpandaentry$(EXEEXT)
 	$(testpandaentry_LINK) $(testpandaentry_OBJECTS) $(testpandaentry_LDADD) $(LIBS)
+testpandahtml$(EXEEXT): $(testpandahtml_OBJECTS) $(testpandahtml_DEPENDENCIES) 
+	@rm -f testpandahtml$(EXEEXT)
+	$(testpandahtml_LINK) $(testpandahtml_OBJECTS) $(testpandahtml_LDADD) $(LIBS)
+testpandapdf$(EXEEXT): $(testpandapdf_OBJECTS) $(testpandapdf_DEPENDENCIES) 
+	@rm -f testpandapdf$(EXEEXT)
+	$(testpandapdf_LINK) $(testpandapdf_OBJECTS) $(testpandapdf_LDADD) $(LIBS)
 testpandapixmap$(EXEEXT): $(testpandapixmap_OBJECTS) $(testpandapixmap_DEPENDENCIES) 
 	@rm -f testpandapixmap$(EXEEXT)
 	$(testpandapixmap_LINK) $(testpandapixmap_OBJECTS) $(testpandapixmap_LDADD) $(LIBS)
 testpandatext$(EXEEXT): $(testpandatext_OBJECTS) $(testpandatext_DEPENDENCIES) 
 	@rm -f testpandatext$(EXEEXT)
 	$(testpandatext_LINK) $(testpandatext_OBJECTS) $(testpandatext_LDADD) $(LIBS)
+testpandatimer$(EXEEXT): $(testpandatimer_OBJECTS) $(testpandatimer_DEPENDENCIES) 
+	@rm -f testpandatimer$(EXEEXT)
+	$(testpandatimer_LINK) $(testpandatimer_OBJECTS) $(testpandatimer_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -397,8 +439,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpandaclist-testpandaclist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpandacombo-testpandacombo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpandaentry-testpandaentry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpandahtml-testpandahtml.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpandapdf-testpandapdf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpandapixmap-testpandapixmap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpandatext-testpandatext.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpandatimer-testpandatimer.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -477,6 +522,34 @@ testpandaentry-testpandaentry.obj: testpandaentry.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandaentry_CFLAGS) $(CFLAGS) -c -o testpandaentry-testpandaentry.obj `if test -f 'testpandaentry.c'; then $(CYGPATH_W) 'testpandaentry.c'; else $(CYGPATH_W) '$(srcdir)/testpandaentry.c'; fi`
 
+testpandahtml-testpandahtml.o: testpandahtml.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandahtml_CFLAGS) $(CFLAGS) -MT testpandahtml-testpandahtml.o -MD -MP -MF $(DEPDIR)/testpandahtml-testpandahtml.Tpo -c -o testpandahtml-testpandahtml.o `test -f 'testpandahtml.c' || echo '$(srcdir)/'`testpandahtml.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/testpandahtml-testpandahtml.Tpo $(DEPDIR)/testpandahtml-testpandahtml.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='testpandahtml.c' object='testpandahtml-testpandahtml.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandahtml_CFLAGS) $(CFLAGS) -c -o testpandahtml-testpandahtml.o `test -f 'testpandahtml.c' || echo '$(srcdir)/'`testpandahtml.c
+
+testpandahtml-testpandahtml.obj: testpandahtml.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandahtml_CFLAGS) $(CFLAGS) -MT testpandahtml-testpandahtml.obj -MD -MP -MF $(DEPDIR)/testpandahtml-testpandahtml.Tpo -c -o testpandahtml-testpandahtml.obj `if test -f 'testpandahtml.c'; then $(CYGPATH_W) 'testpandahtml.c'; else $(CYGPATH_W) '$(srcdir)/testpandahtml.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/testpandahtml-testpandahtml.Tpo $(DEPDIR)/testpandahtml-testpandahtml.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='testpandahtml.c' object='testpandahtml-testpandahtml.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandahtml_CFLAGS) $(CFLAGS) -c -o testpandahtml-testpandahtml.obj `if test -f 'testpandahtml.c'; then $(CYGPATH_W) 'testpandahtml.c'; else $(CYGPATH_W) '$(srcdir)/testpandahtml.c'; fi`
+
+testpandapdf-testpandapdf.o: testpandapdf.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandapdf_CFLAGS) $(CFLAGS) -MT testpandapdf-testpandapdf.o -MD -MP -MF $(DEPDIR)/testpandapdf-testpandapdf.Tpo -c -o testpandapdf-testpandapdf.o `test -f 'testpandapdf.c' || echo '$(srcdir)/'`testpandapdf.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/testpandapdf-testpandapdf.Tpo $(DEPDIR)/testpandapdf-testpandapdf.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='testpandapdf.c' object='testpandapdf-testpandapdf.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandapdf_CFLAGS) $(CFLAGS) -c -o testpandapdf-testpandapdf.o `test -f 'testpandapdf.c' || echo '$(srcdir)/'`testpandapdf.c
+
+testpandapdf-testpandapdf.obj: testpandapdf.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandapdf_CFLAGS) $(CFLAGS) -MT testpandapdf-testpandapdf.obj -MD -MP -MF $(DEPDIR)/testpandapdf-testpandapdf.Tpo -c -o testpandapdf-testpandapdf.obj `if test -f 'testpandapdf.c'; then $(CYGPATH_W) 'testpandapdf.c'; else $(CYGPATH_W) '$(srcdir)/testpandapdf.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/testpandapdf-testpandapdf.Tpo $(DEPDIR)/testpandapdf-testpandapdf.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='testpandapdf.c' object='testpandapdf-testpandapdf.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandapdf_CFLAGS) $(CFLAGS) -c -o testpandapdf-testpandapdf.obj `if test -f 'testpandapdf.c'; then $(CYGPATH_W) 'testpandapdf.c'; else $(CYGPATH_W) '$(srcdir)/testpandapdf.c'; fi`
+
 testpandapixmap-testpandapixmap.o: testpandapixmap.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandapixmap_CFLAGS) $(CFLAGS) -MT testpandapixmap-testpandapixmap.o -MD -MP -MF $(DEPDIR)/testpandapixmap-testpandapixmap.Tpo -c -o testpandapixmap-testpandapixmap.o `test -f 'testpandapixmap.c' || echo '$(srcdir)/'`testpandapixmap.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/testpandapixmap-testpandapixmap.Tpo $(DEPDIR)/testpandapixmap-testpandapixmap.Po
@@ -504,6 +577,20 @@ testpandatext-testpandatext.obj: testpandatext.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='testpandatext.c' object='testpandatext-testpandatext.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandatext_CFLAGS) $(CFLAGS) -c -o testpandatext-testpandatext.obj `if test -f 'testpandatext.c'; then $(CYGPATH_W) 'testpandatext.c'; else $(CYGPATH_W) '$(srcdir)/testpandatext.c'; fi`
+
+testpandatimer-testpandatimer.o: testpandatimer.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandatimer_CFLAGS) $(CFLAGS) -MT testpandatimer-testpandatimer.o -MD -MP -MF $(DEPDIR)/testpandatimer-testpandatimer.Tpo -c -o testpandatimer-testpandatimer.o `test -f 'testpandatimer.c' || echo '$(srcdir)/'`testpandatimer.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/testpandatimer-testpandatimer.Tpo $(DEPDIR)/testpandatimer-testpandatimer.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='testpandatimer.c' object='testpandatimer-testpandatimer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandatimer_CFLAGS) $(CFLAGS) -c -o testpandatimer-testpandatimer.o `test -f 'testpandatimer.c' || echo '$(srcdir)/'`testpandatimer.c
+
+testpandatimer-testpandatimer.obj: testpandatimer.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandatimer_CFLAGS) $(CFLAGS) -MT testpandatimer-testpandatimer.obj -MD -MP -MF $(DEPDIR)/testpandatimer-testpandatimer.Tpo -c -o testpandatimer-testpandatimer.obj `if test -f 'testpandatimer.c'; then $(CYGPATH_W) 'testpandatimer.c'; else $(CYGPATH_W) '$(srcdir)/testpandatimer.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/testpandatimer-testpandatimer.Tpo $(DEPDIR)/testpandatimer-testpandatimer.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='testpandatimer.c' object='testpandatimer-testpandatimer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(testpandatimer_CFLAGS) $(CFLAGS) -c -o testpandatimer-testpandatimer.obj `if test -f 'testpandatimer.c'; then $(CYGPATH_W) 'testpandatimer.c'; else $(CYGPATH_W) '$(srcdir)/testpandatimer.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
