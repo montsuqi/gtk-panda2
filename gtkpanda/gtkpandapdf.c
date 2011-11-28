@@ -43,7 +43,6 @@
 static void gtk_panda_pdf_class_init    (GtkPandaPDFClass *klass);
 static void gtk_panda_pdf_init          (GtkPandaPDF      *pdf);
 
-static GtkContainerClass *parent_class = NULL;
 
 #define SCALE_ZOOM_FIT_PAGE   (-1.0)
 #define SCALE_ZOOM_FIT_WIDTH  (-2.0) 
@@ -125,7 +124,7 @@ gtk_panda_pdf_get_type (void)
         (GInstanceInitFunc) gtk_panda_pdf_init
       };
 
-      type = g_type_register_static( GTK_TYPE_VBOX, "GtkPandaPDF", &info, 0);
+      type = g_type_register_static( GTK_TYPE_BOX, "GtkPandaPDF", &info, 0);
     }
 
   return type;
@@ -136,8 +135,6 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   GtkBindingSet *binding_set;
-
-  parent_class = g_type_class_ref (GTK_TYPE_CONTAINER);
 
   klass->zoom_fit_page = gtk_panda_pdf_zoom_fit_page;
   klass->zoom_fit_width = gtk_panda_pdf_zoom_fit_width;
@@ -739,6 +736,7 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   GtkListStore    *store;
   GtkTreeIter      iter;
   guint i;
+printf("init\n");
 
   g_object_set(gtk_settings_get_default(),"gtk-button-images",TRUE,NULL);
 

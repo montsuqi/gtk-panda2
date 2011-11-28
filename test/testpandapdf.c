@@ -41,8 +41,6 @@ main (int argc, char **argv)
   window1 = gtk_builder_get_object(builder, "window1");
   pandapdf1 = gtk_builder_get_object(builder, "pandapdf1");
 
-fprintf(stderr,"pandapdf1 %p\n",pandapdf1);
-
   gtk_widget_show_all(GTK_WIDGET(window1));
   gtk_main();
   return 0;

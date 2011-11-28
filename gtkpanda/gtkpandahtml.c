@@ -84,7 +84,7 @@ gtk_panda_html_get_type (void)
         (GInstanceInitFunc) gtk_panda_html_init
       };
 
-      type = g_type_register_static( GTK_TYPE_VBOX,
+      type = g_type_register_static( GTK_TYPE_BOX,
                                      "GtkPandaHTML",
                                      &info,
                                      (GTypeFlags)0);

@@ -50,7 +50,7 @@ typedef struct _GtkPandaPDFClass  GtkPandaPDFClass;
 
 struct _GtkPandaPDF
 {
-  GtkVBox parent;
+  GtkBox parent;
 
   GtkWidget *scale;
   GtkWidget *scroll;
@@ -69,7 +69,7 @@ struct _GtkPandaPDF
 
 struct _GtkPandaPDFClass
 {
-  GtkVBoxClass parent_class;
+  GtkBoxClass parent_class;
   void (*zoom_fit_page)  (GtkPandaPDF *pdf);
   void (*zoom_fit_width) (GtkPandaPDF *pdf);
   void (*zoom_in)        (GtkPandaPDF *pdf);
