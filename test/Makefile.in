@@ -73,62 +73,52 @@ testnumberentry_OBJECTS = $(am_testnumberentry_OBJECTS)
 am__DEPENDENCIES_1 =
 am__DEPENDENCIES_2 = $(top_builddir)/gtkpanda/libgtkpanda-2.0.la \
 	$(am__DEPENDENCIES_1)
-testnumberentry_DEPENDENCIES = $(am__DEPENDENCIES_2)
 testnumberentry_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testnumberentry_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_testpandaclist_OBJECTS = testpandaclist-testpandaclist.$(OBJEXT)
 testpandaclist_OBJECTS = $(am_testpandaclist_OBJECTS)
-testpandaclist_DEPENDENCIES = $(am__DEPENDENCIES_2)
 testpandaclist_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandaclist_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_testpandacombo_OBJECTS = testpandacombo-testpandacombo.$(OBJEXT)
 testpandacombo_OBJECTS = $(am_testpandacombo_OBJECTS)
-testpandacombo_DEPENDENCIES = $(am__DEPENDENCIES_2)
 testpandacombo_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandacombo_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_testpandaentry_OBJECTS = testpandaentry-testpandaentry.$(OBJEXT)
 testpandaentry_OBJECTS = $(am_testpandaentry_OBJECTS)
-testpandaentry_DEPENDENCIES = $(am__DEPENDENCIES_2)
 testpandaentry_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandaentry_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_testpandahtml_OBJECTS = testpandahtml-testpandahtml.$(OBJEXT)
 testpandahtml_OBJECTS = $(am_testpandahtml_OBJECTS)
-testpandahtml_DEPENDENCIES = $(am__DEPENDENCIES_2)
 testpandahtml_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandahtml_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_testpandapdf_OBJECTS = testpandapdf-testpandapdf.$(OBJEXT)
 testpandapdf_OBJECTS = $(am_testpandapdf_OBJECTS)
-testpandapdf_DEPENDENCIES = $(am__DEPENDENCIES_2)
 testpandapdf_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandapdf_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_testpandapixmap_OBJECTS =  \
 	testpandapixmap-testpandapixmap.$(OBJEXT)
 testpandapixmap_OBJECTS = $(am_testpandapixmap_OBJECTS)
-testpandapixmap_DEPENDENCIES = $(am__DEPENDENCIES_2)
 testpandapixmap_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandapixmap_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_testpandatable_OBJECTS = testpandatable-testpandatable.$(OBJEXT)
 testpandatable_OBJECTS = $(am_testpandatable_OBJECTS)
-testpandatable_DEPENDENCIES = $(am__DEPENDENCIES_2)
 testpandatable_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandatable_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_testpandatext_OBJECTS = testpandatext-testpandatext.$(OBJEXT)
 testpandatext_OBJECTS = $(am_testpandatext_OBJECTS)
-testpandatext_DEPENDENCIES = $(am__DEPENDENCIES_2)
 testpandatext_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandatext_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_testpandatimer_OBJECTS = testpandatimer-testpandatimer.$(OBJEXT)
 testpandatimer_OBJECTS = $(am_testpandatimer_OBJECTS)
-testpandatimer_DEPENDENCIES = $(am__DEPENDENCIES_2)
 testpandatimer_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(testpandatimer_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -337,36 +327,49 @@ BASE_LIBS = \
 	$(top_builddir)/gtkpanda/libgtkpanda-2.0.la \
 	$(GTK_PANDA_LIBS)
 
+BASE_DEPS = \
+	$(top_builddir)/gtkpanda/libgtkpanda-2.0.la
+
 testpandaentry_SOURCES = testpandaentry.c
 testpandaentry_CFLAGS = $(BASE_CFLAGS)
 testpandaentry_LDADD = $(BASE_LIBS)
+testpandaentry_DEPENDENCIES = $(BASE_DEPS)
 testnumberentry_SOURCES = testnumberentry.c
 testnumberentry_CFLAGS = $(BASE_CFLAGS)
 testnumberentry_LDADD = $(BASE_LIBS)
+testnumberentry_DEPENDENCIES = $(BASE_DEPS)
 testpandatext_SOURCES = testpandatext.c
 testpandatext_CFLAGS = $(BASE_CFLAGS)
 testpandatext_LDADD = $(BASE_LIBS)
+testpandatext_DEPENDENCIES = $(BASE_DEPS)
 testpandacombo_SOURCES = testpandacombo.c
 testpandacombo_CFLAGS = $(BASE_CFLAGS)
 testpandacombo_LDADD = $(BASE_LIBS)
+testpandacombo_DEPENDENCIES = $(BASE_DEPS)
 testpandaclist_SOURCES = testpandaclist.c
 testpandaclist_CFLAGS = $(BASE_CFLAGS)
 testpandaclist_LDADD = $(BASE_LIBS)
+testpandaclist_DEPENDENCIES = $(BASE_DEPS)
 testpandapixmap_SOURCES = testpandapixmap.c
 testpandapixmap_CFLAGS = $(BASE_CFLAGS)
 testpandapixmap_LDADD = $(BASE_LIBS)
+testpandapixmap_DEPENDENCIES = $(BASE_DEPS)
 testpandapdf_SOURCES = testpandapdf.c
 testpandapdf_CFLAGS = $(BASE_CFLAGS)
 testpandapdf_LDADD = $(BASE_LIBS)
+testpandapdf_DEPENDENCIES = $(BASE_DEPS)
 testpandahtml_SOURCES = testpandahtml.c
 testpandahtml_CFLAGS = $(BASE_CFLAGS)
 testpandahtml_LDADD = $(BASE_LIBS)
+testpandahtml_DEPENDENCIES = $(BASE_DEPS)
 testpandatimer_SOURCES = testpandatimer.c
 testpandatimer_CFLAGS = $(BASE_CFLAGS)
 testpandatimer_LDADD = $(BASE_LIBS)
+testpandatimer_DEPENDENCIES = $(BASE_DEPS)
 testpandatable_SOURCES = testpandatable.c
 testpandatable_CFLAGS = $(BASE_CFLAGS)
 testpandatable_LDADD = $(BASE_LIBS)
+testpandatable_DEPENDENCIES = $(BASE_DEPS)
 all: all-am
 
 .SUFFIXES:

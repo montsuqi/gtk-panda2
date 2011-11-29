@@ -6,6 +6,9 @@
     <mime-types>
       <mime-type>pdf</mime-type>
     </mime-types>
+    <patterns>
+      <pattern>*.pdf</pattern>
+    </patterns>
   </object>
   <object class="GtkWindow" id="window1">
     <property name="width_request">400</property>

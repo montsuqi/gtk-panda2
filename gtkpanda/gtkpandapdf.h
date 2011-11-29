@@ -27,6 +27,7 @@
 #ifndef __GTK_PANDA_PDF_H__
 #define __GTK_PANDA_PDF_H__
 
+#include <glib-object.h>
 #include <gtk/gtk.h>
 #include <poppler.h>
 
@@ -34,16 +35,13 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define GTK_PANDA_TYPE_PDF \
-  (gtk_panda_pdf_get_type ())
-#define GTK_PANDA_PDF(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_PDF, GtkPandaPDF))
-#define GTK_PANDA_PDF_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_PDF, GtkPandaPDFClass))
-#define GTK_IS_PANDA_PDF(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_PDF))
-#define GTK_IS_PANDA_PDF_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_PDF))
+G_BEGIN_DECLS
+
+#define GTK_PANDA_TYPE_PDF				(gtk_panda_pd_f_get_type ())
+#define GTK_PANDA_PDF(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_PDF, GtkPandaPDF))
+#define GTK_PANDA_PDF_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_PDF, GtkPandaPDFClass))
+#define GTK_IS_PANDA_PDF(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_PDF))
+#define GTK_IS_PANDA_PDF_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_PDF))
 
 typedef struct _GtkPandaPDF       GtkPandaPDF;
 typedef struct _GtkPandaPDFClass  GtkPandaPDFClass;
@@ -80,15 +78,17 @@ struct _GtkPandaPDFClass
   void (*print)          (GtkPandaPDF *pdf);
 };
 
-extern GType gtk_panda_pdf_get_type (void);
-extern GtkWidget *gtk_panda_pdf_new (void);
-extern gboolean gtk_panda_pdf_set (GtkPandaPDF *pps, int size, char *buff);
-extern gboolean gtk_panda_pdf_load (GtkPandaPDF *pps, char *fname);
-extern int gtk_panda_pdf_get_page_count(GtkPandaPDF *pps);
-extern void gtk_panda_pdf_print(GtkPandaPDF *pps,gboolean showdialog);
+GType gtk_panda_pd_f_get_type (void);
+GtkWidget *gtk_panda_pdf_new (void);
+gboolean gtk_panda_pdf_set (GtkPandaPDF *pps, int size, char *buff);
+gboolean gtk_panda_pdf_load (GtkPandaPDF *pps, char *fname);
+int gtk_panda_pdf_get_page_count(GtkPandaPDF *pps);
+void gtk_panda_pdf_print(GtkPandaPDF *pps,gboolean showdialog);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+G_END_DECLS
 
 #endif /* __GTK_PANDA_PDF_H__ */

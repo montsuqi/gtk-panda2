@@ -27,8 +27,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <sys/types.h>
 #include <unistd.h>
+
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
@@ -65,7 +67,7 @@ static void gtk_panda_html_get_property (
   GParamSpec      *psec);
 
 GType
-gtk_panda_html_get_type (void)
+gtk_panda_ht_m_l_get_type (void)
 {
   static GType type = 0;
 
@@ -87,7 +89,7 @@ gtk_panda_html_get_type (void)
       type = g_type_register_static( GTK_TYPE_BOX,
                                      "GtkPandaHTML",
                                      &info,
-                                     (GTypeFlags)0);
+                                     0);
     }
 
   return type;

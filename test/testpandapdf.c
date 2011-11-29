@@ -29,7 +29,6 @@ main (int argc, char **argv)
 {
   GtkBuilder *builder;
   GObject *window1;
-  GObject *pandapdf1;
 
   gtk_init(&argc,&argv);
   gtk_panda_init(&argc,&argv);
@@ -39,7 +38,6 @@ main (int argc, char **argv)
   gtk_builder_connect_signals(builder, NULL);
 
   window1 = gtk_builder_get_object(builder, "window1");
-  pandapdf1 = gtk_builder_get_object(builder, "pandapdf1");
 
   gtk_widget_show_all(GTK_WIDGET(window1));
   gtk_main();

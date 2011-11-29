@@ -47,6 +47,7 @@ enum {
 static GType
 gtk_panda_type_input_mode_get_type (void)
 {
+
   static GType type = 0;
   static const GEnumValue data[] = {
     {GTK_PANDA_ENTRY_ASCII , "GTK_PANDA_ENTRY_ASCII", "ascii"},

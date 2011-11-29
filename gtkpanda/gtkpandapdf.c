@@ -39,6 +39,7 @@
 
 #include "gtkpandaintl.h"
 #include "gtkpandapdf.h"
+#include "pandamarshal.h"
 
 static void gtk_panda_pdf_class_init    (GtkPandaPDFClass *klass);
 static void gtk_panda_pdf_init          (GtkPandaPDF      *pdf);
@@ -105,7 +106,7 @@ static void combo_changed_cb (GtkComboBox *combo, GtkPandaPDF *pdf);
 static void _gtk_panda_pdf_print(GtkPandaPDF *self);
 
 GType
-gtk_panda_pdf_get_type (void)
+gtk_panda_pd_f_get_type (void)
 {
   static GType type = 0;
 
@@ -867,7 +868,10 @@ printf("init\n");
 GtkWidget *
 gtk_panda_pdf_new (void)
 {
-  return g_object_new (GTK_PANDA_TYPE_PDF, NULL);
+  GtkWidget *pdf;
+
+  pdf = g_object_new (GTK_PANDA_TYPE_PDF, NULL);
+  return pdf;
 }
 
 gboolean
