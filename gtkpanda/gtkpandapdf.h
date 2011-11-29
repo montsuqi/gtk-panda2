@@ -37,7 +37,7 @@ extern "C" {
 
 G_BEGIN_DECLS
 
-#define GTK_PANDA_TYPE_PDF				(gtk_panda_pd_f_get_type ())
+#define GTK_PANDA_TYPE_PDF				(gtk_panda_pdf_get_type ())
 #define GTK_PANDA_PDF(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_PDF, GtkPandaPDF))
 #define GTK_PANDA_PDF_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_PDF, GtkPandaPDFClass))
 #define GTK_IS_PANDA_PDF(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_PDF))
@@ -78,7 +78,10 @@ struct _GtkPandaPDFClass
   void (*print)          (GtkPandaPDF *pdf);
 };
 
+GType gtk_panda_pdf_get_type (void);
 GType gtk_panda_pd_f_get_type (void);
+GType gtk_panda_p_df_get_type (void);
+GType gtk_panda_p_d_f_get_type (void);
 GtkWidget *gtk_panda_pdf_new (void);
 gboolean gtk_panda_pdf_set (GtkPandaPDF *pps, int size, char *buff);
 gboolean gtk_panda_pdf_load (GtkPandaPDF *pps, char *fname);
