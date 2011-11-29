@@ -755,7 +755,6 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   GtkListStore    *store;
   GtkTreeIter      iter;
   guint i;
-printf("init\n");
 
   g_object_set(gtk_settings_get_default(),"gtk-button-images",TRUE,NULL);
 
