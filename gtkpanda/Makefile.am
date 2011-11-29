@@ -53,6 +53,7 @@ pandamarshal.h: pandamarshal.list
 	$(GLIB_GENMARSHAL) --prefix=panda_marshal pandamarshal.list --header > $(@F)
 pandamarshal.c: pandamarshal.list
 	$(GLIB_GENMARSHAL) --prefix=panda_marshal pandamarshal.list --body > $(@F)
+BUILT_SOURCES = pandamarshal.h pandamarshal.c
 
 gtkpanda_private_h_sources =
 
@@ -64,8 +65,6 @@ AM_CPPFLAGS = -g -DLOCALEDIR=\"$(localedir)\"
 libgtkpandaincludedir = $(includedir)/gtkpanda-2.0/gtkpanda
 libgtkpandainclude_HEADERS = $(gtkpanda_public_h_sources)
 
-BUILT_SOURCES = pandamarshal.h pandamarshal.c
-
 lib_LTLIBRARIES = libgtkpanda-2.0.la
 libgtkpanda_2_0_la_SOURCES =		\
 	$(gtkpanda_c_sources)			\
@@ -75,75 +74,10 @@ libgtkpanda_2_0_la_LDFLAGS = 			\
 	-export-dynamic 					\
 	$(GTK_PANDA_LIBS)
 
-BUILT_SOURCES = pandamarshal.h pandamarshal.c
-gen_sources = pandamarshal.h pandamarshal.c
-CLEANFILES = $(gen_sources)
-pandamarshal.h: pandamarshal.list
-	$(GLIB_GENMARSHAL) --prefix=panda_marshal \
-		pandamarshal.list --header > $(@F)
-pandamarshal.c: pandamarshal.list
-	$(GLIB_GENMARSHAL) --prefix=panda_marshal \
-		pandamarshal.list --body > $(@F)
-
 EXTRA_HEADERS =
 EXTRA_DIST = 				\
 	$(gtkpanda_private_h_sources) 	\
 	gtkpanda.def makefile.msc 	\
 	tree_plus.xpm 			\
 	tree_minus.xpm			\
-	diamarshal.list
-
-
-# test programs, not to be installed
-
-noinst_PROGRAMS = 	\
-    testclist		\
-	testcombo		\
-	testfileentry	\
-	testnumeric 	\
-	testentry 		\
-	testhtml		\
-	testtext		\
-	testtimer		\
-	testpdf			\
-	testpixmap		\
-	testtable
-
-DEPS = \
-	libgtkpanda-2.0.la
-LDADDS =	\
-	./libgtkpanda-2.0.la	\
-	$(GTK_PANDA_LIBS)
-
-testclist_DEPENDENCIES = $(DEPS)
-testclist_LDADD = $(LDADDS)
-
-testcombo_DEPENDENCIES = $(DEPS)
-testcombo_LDADD = $(LDADDS)
-
-testfileentry_DEPENDENCIES = $(DEPS)
-testfileentry_LDADD = $(LDADDS)
-
-testnumeric_DEPENDENCIES = $(DEPS)
-testnumeric_LDADD = $(LDADDS)
-
-testentry_DEPENDENCIES = $(DEPS)
-testentry_LDADD = $(LDADDS)
-
-testhtml_DEPENDENCIES = $(DEPS)
-testhtml_LDADD = $(LDADDS)
-
-testtext_DEPENDENCIES = $(DEPS)
-testtext_LDADD = $(LDADDS)
-
-testtimer_DEPENDENCIES = $(DEPS)
-testtimer_LDADD = $(LDADDS)
-
-testpdf_DEPENDENCIES = $(DEPS)
-testpdf_LDADD = $(LDADDS)
-
-testpixmap_DEPENDENCIES = $(DEPS)
-testpixmap_LDADD = $(LDADDS)
-
-testtable_DEPENDENCIES = $(DEPS)
-testtable_LDADD = $(LDADDS)
+	pandamarshal.list

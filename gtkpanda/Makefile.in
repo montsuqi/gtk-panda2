@@ -16,7 +16,6 @@
 @SET_MAKE@
 
 
-
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -36,10 +35,6 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = testclist$(EXEEXT) testcombo$(EXEEXT) \
-	testfileentry$(EXEEXT) testnumeric$(EXEEXT) testentry$(EXEEXT) \
-	testhtml$(EXEEXT) testtext$(EXEEXT) testtimer$(EXEEXT) \
-	testpdf$(EXEEXT) testpixmap$(EXEEXT) testtable$(EXEEXT)
 subdir = gtkpanda
 DIST_COMMON = $(libgtkpandainclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -106,31 +101,6 @@ libgtkpanda_2_0_la_OBJECTS = $(am_libgtkpanda_2_0_la_OBJECTS)
 libgtkpanda_2_0_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(libgtkpanda_2_0_la_LDFLAGS) $(LDFLAGS) -o $@
-PROGRAMS = $(noinst_PROGRAMS)
-testclist_SOURCES = testclist.c
-testclist_OBJECTS = testclist.$(OBJEXT)
-am__DEPENDENCIES_1 =
-am__DEPENDENCIES_2 = ./libgtkpanda-2.0.la $(am__DEPENDENCIES_1)
-testcombo_SOURCES = testcombo.c
-testcombo_OBJECTS = testcombo.$(OBJEXT)
-testentry_SOURCES = testentry.c
-testentry_OBJECTS = testentry.$(OBJEXT)
-testfileentry_SOURCES = testfileentry.c
-testfileentry_OBJECTS = testfileentry.$(OBJEXT)
-testhtml_SOURCES = testhtml.c
-testhtml_OBJECTS = testhtml.$(OBJEXT)
-testnumeric_SOURCES = testnumeric.c
-testnumeric_OBJECTS = testnumeric.$(OBJEXT)
-testpdf_SOURCES = testpdf.c
-testpdf_OBJECTS = testpdf.$(OBJEXT)
-testpixmap_SOURCES = testpixmap.c
-testpixmap_OBJECTS = testpixmap.$(OBJEXT)
-testtable_SOURCES = testtable.c
-testtable_OBJECTS = testtable.$(OBJEXT)
-testtext_SOURCES = testtext.c
-testtext_OBJECTS = testtext.$(OBJEXT)
-testtimer_SOURCES = testtimer.c
-testtimer_OBJECTS = testtimer.$(OBJEXT)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -144,12 +114,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libgtkpanda_2_0_la_SOURCES) testclist.c testcombo.c \
-	testentry.c testfileentry.c testhtml.c testnumeric.c testpdf.c \
-	testpixmap.c testtable.c testtext.c testtimer.c
-DIST_SOURCES = $(libgtkpanda_2_0_la_SOURCES) testclist.c testcombo.c \
-	testentry.c testfileentry.c testhtml.c testnumeric.c testpdf.c \
-	testpixmap.c testtable.c testtext.c testtimer.c
+SOURCES = $(libgtkpanda_2_0_la_SOURCES)
+DIST_SOURCES = $(libgtkpanda_2_0_la_SOURCES)
 HEADERS = $(libgtkpandainclude_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -372,6 +338,7 @@ gtkpanda_c_sources = \
 
 gen_sources = pandamarshal.h pandamarshal.c
 CLEANFILES = $(gen_sources)
+BUILT_SOURCES = pandamarshal.h pandamarshal.c
 gtkpanda_private_h_sources = 
 INCLUDES = $(GTK_PANDA_CFLAGS) \
 	-I$(top_srcdir)
@@ -379,7 +346,6 @@ INCLUDES = $(GTK_PANDA_CFLAGS) \
 AM_CPPFLAGS = -g -DLOCALEDIR=\"$(localedir)\"
 libgtkpandaincludedir = $(includedir)/gtkpanda-2.0/gtkpanda
 libgtkpandainclude_HEADERS = $(gtkpanda_public_h_sources)
-BUILT_SOURCES = pandamarshal.h pandamarshal.c
 lib_LTLIBRARIES = libgtkpanda-2.0.la
 libgtkpanda_2_0_la_SOURCES = \
 	$(gtkpanda_c_sources)			\
@@ -396,37 +362,8 @@ EXTRA_DIST = \
 	gtkpanda.def makefile.msc 	\
 	tree_plus.xpm 			\
 	tree_minus.xpm			\
-	diamarshal.list
+	pandamarshal.list
 
-DEPS = \
-	libgtkpanda-2.0.la
-
-LDADDS = \
-	./libgtkpanda-2.0.la	\
-	$(GTK_PANDA_LIBS)
-
-testclist_DEPENDENCIES = $(DEPS)
-testclist_LDADD = $(LDADDS)
-testcombo_DEPENDENCIES = $(DEPS)
-testcombo_LDADD = $(LDADDS)
-testfileentry_DEPENDENCIES = $(DEPS)
-testfileentry_LDADD = $(LDADDS)
-testnumeric_DEPENDENCIES = $(DEPS)
-testnumeric_LDADD = $(LDADDS)
-testentry_DEPENDENCIES = $(DEPS)
-testentry_LDADD = $(LDADDS)
-testhtml_DEPENDENCIES = $(DEPS)
-testhtml_LDADD = $(LDADDS)
-testtext_DEPENDENCIES = $(DEPS)
-testtext_LDADD = $(LDADDS)
-testtimer_DEPENDENCIES = $(DEPS)
-testtimer_LDADD = $(LDADDS)
-testpdf_DEPENDENCIES = $(DEPS)
-testpdf_LDADD = $(LDADDS)
-testpixmap_DEPENDENCIES = $(DEPS)
-testpixmap_LDADD = $(LDADDS)
-testtable_DEPENDENCIES = $(DEPS)
-testtable_LDADD = $(LDADDS)
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -496,48 +433,6 @@ clean-libLTLIBRARIES:
 libgtkpanda-2.0.la: $(libgtkpanda_2_0_la_OBJECTS) $(libgtkpanda_2_0_la_DEPENDENCIES) 
 	$(libgtkpanda_2_0_la_LINK) -rpath $(libdir) $(libgtkpanda_2_0_la_OBJECTS) $(libgtkpanda_2_0_la_LIBADD) $(LIBS)
 
-clean-noinstPROGRAMS:
-	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
-	echo " rm -f" $$list; \
-	rm -f $$list || exit $$?; \
-	test -n "$(EXEEXT)" || exit 0; \
-	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
-	echo " rm -f" $$list; \
-	rm -f $$list
-testclist$(EXEEXT): $(testclist_OBJECTS) $(testclist_DEPENDENCIES) 
-	@rm -f testclist$(EXEEXT)
-	$(LINK) $(testclist_OBJECTS) $(testclist_LDADD) $(LIBS)
-testcombo$(EXEEXT): $(testcombo_OBJECTS) $(testcombo_DEPENDENCIES) 
-	@rm -f testcombo$(EXEEXT)
-	$(LINK) $(testcombo_OBJECTS) $(testcombo_LDADD) $(LIBS)
-testentry$(EXEEXT): $(testentry_OBJECTS) $(testentry_DEPENDENCIES) 
-	@rm -f testentry$(EXEEXT)
-	$(LINK) $(testentry_OBJECTS) $(testentry_LDADD) $(LIBS)
-testfileentry$(EXEEXT): $(testfileentry_OBJECTS) $(testfileentry_DEPENDENCIES) 
-	@rm -f testfileentry$(EXEEXT)
-	$(LINK) $(testfileentry_OBJECTS) $(testfileentry_LDADD) $(LIBS)
-testhtml$(EXEEXT): $(testhtml_OBJECTS) $(testhtml_DEPENDENCIES) 
-	@rm -f testhtml$(EXEEXT)
-	$(LINK) $(testhtml_OBJECTS) $(testhtml_LDADD) $(LIBS)
-testnumeric$(EXEEXT): $(testnumeric_OBJECTS) $(testnumeric_DEPENDENCIES) 
-	@rm -f testnumeric$(EXEEXT)
-	$(LINK) $(testnumeric_OBJECTS) $(testnumeric_LDADD) $(LIBS)
-testpdf$(EXEEXT): $(testpdf_OBJECTS) $(testpdf_DEPENDENCIES) 
-	@rm -f testpdf$(EXEEXT)
-	$(LINK) $(testpdf_OBJECTS) $(testpdf_LDADD) $(LIBS)
-testpixmap$(EXEEXT): $(testpixmap_OBJECTS) $(testpixmap_DEPENDENCIES) 
-	@rm -f testpixmap$(EXEEXT)
-	$(LINK) $(testpixmap_OBJECTS) $(testpixmap_LDADD) $(LIBS)
-testtable$(EXEEXT): $(testtable_OBJECTS) $(testtable_DEPENDENCIES) 
-	@rm -f testtable$(EXEEXT)
-	$(LINK) $(testtable_OBJECTS) $(testtable_LDADD) $(LIBS)
-testtext$(EXEEXT): $(testtext_OBJECTS) $(testtext_DEPENDENCIES) 
-	@rm -f testtext$(EXEEXT)
-	$(LINK) $(testtext_OBJECTS) $(testtext_LDADD) $(LIBS)
-testtimer$(EXEEXT): $(testtimer_OBJECTS) $(testtimer_DEPENDENCIES) 
-	@rm -f testtimer$(EXEEXT)
-	$(LINK) $(testtimer_OBJECTS) $(testtimer_LDADD) $(LIBS)
-
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -563,17 +458,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/numeric.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pandacellrenderertext.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pandamarshal.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testclist.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testcombo.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testentry.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testfileentry.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testhtml.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testnumeric.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpdf.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testpixmap.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testtable.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testtext.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testtimer.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -707,7 +591,7 @@ distdir: $(DISTFILES)
 check-am: all-am
 check: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libgtkpandaincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
@@ -743,7 +627,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
-	clean-noinstPROGRAMS mostlyclean-am
+	mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -815,31 +699,25 @@ uninstall-am: uninstall-libLTLIBRARIES \
 .MAKE: all check install install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libLTLIBRARIES clean-libtool clean-noinstPROGRAMS ctags \
-	distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-libLTLIBRARIES \
-	install-libgtkpandaincludeHEADERS install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-libLTLIBRARIES \
+	clean-libLTLIBRARIES clean-libtool ctags distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am \
+	install-libLTLIBRARIES install-libgtkpandaincludeHEADERS \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-libLTLIBRARIES \
 	uninstall-libgtkpandaincludeHEADERS
 
 pandamarshal.h: pandamarshal.list
 	$(GLIB_GENMARSHAL) --prefix=panda_marshal pandamarshal.list --header > $(@F)
 pandamarshal.c: pandamarshal.list
 	$(GLIB_GENMARSHAL) --prefix=panda_marshal pandamarshal.list --body > $(@F)
-pandamarshal.h: pandamarshal.list
-	$(GLIB_GENMARSHAL) --prefix=panda_marshal \
-		pandamarshal.list --header > $(@F)
-pandamarshal.c: pandamarshal.list
-	$(GLIB_GENMARSHAL) --prefix=panda_marshal \
-		pandamarshal.list --body > $(@F)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
