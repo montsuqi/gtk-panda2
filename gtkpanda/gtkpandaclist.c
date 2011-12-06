@@ -346,7 +346,6 @@ gtk_panda_clist_append  (
   GtkTreeIter iter;
   gint ncols;
   int i;
-  GValue *value;
   
   g_return_if_fail(clist != NULL);
   g_return_if_fail(GTK_IS_PANDA_CLIST(clist));
@@ -355,10 +354,7 @@ gtk_panda_clist_append  (
   ncols = gtk_tree_model_get_n_columns(GTK_TREE_MODEL(store));
   gtk_list_store_append (store, &iter);
   for (i = 0; i < ncols; i++){
-    value = g_new0(GValue, 1);
-    g_value_init(value, G_TYPE_STRING);
-    g_value_set_string(value, text[i]);
-    gtk_list_store_set_value(store, &iter, i, value);
+    gtk_list_store_set(store, &iter, i, text[i],-1);
   } 
 }
 
