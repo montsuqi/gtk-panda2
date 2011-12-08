@@ -6,9 +6,10 @@ BASE_CFLAGS = \
 	$(GTK_PANDA_CFLAGS)
 
 BASE_LIBS = \
-	-g -Wl,--no-as-needed\
+	-Wl,--no-as-needed\
 	$(top_builddir)/gtkpanda/libgtkpanda-2.0.la \
 	$(GTK_PANDA_LIBS)
+
 BASE_DEPS = \
 	$(top_builddir)/gtkpanda/libgtkpanda-2.0.la
 
