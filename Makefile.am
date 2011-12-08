@@ -1,7 +1,8 @@
 ## Makefile.am for gtk+panda
 
-SUBDIRS = intl po 					\
-	gtkpanda 				\
+SUBDIRS = intl po 	\
+	gtkpanda 		\
+	test			\
 	docs
 
 

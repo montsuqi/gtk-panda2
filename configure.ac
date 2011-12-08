@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(gtk+panda, 2.0.3)
+AC_INIT(gtk+panda, 2.0.5)
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([gtkpanda/gtkpandaentry.c])
 AC_CONFIG_HEADER([config.h])
@@ -22,6 +22,8 @@ AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 AC_PATH_PROG(GNOME_MOZ_REMOTE_PROG, gnome-moz-remote, /usr/bin/firefox)
 AC_DEFINE_UNQUOTED(OPEN_BROWSER_COMMAND, "$GNOME_MOZ_REMOTE_PROG", "")
+
+AM_PROG_CC_C_O
 
 # Checks for libraries.
 AM_GNU_GETTEXT
@@ -55,21 +57,22 @@ AC_SUBST(WEBKIT_REQUIRED, 1.2.5)
 
 PKG_CHECK_MODULES(GTK_PANDA,
 [
-	glib-2.0					>=	$GLIB_REQUIRED
-	gtk+-2.0 					>=	$GTK_REQUIRED
-	poppler-glib 				>=	$POPPLER_REQUIRED
-	webkit-1.0					>=	$WEBKIT_REQUIRED
+	glib-2.0					>=	2.24.0
+	gtk+-2.0 					>=	2.20.0
+	poppler-glib 				>=	0.12.0
+	webkit-1.0					>=	1.2.0
+	gmodule-2.0					>=	2.24.0
 ])
 
 dnl ***************************************************************************
 dnl gtk version check
 dnl ***************************************************************************
-PKG_CHECK_MODULES(CHECK_GTK_VER,gtk+-2.0 >= 2.14.0)
 
 AC_CONFIG_FILES([	Makefile 
 					docs/Makefile 
 					gtkpanda/Makefile 
 					gtkpanda2.pc 
 					intl/Makefile 
+					test/Makefile
 					po/Makefile.in ])
 AC_OUTPUT

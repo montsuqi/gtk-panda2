@@ -57,6 +57,13 @@ struct _GtkPandaHTMLClass
 };
 
 GType gtk_panda_html_get_type (void);
+GType gtk_panda_h_tml_get_type (void);
+GType gtk_panda_ht_ml_get_type (void);
+GType gtk_panda_htm_l_get_type (void);
+GType gtk_panda_ht_ml_get_type (void);
+GType gtk_panda_ht_m_l_get_type (void);
+GType gtk_panda_h_tm_l_get_type (void);
+GType gtk_panda_h_t_m_l_get_type (void);
 GtkWidget* gtk_panda_html_new (void);
 gchar *gtk_panda_html_get_uri (GtkPandaHTML *html);
 void gtk_panda_html_set_uri (GtkPandaHTML *html, const gchar *uri);

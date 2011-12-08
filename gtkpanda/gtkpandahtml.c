@@ -93,6 +93,42 @@ gtk_panda_html_get_type (void)
   return type;
 }
 
+GType
+gtk_panda_h_tml_get_type (void)
+{
+	return gtk_panda_html_get_type();
+}
+
+GType
+gtk_panda_ht_ml_get_type (void)
+{
+	return gtk_panda_html_get_type();
+}
+
+GType
+gtk_panda_htm_l_get_type (void)
+{
+	return gtk_panda_html_get_type();
+}
+
+GType
+gtk_panda_h_tm_l_get_type (void)
+{
+	return gtk_panda_html_get_type();
+}
+
+GType
+gtk_panda_ht_m_l_get_type (void)
+{
+	return gtk_panda_html_get_type();
+}
+
+GType
+gtk_panda_h_t_m_l_get_type (void)
+{
+	return gtk_panda_html_get_type();
+}
+
 static void 
 gtk_panda_html_class_init (GtkPandaHTMLClass *klass)
 {
