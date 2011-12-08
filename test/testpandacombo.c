@@ -9,27 +9,6 @@
 #include "debug.h"
 
 G_MODULE_EXPORT void
-cb_case_toggle(GtkToggleButton *t,
-  GtkPandaCombo *combo)
-{
-  gtk_panda_combo_set_case_sensitive(combo,!combo->case_sensitive);
-}
-
-G_MODULE_EXPORT void
-cb_arrow_toggle(GtkToggleButton *t,
-  GtkPandaCombo *combo)
-{
-  gtk_panda_combo_set_use_arrows(combo,!combo->use_arrows);
-}
-
-G_MODULE_EXPORT void
-cb_loop_toggle(GtkToggleButton *t,
-  GtkPandaCombo *combo)
-{
-  gtk_panda_combo_set_loop_selection(combo,!combo->loop_selection);
-}
-
-G_MODULE_EXPORT void
 cb_activate(GtkEntry *w,gpointer data)
 {
   fprintf(stderr,"activate %s[%s]\n",

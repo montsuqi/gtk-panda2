@@ -47,6 +47,9 @@ enum {
 static void gtk_panda_combo_class_init(GtkPandaComboClass *klass);
 static void gtk_panda_combo_init(GtkPandaCombo *combo);
 
+static void gtk_panda_combo_active_changed (GtkComboBox *combo_box,
+  gpointer user_data);
+
 static void  gtk_panda_combo_set_property       (GObject         *object,
                        guint            prop_id,
                        const GValue    *value,
@@ -90,13 +93,6 @@ gtk_panda_combo_class_init (GtkPandaComboClass * klass)
                           G_PARAM_READWRITE));
 }
 
-static void
-gtk_panda_combo_init (GtkPandaCombo * combo)
-{
-  combo->case_sensitive = FALSE;
-  combo->use_arrows = TRUE;
-  combo->loop_selection = FALSE;
-}
 
 GType
 gtk_panda_combo_get_type (void)
@@ -139,32 +135,62 @@ GtkWidget *
 gtk_panda_combo_new (void)
 {
   GtkWidget *ret;
-  GtkEntry *entry;
-  GtkEntryCompletion *comp;
-  GtkListStore *store;
-
-  store = gtk_list_store_new(1, G_TYPE_STRING);
  
   ret = g_object_new( gtk_panda_combo_get_type(),
-    "model", GTK_TREE_MODEL(store),
     "has-entry",TRUE,
     "entry-text-column",0,
     NULL);
 
-  comp = gtk_entry_completion_new();
-  gtk_entry_completion_set_model(comp,GTK_TREE_MODEL(store));
-  gtk_entry_completion_set_text_column(comp,0);
-  entry = gtk_panda_combo_get_entry(GTK_PANDA_COMBO(ret));
-  gtk_entry_set_completion(entry,comp);
+  return ret;
+}
 
-  g_signal_connect(G_OBJECT(entry),"focus-out-event",
-    G_CALLBACK(cb_entry_focus_out),NULL);
+static void
+gtk_panda_combo_init (GtkPandaCombo * combo)
+{
+  combo->case_sensitive = FALSE;
+  combo->use_arrows = TRUE;
+  combo->loop_selection = FALSE;
+
+  GtkListStore *store;
+
+  store = gtk_list_store_new(1, G_TYPE_STRING);
+ 
+  g_object_set(G_OBJECT(combo),
+    "model", GTK_TREE_MODEL(store),
+    NULL);
+
+  g_signal_connect(G_OBJECT(combo), "changed",
+    G_CALLBACK(gtk_panda_combo_active_changed), NULL);
 
   g_object_unref (store);
-  gtk_combo_box_set_row_span_column(GTK_COMBO_BOX(ret),0);
-  gtk_combo_box_set_wrap_width(GTK_COMBO_BOX(ret),0);
+  gtk_combo_box_set_row_span_column(GTK_COMBO_BOX(combo),0);
+  gtk_combo_box_set_wrap_width(GTK_COMBO_BOX(combo),0);
+}
 
-  return ret;
+static void
+gtk_panda_combo_active_changed (GtkComboBox *combo_box,
+  gpointer     user_data)
+{
+  GtkPandaCombo *panda_combo = GTK_PANDA_COMBO (combo_box);
+  GtkEntry *entry;
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  gchar *str = NULL;
+
+  entry = gtk_panda_combo_get_entry(panda_combo);
+  if (gtk_widget_has_focus(GTK_WIDGET(entry))) {
+    return;
+  }
+
+  if (gtk_combo_box_get_active_iter (combo_box, &iter))
+    {
+      model = gtk_combo_box_get_model (combo_box);
+
+      gtk_tree_model_get (model, &iter, 0, &str, -1);
+      gtk_entry_set_text (GTK_ENTRY (entry), str);
+      g_signal_emit_by_name (GTK_ENTRY(entry), "activate");
+      g_free (str);
+    }
 }
 
 static void 
