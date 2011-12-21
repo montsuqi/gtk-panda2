@@ -7,17 +7,19 @@
 #include <sys/stat.h>
 #include "gtkpanda.h"
 
+static GtkPandaCList *clist1 = NULL;
+
 G_MODULE_EXPORT void
 cb_toggled(
   GtkToggleButton *w,
-  GtkPandaCList *clist)
+  gpointer data)
 {
   if (gtk_toggle_button_get_active(w)) {
     printf("set multi\n");
-    gtk_panda_clist_set_selection_mode(GTK_PANDA_CLIST(clist),GTK_SELECTION_MULTIPLE);
+    gtk_panda_clist_set_selection_mode(GTK_PANDA_CLIST(clist1),GTK_SELECTION_MULTIPLE);
   } else {
     printf("set single\n");
-    gtk_panda_clist_set_selection_mode(GTK_PANDA_CLIST(clist),GTK_SELECTION_SINGLE);
+    gtk_panda_clist_set_selection_mode(GTK_PANDA_CLIST(clist1),GTK_SELECTION_SINGLE);
   }
 }
 
@@ -73,6 +75,7 @@ main (int argc, char **argv)
 
   window1 = gtk_builder_get_object(builder, "window1");
   pandaclist1 = gtk_builder_get_object(builder, "pandaclist1");
+  clist1 = GTK_PANDA_CLIST(pandaclist1);
 
   gtk_panda_clist_clear(GTK_PANDA_CLIST(pandaclist1));
   

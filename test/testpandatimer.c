@@ -7,23 +7,26 @@
 #include <sys/stat.h>
 #include "gtkpanda.h"
 
+static GtkPandaTimer *timer1 = NULL;
+static GtkButton *button1 = NULL;
+
 G_MODULE_EXPORT void
 cb_timeout(
   GtkPandaTimer *timer,
-  GtkButton *button)
+  gpointer data)
 {
   printf("timeout\n");
-  gtk_button_set_label(button,"idle");
+  gtk_button_set_label(button1,"idle");
 }
 
 G_MODULE_EXPORT void
 cb_clicked(
   GtkButton *w,
-  GtkPandaTimer *timer)
+  gpointer data)
 {
   printf("timer start\n");
-  gtk_panda_timer_set(timer,5);
-  gtk_panda_timer_reset(timer);
+  gtk_panda_timer_set(timer1,5);
+  gtk_panda_timer_reset(timer1);
   gtk_button_set_label(w,"timeout waiting ...");
 }
 
@@ -41,6 +44,8 @@ main (int argc, char **argv)
   gtk_builder_connect_signals(builder, NULL);
 
   window1 = gtk_builder_get_object(builder, "window1");
+  timer1 = GTK_PANDA_TIMER(gtk_builder_get_object(builder, "pandatimer1"));
+  button1 = GTK_BUTTON(gtk_builder_get_object(builder, "button1"));
 
   gtk_widget_show_all(GTK_WIDGET(window1));
   gtk_main();

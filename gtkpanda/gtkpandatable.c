@@ -237,12 +237,15 @@ gtk_panda_table_key_press(GtkWidget *widget,
         ncol = GPOINTER_TO_INT(
           g_object_get_data(G_OBJECT(column),"column_num"));
         gtk_tree_model_get_iter(model,&iter,path);
-        if (table->model_types[ncol] == G_TYPE_STRING) {
+        if (table->model_types[ncol] == G_TYPE_STRING &&
+            table->renderer_types[ncol] == GTK_PANDA_TABLE_RENDERER_TEXT
+        ) {
            gchar *text;
 
            gtk_tree_model_get(model,&iter,ncol,&text,-1);
            g_signal_emit(G_OBJECT(widget),signals[CELL_EDITED],0,
              nrow,ncol,text);
+       
            if (text != NULL) {
              g_free(text);
            }

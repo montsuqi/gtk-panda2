@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<interface>
+  <!-- interface-requires panda 2.0 -->
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkWindow" id="window1">
+    <signal name="destroy_event" handler="gtk_main_quit"/>
+    <child>
+      <object class="GtkPandaCombo" id="pandacombo1">
+        <property name="visible">True</property>
+        <property name="button_sensitivity">on</property>
+        <property name="case_sensitive">False</property>
+        <property name="loop_selection">False</property>
+      </object>
+    </child>
+  </object>
+</interface>

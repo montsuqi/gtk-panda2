@@ -25,7 +25,7 @@ main (int argc, char **argv)
   GObject *window1;
   GObject *pandatable1;
   char *rowdata[5] = {"","label","text","T",NULL};
-  char *colors[11];
+  char *colors[100];
   int i,rows;
 
   gtk_init(&argc,&argv);
@@ -40,7 +40,7 @@ main (int argc, char **argv)
 
   rows = GTK_PANDA_TABLE(pandatable1)->rows;
 
-  colors[10] = NULL;
+  colors[rows] = NULL;
   for (i=0; i<rows; i++) {
     if (i%2 == 0) {
       rowdata[0] = GTK_STOCK_YES;

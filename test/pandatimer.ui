@@ -1,22 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
-  <requires lib="panda" version="2.24"/>
+  <!-- interface-requires panda 2.0 -->
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="window1">
-    <property name="width_request">100</property>
+    <property name="width_request">150</property>
     <property name="height_request">100</property>
-    <property name="can_focus">False</property>
-    <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
+    <signal name="destroy" handler="gtk_main_quit"/>
     <child>
-      <object class="GtkBox" id="box1">
+      <object class="GtkVBox" id="box1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
         <child>
           <object class="GtkPandaTimer" id="pandatimer1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <signal name="timeout" handler="cb_timeout" object="button1" swapped="no"/>
+            <signal name="timeout" handler="cb_timeout"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -30,12 +27,9 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="use_action_appearance">False</property>
-            <signal name="clicked" handler="cb_clicked" object="pandatimer1" swapped="no"/>
+            <signal name="clicked" handler="cb_clicked"/>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>

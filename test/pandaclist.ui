@@ -1,31 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
-  <requires lib="panda" version="2.24"/>
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-requires panda 2.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="window1">
     <property name="width_request">300</property>
     <property name="height_request">400</property>
-    <property name="can_focus">False</property>
-    <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
+    <signal name="destroy" handler="gtk_main_quit"/>
     <child>
-      <object class="GtkBox" id="box1">
+      <object class="GtkVBox" id="box1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
         <child>
           <object class="GtkCheckButton" id="checkbutton1">
             <property name="label" translatable="yes">multi selection</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
-            <property name="use_action_appearance">False</property>
             <property name="xalign">0</property>
             <property name="draw_indicator">True</property>
-            <signal name="toggled" handler="cb_toggled" object="pandaclist1" swapped="no"/>
+            <signal name="toggled" handler="cb_toggled" />
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -44,17 +40,12 @@
                 <property name="columns">3</property>
                 <property name="column_widths">100,100,100,100,100,100,100,100,100,100,100,100,100</property>
                 <property name="titles">col1,col2,col3,col4,col5,col6,col7,col8,col9,col10</property>
-                <signal name="select-row" handler="cb_select_row" swapped="no"/>
-                <signal name="unselect-row" handler="cb_unselect_row" swapped="no"/>
-                <child internal-child="selection">
-                  <object class="GtkTreeSelection" id="pandaclist-selection"/>
-                </child>
+                <signal name="select_row" handler="cb_select_row"/>
+                <signal name="unselect_row" handler="cb_unselect_row"/>
               </object>
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>

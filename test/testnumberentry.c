@@ -8,10 +8,14 @@
 #include "gtkpanda.h"
 #include "debug.h"
 
+static GObject *numberentry1;
+
 G_MODULE_EXPORT void
-cb_format_change(GtkEntry *w,GtkNumberEntry *ne)
+cb_format_change(GtkEntry *w,gpointer data)
 {
-  gtk_number_entry_set_format(ne,gtk_entry_get_text(w));
+  gtk_number_entry_set_format(
+    GTK_NUMBER_ENTRY(numberentry1),
+    gtk_entry_get_text(w));
 }
 
 G_MODULE_EXPORT void
@@ -37,6 +41,7 @@ cb_changed(GtkEditable *w,
   );
 }
 
+
 int
 main (int argc, char **argv)
 {
@@ -51,6 +56,7 @@ main (int argc, char **argv)
   gtk_builder_connect_signals(builder, NULL);
 
   window1 = gtk_builder_get_object(builder, "window1");
+  numberentry1 = gtk_builder_get_object(builder, "numberentry1");
 
   gtk_widget_show_all(GTK_WIDGET(window1));
   gtk_main();

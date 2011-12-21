@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
-  <requires lib="panda" version="2.24"/>
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-requires panda 2.0 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="window1">
     <property name="width_request">400</property>
     <property name="height_request">300</property>
-    <property name="can_focus">False</property>
-    <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
+    <signal name="destroy" handler="gtk_main_quit"/>
     <child>
       <object class="GtkScrolledWindow" id="scrolledwindow1">
         <property name="visible">True</property>
@@ -19,17 +19,12 @@
             <property name="headers_clickable">False</property>
             <property name="enable_search">False</property>
             <property name="search_column">0</property>
-            <property name="rows">10</property>
+            <property name="rows">50</property>
             <property name="columns">4</property>
             <property name="column_types">icon,label,text,check</property>
             <property name="column_titles">icon,label,text,check</property>
             <property name="column_widths">100,100,100,100,100,100,100,100,100,100</property>
-            <signal name="cell-edited" handler="cb_cell_edited" swapped="no"/>
-            <child internal-child="selection">
-              <object class="GtkTreeSelection" id="pandatable-selection1">
-                <property name="mode">none</property>
-              </object>
-            </child>
+            <signal name="cell_edited" handler="cb_cell_edited"/>
           </object>
         </child>
       </object>
