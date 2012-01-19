@@ -222,6 +222,9 @@ main (int argc, char **argv)
   window = create_window1 ();
   gtk_signal_connect (GTK_OBJECT (window), "destroy",
 		      GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
+#if 1
+  gtk_panda_entry_force_feature_off();
+#endif
 
   gtk_widget_show (window);
   gtk_main ();
