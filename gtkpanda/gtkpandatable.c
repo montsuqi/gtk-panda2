@@ -18,7 +18,6 @@
  *
  * Based on gtk/gtktreeview.c
  */
-
 /*
  * Modified by the GTK+ Team and others 1997-1999.  See the AUTHORS
  * file for a list of people on the GTK+ Team.  See the ChangeLog
@@ -269,6 +268,12 @@ gtk_panda_table_key_press(GtkWidget *widget,
      ) {
     if ((event->keyval >= GDK_space && event->keyval <= GDK_z) || 
         (event->keyval >= GDK_KP_0 && event->keyval <= GDK_KP_9) ||
+        (event->keyval == GDK_KP_Multiply) ||
+        (event->keyval == GDK_KP_Add) ||
+        (event->keyval == GDK_KP_Separator) ||
+        (event->keyval == GDK_KP_Subtract) ||
+        (event->keyval == GDK_KP_Divide) ||
+        (event->keyval == GDK_KP_Decimal) ||
         (event->keyval == GDK_BackSpace) ||
         (event->keyval == GDK_Zenkaku_Hankaku)) {
       hook = TRUE;
