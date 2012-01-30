@@ -18,7 +18,6 @@
  *
  * Based on gtk/gtktreeview.c
  */
-
 /*
  * Modified by the GTK+ Team and others 1997-1999.  See the AUTHORS
  * file for a list of people on the GTK+ Team.  See the ChangeLog
@@ -247,12 +246,6 @@ gtk_panda_table_key_press(GtkWidget *widget,
            if (text != NULL) {
              g_free(text);
            }
-        } else if (table->model_types[ncol] == G_TYPE_BOOLEAN) {
-           gboolean check;
-
-           gtk_tree_model_get(model,&iter,ncol,&check,-1);
-           g_signal_emit(G_OBJECT(widget),signals[CELL_EDITED],0,
-            nrow,ncol,check ? "F":"T");
         }
 
         if (path != NULL) {
@@ -270,6 +263,12 @@ gtk_panda_table_key_press(GtkWidget *widget,
      ) {
     if ((event->keyval >= GDK_space && event->keyval <= GDK_z) || 
         (event->keyval >= GDK_KP_0 && event->keyval <= GDK_KP_9) ||
+        (event->keyval == GDK_KP_Multiply) ||
+        (event->keyval == GDK_KP_Add) ||
+        (event->keyval == GDK_KP_Separator) ||
+        (event->keyval == GDK_KP_Subtract) ||
+        (event->keyval == GDK_KP_Divide) ||
+        (event->keyval == GDK_KP_Decimal) ||
         (event->keyval == GDK_BackSpace) ||
         (event->keyval == GDK_Zenkaku_Hankaku)) {
       hook = TRUE;
@@ -342,38 +341,6 @@ cb_text_renderer_edited(GtkCellRendererText *renderer,
 }
 
 static void
-cb_toggle_renderer_toggled(GtkCellRendererToggle *renderer,
-  gchar *pathstr,
-  gpointer user_data)
-{
-  GtkPandaTable *table = GTK_PANDA_TABLE(user_data);
-  guint row,column;
-  gpointer data = g_object_get_data(G_OBJECT(renderer),"column_num");
-  GtkTreeIter iter;
-  GtkTreeModel *model;
-  GtkTreePath *path;
-  
-  if (data == NULL) { return; }
-  column = GPOINTER_TO_UINT(data);
-  row = atoi(pathstr);
-  path = gtk_tree_path_new_from_string(pathstr);
-  model = gtk_tree_view_get_model(GTK_TREE_VIEW(table));
-  if (gtk_tree_model_get_iter(model,&iter,path)) {
-    gtk_list_store_set(
-      GTK_LIST_STORE(model),
-      &iter,
-      column,
-      !gtk_cell_renderer_toggle_get_active(renderer),
-      -1);
-  }
-  gtk_tree_path_free(path);
-
-  g_signal_emit(table, signals[CELL_EDITED],0,row,column,
-    !gtk_cell_renderer_toggle_get_active(renderer)?"T":"F");
-}
-
-
-static void
 parse_prop_types(GtkPandaTable *table)
 {
   int i;
@@ -392,19 +359,10 @@ parse_prop_types(GtkPandaTable *table)
 
 
   for(i = 0; splits[i] != NULL && i < table->columns; i++) {
-    if (!strcmp(splits[i], "text")) {
-      table->renderer_types[i] = GTK_PANDA_TABLE_RENDERER_TEXT;
-      table->model_types[i] = G_TYPE_STRING;
-    } else if (!strcmp(splits[i], "label")) {
+    if (!strcmp(splits[i], "label")) {
       table->renderer_types[i] = GTK_PANDA_TABLE_RENDERER_LABEL;
       table->model_types[i] = G_TYPE_STRING;
-    } else if (!strcmp(splits[i], "icon")) {
-      table->renderer_types[i] = GTK_PANDA_TABLE_RENDERER_ICON;
-      table->model_types[i] = G_TYPE_STRING;
-    } else if (!strcmp(splits[i], "check")) {
-      table->renderer_types[i] = GTK_PANDA_TABLE_RENDERER_CHECK;
-      table->model_types[i] = G_TYPE_BOOLEAN;
-    } else {
+    } else { /* text */
       table->renderer_types[i] = GTK_PANDA_TABLE_RENDERER_TEXT;
       table->model_types[i] = G_TYPE_STRING;
     }
@@ -455,25 +413,6 @@ apply_prop_types(GtkPandaTable *table)
       gtk_tree_view_column_set_attributes(col, renderer, 
         "text",i,
         "foreground",table->columns,
-        NULL);
-      break;
-    case GTK_PANDA_TABLE_RENDERER_CHECK:
-      renderer = gtk_cell_renderer_toggle_new();
-      gtk_tree_view_column_pack_start(col, renderer, TRUE);
-      g_object_set(G_OBJECT(renderer),
-        "activatable",TRUE,
-        NULL);
-      gtk_tree_view_column_set_attributes(col, renderer, 
-        "active", i,
-        NULL);
-      g_signal_connect(G_OBJECT(renderer),"toggled",
-        G_CALLBACK(cb_toggle_renderer_toggled),table);
-      break;
-    case GTK_PANDA_TABLE_RENDERER_ICON:
-      renderer = gtk_cell_renderer_pixbuf_new();
-      gtk_tree_view_column_pack_start(col, renderer, TRUE);
-      gtk_tree_view_column_set_attributes(col, renderer, 
-        "stock-id",i,
         NULL);
       break;
     }
@@ -600,26 +539,10 @@ gtk_panda_table_set_rows(
   for(i=0;i<new_rows;i++) {
     gtk_list_store_append (GTK_LIST_STORE(model), &iter);
     for(j = 0; j < table->columns; j++) {
-      switch(table->renderer_types[j]) {
-      case GTK_PANDA_TABLE_RENDERER_TEXT:
-      case GTK_PANDA_TABLE_RENDERER_LABEL:
-        value = g_new0(GValue, 1);
-        g_value_init(value, G_TYPE_STRING);
-        g_value_set_string(value, "");
-        gtk_list_store_set_value(GTK_LIST_STORE(model), &iter, j, value);
-      case GTK_PANDA_TABLE_RENDERER_ICON:
-        value = g_new0(GValue, 1);
-        g_value_init(value, G_TYPE_STRING);
-        g_value_set_string(value, GTK_STOCK_YES);
-        gtk_list_store_set_value(GTK_LIST_STORE(model), &iter, j, value);
-        break;
-      case GTK_PANDA_TABLE_RENDERER_CHECK:
-        value = g_new0(GValue, 1);
-        g_value_init(value, G_TYPE_BOOLEAN);
-        g_value_set_boolean(value, FALSE);
-        gtk_list_store_set_value(GTK_LIST_STORE(model), &iter, j, value);
-        break;
-      }
+      value = g_new0(GValue, 1);
+      g_value_init(value, G_TYPE_STRING);
+      g_value_set_string(value, "");
+      gtk_list_store_set_value(GTK_LIST_STORE(model), &iter, j, value);
     }
     /* fgcolor */
     value = g_new0(GValue, 1);
@@ -654,17 +577,7 @@ gtk_panda_table_set_row(
   gtk_tree_model_get_iter_from_string(model,&iter,path);
 
   for(i=0;rdata[i] !=NULL && i<table->columns;i++) {
-    switch(table->renderer_types[i]) {
-    case GTK_PANDA_TABLE_RENDERER_TEXT:
-    case GTK_PANDA_TABLE_RENDERER_LABEL:
-    case GTK_PANDA_TABLE_RENDERER_ICON:
-      gtk_list_store_set(GTK_LIST_STORE(model),&iter,i,rdata[i],-1);
-      break;
-    case GTK_PANDA_TABLE_RENDERER_CHECK:
-      gtk_list_store_set(GTK_LIST_STORE(model),&iter,i,
-        *(rdata[i]) == 'T' ? TRUE:FALSE,-1);
-      break;
-    }
+    gtk_list_store_set(GTK_LIST_STORE(model),&iter,i,rdata[i],-1);
   }
 }
 
@@ -774,7 +687,6 @@ gtk_panda_table_set_column_widths(
   table->widths = g_strdup(widths);
   apply_prop_widths(table);
 }
-
 
 gint
 gtk_panda_table_get_n_rows(
