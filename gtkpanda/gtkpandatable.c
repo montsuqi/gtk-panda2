@@ -160,7 +160,7 @@ gtk_panda_table_init ( GtkPandaTable * table)
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(table), FALSE );
   gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(table), FALSE );
   gtk_tree_view_set_reorderable(GTK_TREE_VIEW(table), FALSE );
-  gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(table), GTK_TREE_VIEW_GRID_LINES_BOTH);
+  gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(table), GTK_TREE_VIEW_GRID_LINES_VERTICAL);
 
   selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(table));
   gtk_tree_selection_set_mode(selection,GTK_SELECTION_NONE);
