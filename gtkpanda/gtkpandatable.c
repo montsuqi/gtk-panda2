@@ -336,7 +336,11 @@ cb_text_renderer_edited(GtkCellRendererText *renderer,
   }
   gtk_tree_path_free(path);
   
+#if 0
+/* 編集中にマウスクリックでカーソル移動するとCELL_EDITED発生 */
+/* CELL_EDITEDのコールバックでセル移動すると元のセルが破壊される */
   g_signal_emit(table, signals[CELL_EDITED],0,row,column,new_text);
+#endif
 }
 
 static void
