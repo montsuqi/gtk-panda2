@@ -344,6 +344,37 @@ cb_text_renderer_edited(GtkCellRendererText *renderer,
 }
 
 static void
+cb_text_renderer_edited_by_key(GtkCellRendererText *renderer,
+  gchar *pathstr,
+  gchar *new_text,
+  gpointer user_data)
+{
+  GtkPandaTable *table = GTK_PANDA_TABLE(user_data);
+  guint row,column;
+  gpointer data = g_object_get_data(G_OBJECT(renderer),"column_num");
+  GtkTreeIter iter;
+  GtkTreeModel *model;
+  GtkTreePath *path;
+  
+  if (data == NULL) { return; }
+  column = GPOINTER_TO_UINT(data);
+  row = atoi(pathstr);
+  path = gtk_tree_path_new_from_string(pathstr);
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(table));
+  if (gtk_tree_model_get_iter(model,&iter,path)) {
+    gtk_list_store_set(
+      GTK_LIST_STORE(model),
+      &iter,
+      column,
+      new_text,
+      -1);
+  }
+  gtk_tree_path_free(path);
+  
+  g_signal_emit(table, signals[CELL_EDITED],0,row,column,new_text);
+}
+
+static void
 parse_prop_types(GtkPandaTable *table)
 {
   int i;
@@ -406,6 +437,8 @@ apply_prop_types(GtkPandaTable *table)
         NULL);
       g_signal_connect(G_OBJECT(renderer),"edited",
         G_CALLBACK(cb_text_renderer_edited),table);
+      g_signal_connect(G_OBJECT(renderer),"edited-by-key",
+        G_CALLBACK(cb_text_renderer_edited_by_key),table);
       break;
     case GTK_PANDA_TABLE_RENDERER_LABEL:
       renderer = gtk_cell_renderer_text_new();

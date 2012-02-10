@@ -44,6 +44,10 @@ struct _PandaCellRendererText
 struct _PandaCellRendererTextClass
 {
   GtkCellRendererTextClass parent_class;
+
+  void (*edited_by_key) (PandaCellRendererText *p,
+    gchar *path,
+    gchar *text);
 };
 
 GType            panda_cell_renderer_text_get_type (void);
