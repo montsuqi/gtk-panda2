@@ -236,7 +236,7 @@ gtk_panda_table_key_press(GtkWidget *widget,
         ncol = GPOINTER_TO_INT(
           g_object_get_data(G_OBJECT(column),"column_num"));
         gtk_tree_model_get_iter(model,&iter,path);
-        if (table->model_types[ncol] == G_TYPE_STRING) {
+        if (table->renderer_types[ncol] == GTK_PANDA_TABLE_RENDERER_TEXT) {
            gchar *text;
 
            gtk_tree_model_get(model,&iter,ncol,&text,-1);
@@ -431,10 +431,6 @@ apply_prop_types(GtkPandaTable *table)
       g_object_set(G_OBJECT(renderer),
         "editable",TRUE,
         NULL);
-      gtk_tree_view_column_set_attributes(col, renderer, 
-        "text",i,
-        "foreground",table->columns,
-        NULL);
       g_signal_connect(G_OBJECT(renderer),"edited",
         G_CALLBACK(cb_text_renderer_edited),table);
       g_signal_connect(G_OBJECT(renderer),"edited-by-key",
@@ -446,17 +442,16 @@ apply_prop_types(GtkPandaTable *table)
       g_object_set(G_OBJECT(renderer),
         "editable",FALSE,
         NULL);
-      gtk_tree_view_column_set_attributes(col, renderer, 
-        "text",i,
-        "foreground",table->columns,
-        NULL);
       break;
     }
     if (renderer != NULL) {
       g_object_set_data(G_OBJECT(renderer),
        "column_num", GUINT_TO_POINTER(i));
-      gtk_tree_view_column_add_attribute(col, renderer, 
-        "cell-background",table->columns+1);
+      gtk_tree_view_column_set_attributes(col, renderer, 
+        "text",i,
+        "foreground",table->columns+i,
+        "cell-background",table->columns*2+i,
+        NULL);
     }
   }
 }
@@ -546,7 +541,7 @@ gtk_panda_table_set_columns (
   apply_prop_types(table);
   apply_prop_titles(table);
 
-  store = gtk_list_store_newv(table->columns+2, table->model_types);
+  store = gtk_list_store_newv(table->columns*3, table->model_types);
   gtk_tree_view_set_model(GTK_TREE_VIEW(table), GTK_TREE_MODEL(store));
 
   gtk_panda_table_set_rows(table,table->rows);
@@ -579,18 +574,19 @@ gtk_panda_table_set_rows(
       g_value_init(value, G_TYPE_STRING);
       g_value_set_string(value, "");
       gtk_list_store_set_value(GTK_LIST_STORE(model), &iter, j, value);
-    }
-    /* fgcolor */
-    value = g_new0(GValue, 1);
-    g_value_init(value, G_TYPE_STRING);
-    g_value_set_string(value, "black");
-    gtk_list_store_set_value(GTK_LIST_STORE(model), &iter, table->columns, value);
 
-    /* bgcolor */
-    value = g_new0(GValue, 1);
-    g_value_init(value, G_TYPE_STRING);
-    g_value_set_string(value, "white");
-    gtk_list_store_set_value(GTK_LIST_STORE(model), &iter, table->columns + 1, value);
+      /* fgcolor */
+      value = g_new0(GValue, 1);
+      g_value_init(value, G_TYPE_STRING);
+      g_value_set_string(value, "black");
+      gtk_list_store_set_value(GTK_LIST_STORE(model), &iter, table->columns + j, value);
+
+      /* bgcolor */
+      value = g_new0(GValue, 1);
+      g_value_init(value, G_TYPE_STRING);
+      g_value_set_string(value, "white");
+      gtk_list_store_set_value(GTK_LIST_STORE(model), &iter, table->columns*2 + 1, value);
+    }
   }
 }
 
@@ -618,63 +614,55 @@ gtk_panda_table_set_row(
 }
 
 void
-gtk_panda_table_set_bgcolors(
+gtk_panda_table_set_bgcolor(
   GtkPandaTable *table,
+  int row,
   gchar **rdata)
 {
   GtkTreeModel *model;
   GtkTreeIter iter;
+  gchar path[16];
   int i;
 
   g_return_if_fail(table != NULL);
   g_return_if_fail(GTK_IS_PANDA_TABLE(table));
-  if (rdata == NULL) {
-    return;
-  }
 
+  sprintf(path,"%d",row);
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(table));
-  if(!gtk_tree_model_get_iter_first(model,&iter)) {
-    return;
-  }
-  for(i=0;rdata[i]!=NULL;i++) {
+  gtk_tree_model_get_iter_from_string(model,&iter,path);
+
+  for(i=0;rdata[i] !=NULL && i<table->columns;i++) {
     if (strlen(rdata[i])==0) {
-      gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns+1,NULL,-1);
+      gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns*2+i,NULL,-1);
     } else {
-      gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns+1,rdata[i],-1);
-    }
-    if(!gtk_tree_model_iter_next(model,&iter)) {
-      break;
+      gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns*2+i,rdata[i],-1);
     }
   }
 }
 
 void
-gtk_panda_table_set_fgcolors(
+gtk_panda_table_set_fgcolor(
   GtkPandaTable *table,
+  int row,
   gchar **rdata)
 {
   GtkTreeModel *model;
   GtkTreeIter iter;
+  gchar path[16];
   int i;
 
   g_return_if_fail(table != NULL);
   g_return_if_fail(GTK_IS_PANDA_TABLE(table));
-  if (rdata == NULL) {
-    return;
-  }
 
+  sprintf(path,"%d",row);
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(table));
-  if(!gtk_tree_model_get_iter_first(model,&iter)) {
-    return;
-  }
-  for(i=0;rdata[i]!=NULL;i++) {
+  gtk_tree_model_get_iter_from_string(model,&iter,path);
+
+  for(i=0;rdata[i] !=NULL && i<table->columns;i++) {
     if (strlen(rdata[i])==0) {
-      gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns,NULL,-1);
+      gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns+i,NULL,-1);
     } else {
-      gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns,rdata[i],-1);
-    }
-    if(!gtk_tree_model_iter_next(model,&iter)) {
-      break;
+      gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns+i,rdata[i],-1);
     }
   }
 }

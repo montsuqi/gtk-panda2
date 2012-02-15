@@ -85,9 +85,11 @@ void gtk_panda_table_set_column_widths(GtkPandaTable *table,
 void gtk_panda_table_set_row(GtkPandaTable *table,
   gint i,
   gchar *text[]);
-void gtk_panda_table_set_bgcolors(GtkPandaTable *table,
+void gtk_panda_table_set_bgcolor(GtkPandaTable *table,
+  gint i,
   gchar *colors[]);
-void gtk_panda_table_set_fgcolors(GtkPandaTable *table,
+void gtk_panda_table_set_fgcolor(GtkPandaTable *table,
+  gint i,
   gchar *colors[]);
 void gtk_panda_table_moveto(GtkPandaTable *table,
   gint row,

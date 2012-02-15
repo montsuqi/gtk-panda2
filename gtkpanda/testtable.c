@@ -15,7 +15,7 @@ reset_data(GtkPandaTable *table)
 {
   static int num = 1;
   gchar *rowdata[5] = {GTK_STOCK_YES,"text","label","T",NULL};
-  gchar *colors[ROW_SIZE+1];
+  gchar *colors[5] = {"","","","",NULL};
   int i;
 
   for(i=0;i<ROW_SIZE;i++) {
@@ -31,26 +31,15 @@ reset_data(GtkPandaTable *table)
       rowdata[3] = "F";
     }
     gtk_panda_table_set_row(table,i,rowdata);
-  }
-
-  colors[ROW_SIZE] = NULL;
-  for(i=0;i<ROW_SIZE;i++){
+    colors[0] = colors[1] = colors[2] = colors[3] = "black";
+    gtk_panda_table_set_fgcolor(table,i,colors);
     if (i%2==0) {
-      colors[i] = "";
+      colors[0] = colors[1] = colors[2] = colors[3] = "";
     } else {
-      colors[i] = "azure";
+      colors[0] = colors[1] = colors[2] = colors[3] = "azure";
     }
+    gtk_panda_table_set_bgcolor(table,i,colors);
   }
-  gtk_panda_table_set_bgcolors(table,colors);
-
-  for(i=0;i<ROW_SIZE;i++){
-    if (i%2==0) {
-      colors[i] = "black";
-    } else {
-      colors[i] = "red";
-    }
-  }
-  gtk_panda_table_set_fgcolors(table,colors);
   num++;
 }
 
@@ -68,6 +57,10 @@ cb_cell_edited(GtkPandaTable *table,
   gchar *value,
   gpointer data)
 {
+  gchar *colors[5] = {"","","","",NULL};
+
+  colors[column] = "red";
+  gtk_panda_table_set_bgcolor(table,row,colors);
   fprintf(stderr,"[%d,%d][%s]\n",row,column,value);
 }
 
