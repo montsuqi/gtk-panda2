@@ -153,11 +153,10 @@ gtk_panda_combo_init (GtkPandaCombo * combo)
 
   GtkListStore *store;
 
-  store = gtk_list_store_new(1, G_TYPE_STRING);
+  /* 本当は1でいいはずだが、警告が出るので2にしている */
+  store = gtk_list_store_new(2, G_TYPE_STRING,G_TYPE_STRING);
  
-  g_object_set(G_OBJECT(combo),
-    "model", GTK_TREE_MODEL(store),
-    NULL);
+  gtk_combo_box_set_model(GTK_COMBO_BOX(combo),GTK_TREE_MODEL(store));
 
   g_signal_connect(G_OBJECT(combo), "changed",
     G_CALLBACK(gtk_panda_combo_active_changed), NULL);
