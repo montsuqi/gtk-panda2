@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <requires lib="panda" version="2.24"/>
+  <object class="GtkWindow" id="window1">
+    <property name="can_focus">False</property>
+    <property name="has_resize_grip">False</property>
+    <signal name="destroy-event" handler="gtk_main_quit" swapped="no"/>
+    <child>
+      <object class="GtkPandaCombo" id="pandacombo1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="has_entry">True</property>
+        <property name="entry_text_column">0</property>
+        <property name="id_column">0</property>
+        <property name="case_sensitive">False</property>
+        <property name="loop_selection">False</property>
+        <child internal-child="entry">
+          <object class="GtkEntry" id="pandacombo-entry1">
+            <property name="can_focus">True</property>
+            <property name="invisible_char">•</property>
+            <signal name="changed" handler="cb_changed" swapped="no"/>
+            <signal name="activate" handler="cb_activate" swapped="no"/>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
