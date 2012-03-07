@@ -52,6 +52,7 @@ struct _GtkPandaCombo {
   gboolean case_sensitive:1;
   gboolean use_arrows:1;
   gboolean loop_selection:1;
+  GtkEntryCompletion *completion;
 };
 
 struct _GtkPandaComboClass {

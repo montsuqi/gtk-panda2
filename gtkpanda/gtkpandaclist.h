@@ -55,7 +55,6 @@ struct _GtkPandaCList {
   gboolean show_titles;
   gint columns;
   gchar *column_widths;
-  gchar *titles;
   GtkSelectionMode selection_mode;
 };
 
@@ -107,8 +106,6 @@ void gtk_panda_clist_unselect_row (GtkPandaCList *clist,
   gint      column);
 void gtk_panda_clist_set_show_titles(GtkPandaCList *clist,
   gboolean show_titles);
-void gtk_panda_clist_set_titles(GtkPandaCList *clist,
-  const gchar *titles);
 
 #ifdef __cplusplus
 }

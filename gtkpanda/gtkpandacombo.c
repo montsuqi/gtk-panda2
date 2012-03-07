@@ -164,6 +164,8 @@ gtk_panda_combo_init (GtkPandaCombo * combo)
   g_object_unref (store);
   gtk_combo_box_set_row_span_column(GTK_COMBO_BOX(combo),0);
   gtk_combo_box_set_wrap_width(GTK_COMBO_BOX(combo),0);
+
+  combo->completion = NULL;
 }
 
 static void
@@ -283,7 +285,6 @@ gtk_panda_combo_set_popdown_strings (GtkPandaCombo * combo, gchar **strs)
   GtkListStore *model;
   GtkTreeIter iter;
   GtkEntry *entry;
-  static GtkEntryCompletion *comp = NULL;
   int i;
   
   g_return_if_fail (combo != NULL);
@@ -298,12 +299,12 @@ gtk_panda_combo_set_popdown_strings (GtkPandaCombo * combo, gchar **strs)
   }
   gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
 
-  if (comp == NULL) {
-    comp = gtk_entry_completion_new();
-    gtk_entry_completion_set_model(comp,GTK_TREE_MODEL(model));
-    gtk_entry_completion_set_text_column(comp,0);
+  if (combo->completion == NULL) {
+    combo->completion = gtk_entry_completion_new();
+    gtk_entry_completion_set_model(combo->completion,GTK_TREE_MODEL(model));
+    gtk_entry_completion_set_text_column(combo->completion,0);
     entry = gtk_panda_combo_get_entry(combo);
-    gtk_entry_set_completion(entry,comp);
+    gtk_entry_set_completion(entry,combo->completion);
     g_signal_connect(G_OBJECT(entry),"focus-out-event",
     G_CALLBACK(cb_entry_focus_out),NULL);
   }

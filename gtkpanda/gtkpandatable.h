@@ -45,8 +45,6 @@ extern "C" {
 enum GtkPandaTableRendererType {
   GTK_PANDA_TABLE_RENDERER_TEXT = 0,
   GTK_PANDA_TABLE_RENDERER_LABEL,
-  GTK_PANDA_TABLE_RENDERER_CHECK,
-  GTK_PANDA_TABLE_RENDERER_ICON
 };
 
 typedef struct _GtkPandaTable		GtkPandaTable;
@@ -87,9 +85,11 @@ void gtk_panda_table_set_column_widths(GtkPandaTable *table,
 void gtk_panda_table_set_row(GtkPandaTable *table,
   gint i,
   gchar *text[]);
-void gtk_panda_table_set_bgcolors(GtkPandaTable *table,
+void gtk_panda_table_set_bgcolor(GtkPandaTable *table,
+  gint i,
   gchar *colors[]);
-void gtk_panda_table_set_fgcolors(GtkPandaTable *table,
+void gtk_panda_table_set_fgcolor(GtkPandaTable *table,
+  gint i,
   gchar *colors[]);
 void gtk_panda_table_moveto(GtkPandaTable *table,
   gint row,

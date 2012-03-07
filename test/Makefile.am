@@ -1,14 +1,13 @@
 noinst_PROGRAMS = \
-	testpandaentry \
-	testnumberentry	\
-	testpandatext \
-	testpandacombo \
-	testpandaclist \
-	testpandapixmap \
-	testpandapdf \
-	testpandahtml \
-	testpandatimer \
-	testpandatable
+	testentry \
+	testnumeric	\
+	testtext \
+	testcombo \
+	testpixmap \
+	testpdf \
+	testhtml \
+	testtimer \
+	testtable
 
 BASE_CFLAGS = \
 	-I $(top_builddir)/gtkpanda \
@@ -20,52 +19,52 @@ BASE_LIBS = \
 BASE_DEPS = \
 	$(top_builddir)/gtkpanda/libgtkpanda-2.0.la
 
-testpandaentry_SOURCES = testpandaentry.c
-testpandaentry_CFLAGS = $(BASE_CFLAGS)
-testpandaentry_LDADD = $(BASE_LIBS)
-testpandaentry_DEPENDENCIES = $(BASE_DEPS)
+testentry_SOURCES = testentry.c
+testentry_CFLAGS = $(BASE_CFLAGS)
+testentry_LDADD = $(BASE_LIBS)
+testentry_DEPENDENCIES = $(BASE_DEPS)
 
-testnumberentry_SOURCES = testnumberentry.c
-testnumberentry_CFLAGS = $(BASE_CFLAGS)
-testnumberentry_LDADD = $(BASE_LIBS)
-testnumberentry_DEPENDENCIES = $(BASE_DEPS)
+testnumeric_SOURCES = testnumeric.c
+testnumeric_CFLAGS = $(BASE_CFLAGS)
+testnumeric_LDADD = $(BASE_LIBS)
+testnumeric_DEPENDENCIES = $(BASE_DEPS)
 
-testpandatext_SOURCES = testpandatext.c
-testpandatext_CFLAGS = $(BASE_CFLAGS)
-testpandatext_LDADD = $(BASE_LIBS)
-testpandatext_DEPENDENCIES = $(BASE_DEPS)
+testtext_SOURCES = testtext.c
+testtext_CFLAGS = $(BASE_CFLAGS)
+testtext_LDADD = $(BASE_LIBS)
+testtext_DEPENDENCIES = $(BASE_DEPS)
 
-testpandacombo_SOURCES = testpandacombo.c
-testpandacombo_CFLAGS = $(BASE_CFLAGS)
-testpandacombo_LDADD = $(BASE_LIBS)
-testpandacombo_DEPENDENCIES = $(BASE_DEPS)
+testcombo_SOURCES = testcombo.c
+testcombo_CFLAGS = $(BASE_CFLAGS)
+testcombo_LDADD = $(BASE_LIBS)
+testcombo_DEPENDENCIES = $(BASE_DEPS)
 
-testpandaclist_SOURCES = testpandaclist.c
-testpandaclist_CFLAGS = $(BASE_CFLAGS)
-testpandaclist_LDADD = $(BASE_LIBS)
-testpandaclist_DEPENDENCIES = $(BASE_DEPS)
+##testpandaclist_SOURCES = testpandaclist.c
+##testpandaclist_CFLAGS = $(BASE_CFLAGS)
+##testpandaclist_LDADD = $(BASE_LIBS)
+##testpandaclist_DEPENDENCIES = $(BASE_DEPS)
 
-testpandapixmap_SOURCES = testpandapixmap.c
-testpandapixmap_CFLAGS = $(BASE_CFLAGS)
-testpandapixmap_LDADD = $(BASE_LIBS)
-testpandapixmap_DEPENDENCIES = $(BASE_DEPS)
+testpixmap_SOURCES = testpixmap.c
+testpixmap_CFLAGS = $(BASE_CFLAGS)
+testpixmap_LDADD = $(BASE_LIBS)
+testpixmap_DEPENDENCIES = $(BASE_DEPS)
 
-testpandapdf_SOURCES = testpandapdf.c
-testpandapdf_CFLAGS = $(BASE_CFLAGS)
-testpandapdf_LDADD = $(BASE_LIBS)
-testpandapdf_DEPENDENCIES = $(BASE_DEPS)
+testpdf_SOURCES = testpdf.c
+testpdf_CFLAGS = $(BASE_CFLAGS)
+testpdf_LDADD = $(BASE_LIBS)
+testpdf_DEPENDENCIES = $(BASE_DEPS)
 
-testpandahtml_SOURCES = testpandahtml.c
-testpandahtml_CFLAGS = $(BASE_CFLAGS)
-testpandahtml_LDADD = $(BASE_LIBS)
-testpandahtml_DEPENDENCIES = $(BASE_DEPS)
+testhtml_SOURCES = testhtml.c
+testhtml_CFLAGS = $(BASE_CFLAGS)
+testhtml_LDADD = $(BASE_LIBS)
+testhtml_DEPENDENCIES = $(BASE_DEPS)
 
-testpandatimer_SOURCES = testpandatimer.c
-testpandatimer_CFLAGS = $(BASE_CFLAGS)
-testpandatimer_LDADD = $(BASE_LIBS)
-testpandatimer_DEPENDENCIES = $(BASE_DEPS)
+testtimer_SOURCES = testtimer.c
+testtimer_CFLAGS = $(BASE_CFLAGS)
+testtimer_LDADD = $(BASE_LIBS)
+testtimer_DEPENDENCIES = $(BASE_DEPS)
 
-testpandatable_SOURCES = testpandatable.c
-testpandatable_CFLAGS = $(BASE_CFLAGS)
-testpandatable_LDADD = $(BASE_LIBS)
-testpandatable_DEPENDENCIES = $(BASE_DEPS)
+testtable_SOURCES = testtable.c
+testtable_CFLAGS = $(BASE_CFLAGS)
+testtable_LDADD = $(BASE_LIBS)
+testtable_DEPENDENCIES = $(BASE_DEPS)

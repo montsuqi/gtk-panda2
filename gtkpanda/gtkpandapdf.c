@@ -700,13 +700,13 @@ static void
 button_press_cb (GtkWidget *widget, GdkEventButton *ev, gpointer data)
 {
   GtkPandaPDF *self;
-  gint x;
-  gint y;
+  gint x,y;
 
   self = GTK_PANDA_PDF(data);
   if (ev->button == 1) {
     self->pan = TRUE;
-    gdk_window_get_pointer(gtk_widget_get_root_window(widget), &x, &y, NULL);
+    gdk_window_get_device_position(gtk_widget_get_root_window(widget),
+      ev->device,&x,&y,NULL);
     self->bx = x;
     self->by = y;
   }
@@ -732,7 +732,8 @@ motion_cb (GtkWidget *widget, GdkEventButton *ev, gpointer data)
 
   self = GTK_PANDA_PDF(data);
   if (self->pan) {
-     gdk_window_get_pointer(gtk_widget_get_root_window(widget), &x, &y, NULL);
+     gdk_window_get_device_position(gtk_widget_get_root_window(widget),
+       ev->device,&x,&y,NULL);
      hsb = gtk_scrolled_window_get_hscrollbar(GTK_SCROLLED_WINDOW(self->scroll));
      vsb = gtk_scrolled_window_get_vscrollbar(GTK_SCROLLED_WINDOW(self->scroll));
      gtk_range_set_value(GTK_RANGE(hsb), gtk_range_get_value(GTK_RANGE(hsb)) + self->bx - x);
@@ -858,7 +859,7 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
     G_CALLBACK (combo_changed_cb), self);
   g_object_unref (store);
 
-  hbox = gtk_hbox_new(FALSE, 0);
+  hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
   gtk_box_pack_start(GTK_BOX (hbox), prev_button, FALSE, FALSE, 2);
   gtk_box_pack_start(GTK_BOX (hbox), next_button, FALSE, FALSE, 2);
   gtk_box_pack_start(GTK_BOX (hbox), self->page_entry, FALSE, FALSE, 2);
