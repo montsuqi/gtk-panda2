@@ -524,3 +524,9 @@ gtk_panda_entry_set_xim_enabled (GtkPandaEntry *entry, gboolean flag)
   entry->xim_enabled = flag;
 }
 
+
+void
+gtk_panda_entry_force_feature_off()
+{
+  // do nothing
+}
