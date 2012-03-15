@@ -613,6 +613,14 @@ gtk_panda_clist_key_press (GtkWidget   *widget,
       }
     }
     break;
+  case GDK_Tab:
+  case GDK_ISO_Left_Tab:
+    if (event->state & GDK_SHIFT_MASK) {
+      return gtk_widget_child_focus(widget,GTK_DIR_TAB_BACKWARD);
+    } else {
+      return gtk_widget_child_focus(widget,GTK_DIR_TAB_FORWARD);
+    }
+    break;
   default:
     event->state |= GDK_CONTROL_MASK;
     if (GTK_WIDGET_CLASS (parent_class)->key_press_event &&
