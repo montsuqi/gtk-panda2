@@ -224,6 +224,17 @@ gtk_panda_table_key_press(GtkWidget *widget,
   table = GTK_PANDA_TABLE(widget);
   model = gtk_tree_view_get_model(view);
 
+  switch (event->keyval) {
+  case GDK_Tab:
+  case GDK_ISO_Left_Tab:
+    if (event->state & GDK_SHIFT_MASK) {
+      return gtk_widget_child_focus(widget,GTK_DIR_TAB_BACKWARD);
+    } else {
+      return gtk_widget_child_focus(widget,GTK_DIR_TAB_FORWARD);
+    }
+    break;
+  }
+
   /* 非編集モードでEnterキーを押した場合は確定 */
   if (!(event->state & GDK_SHIFT_MASK ) &&
       !(event->state & GDK_CONTROL_MASK) &&
