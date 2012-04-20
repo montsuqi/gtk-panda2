@@ -311,11 +311,13 @@ dbgmsg(">gtk_entry_key_press");
 
   if (!gtk_editable_get_editable(editable)) {
     switch(event->keyval){
+      case GDK_Tab:
+        return FALSE;
+        break;
       case GDK_Left:
       case GDK_Right:
       case GDK_Up:
       case GDK_Down:
-      case GDK_Tab:
       case GDK_Return:
       break;
       default:
@@ -350,11 +352,13 @@ dbgmsg(">gtk_entry_key_press");
         gtk_editable_cut_clipboard (editable);
       }
       break;
+    case GDK_Tab:
+      return FALSE;
+      break;
     case GDK_Left:
     case GDK_Right:
     case GDK_Shift_L:
     case GDK_Shift_R:
-    case GDK_Tab:
     case GDK_Escape:
     case GDK_Up:
     case GDK_Down:
