@@ -86,6 +86,13 @@ static void  gtk_panda_entry_get_property       (GObject         *object,
                        GValue          *value,
                        GParamSpec      *pspec);
 
+static void   gtk_panda_entry_get_preferred_width  (GtkWidget  *widget,
+                                              gint             *minimum,
+                                              gint             *natural);
+static void   gtk_panda_entry_get_preferred_height (GtkWidget  *widget,
+                                              gint             *minimum,
+                                              gint             *natural);
+
 static GtkWidgetClass *parent_class = NULL;
 static gboolean force_im_disable = FALSE;
 
@@ -130,6 +137,8 @@ gtk_panda_entry_class_init (GtkPandaEntryClass *klass)
   widget_class->hide = gtk_panda_entry_hide;
   widget_class->focus_in_event = gtk_panda_entry_focus_in;
   widget_class->focus_out_event = gtk_panda_entry_focus_out;
+  widget_class->get_preferred_width = gtk_panda_entry_get_preferred_width;
+  widget_class->get_preferred_height = gtk_panda_entry_get_preferred_height;
 
   gobject_class = (GObjectClass*) klass;
   gobject_class->set_property = gtk_panda_entry_set_property; 
@@ -509,6 +518,22 @@ static void gtk_panda_entry_get_property (GObject         *object,
     }
 }
 
+static void   gtk_panda_entry_get_preferred_width  (GtkWidget        *widget,
+                                              gint             *minimum,
+                                              gint             *natural)
+{
+	*minimum = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget),"width"));
+    *natural = *minimum;
+}
+
+static void   gtk_panda_entry_get_preferred_height (GtkWidget        *widget,
+                                              gint             *minimum,
+                                              gint             *natural)
+{
+	*minimum = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget),"height"));
+    *natural = *minimum;
+}
+
 // public API
 
 void
@@ -530,3 +555,4 @@ gtk_panda_entry_force_feature_off()
 {
   // do nothing
 }
+

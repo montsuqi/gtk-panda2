@@ -62,6 +62,13 @@ static gint gtk_number_entry_key_press (
   GtkWidget         *widget,
   GdkEventKey       *event);
 
+static void   gtk_number_entry_get_preferred_width  (GtkWidget *widget,
+                                              gint             *minimum,
+                                              gint             *natural);
+static void   gtk_number_entry_get_preferred_height (GtkWidget *widget,
+                                              gint             *minimum,
+                                              gint             *natural);
+
 GType
 gtk_number_entry_get_type (void)
 {
@@ -100,6 +107,8 @@ gtk_number_entry_class_init (GtkNumberEntryClass *klass)
   widget_class = (GtkWidgetClass*) klass;
 
   widget_class->key_press_event = gtk_number_entry_key_press;
+  widget_class->get_preferred_width = gtk_number_entry_get_preferred_width;
+  widget_class->get_preferred_height = gtk_number_entry_get_preferred_height;
 
   gobject_class->set_property = gtk_number_entry_set_property;
   gobject_class->get_property = gtk_number_entry_get_property;
@@ -429,3 +438,20 @@ dbgmsg(">gtk_entry_key_press");
 dbgmsg("<gtk_entry_key_press");
   return return_val;
 }
+
+static void   gtk_number_entry_get_preferred_width  (GtkWidget        *widget,
+                                              gint             *minimum,
+                                              gint             *natural)
+{
+	*minimum = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget),"width"));
+    *natural = *minimum;
+}
+
+static void   gtk_number_entry_get_preferred_height (GtkWidget        *widget,
+                                              gint             *minimum,
+                                              gint             *natural)
+{
+	*minimum = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget),"height"));
+    *natural = *minimum;
+}
+
