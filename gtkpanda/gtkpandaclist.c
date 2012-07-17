@@ -540,6 +540,10 @@ gtk_panda_clist_button_press (GtkWidget *widget,
   gboolean get_path_result;
   gint bx, by;
 
+  if (event->button != 1) {
+    return FALSE;
+  }
+
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(widget));
   if (!gtk_tree_model_get_iter_first(model, &iter))
     return FALSE;
