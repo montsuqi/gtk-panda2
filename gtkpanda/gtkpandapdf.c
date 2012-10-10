@@ -426,10 +426,6 @@ draw_page(GtkPrintOperation *print,
   page = poppler_document_get_page(self->doc, pageno);
   if (page == NULL) return;
   poppler_page_get_size(page, &doc_w, &doc_h);
-fprintf(stderr,"w:%lf,h:%lf gw:%lf,gh:%lf\n",doc_w,doc_h,
-gtk_print_context_get_width(context),
-gtk_print_context_get_height(context)
-);
 
   cr = gtk_print_context_get_cairo_context(context);
 
