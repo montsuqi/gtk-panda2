@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <math.h>
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
@@ -425,8 +426,21 @@ draw_page(GtkPrintOperation *print,
   page = poppler_document_get_page(self->doc, pageno);
   if (page == NULL) return;
   poppler_page_get_size(page, &doc_w, &doc_h);
+fprintf(stderr,"w:%lf,h:%lf gw:%lf,gh:%lf\n",doc_w,doc_h,
+gtk_print_context_get_width(context),
+gtk_print_context_get_height(context)
+);
 
   cr = gtk_print_context_get_cairo_context(context);
+
+  /* FIXME:おそらくGtkの座標変換をキャンセルしている */
+  /* Gtk -> 何が何でもportlaitに変換 -> landscapeの場合、crに90度変換が入ってる  */
+  /* 日レセ改造Gtk -> landscapeはlandscapeのまま出力 -> 逆変換が必要 */
+  if (doc_w > doc_h) {
+    cairo_translate(cr,doc_w,0);
+    cairo_rotate(cr,M_PI/2.0);
+  }
+
 #ifdef POPPLER_0_8
   /* may be need poppler >= 0.8 */
   poppler_page_render_for_printing(page, cr);
