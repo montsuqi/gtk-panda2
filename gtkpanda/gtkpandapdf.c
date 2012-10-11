@@ -429,11 +429,9 @@ draw_page(GtkPrintOperation *print,
 
   cr = gtk_print_context_get_cairo_context(context);
 
-  /* FIXME:おそらくGtkの座標変換をキャンセルしている */
-  /* Gtk -> 何が何でもportlaitに変換 -> landscapeの場合、crに90度変換が入ってる  */
-  /* 日レセ改造Gtk -> landscapeはlandscapeのまま出力 -> 逆変換が必要 */
+  /* landscapeをportlaitに変換 */
   if (doc_w > doc_h) {
-    cairo_translate(cr,doc_w,0);
+    cairo_translate(cr,doc_h,0);
     cairo_rotate(cr,M_PI/2.0);
   }
 
@@ -444,27 +442,6 @@ draw_page(GtkPrintOperation *print,
   cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 0.0);
   poppler_page_render(page, cr);
 #endif
-  g_object_unref(page);
-}
-
-static void
-arrange_orientation(GtkPandaPDF *self, GtkPageSetup *ps)
-{
-  PopplerPage *page;
-  gdouble doc_w, doc_h;
-  int w, h;
-
-  page = poppler_document_get_page(self->doc, 0);
-  if (page == NULL) return;
-  poppler_page_get_size(page, &doc_w, &doc_h);
-  w = (int)(doc_w); 
-  h = (int)(doc_h);
-
-  if (w > h) {
-    gtk_page_setup_set_orientation(ps, GTK_PAGE_ORIENTATION_LANDSCAPE);
-  } else {
-    gtk_page_setup_set_orientation(ps, GTK_PAGE_ORIENTATION_PORTRAIT);
-  }
   g_object_unref(page);
 }
 
@@ -500,7 +477,6 @@ gtk_panda_pdf_print(GtkPandaPDF *self,
   gtk_page_setup_set_bottom_margin(page_setup, 0.0, GTK_UNIT_MM);    
   gtk_page_setup_set_left_margin(page_setup, 0.0, GTK_UNIT_MM);    
   gtk_page_setup_set_right_margin(page_setup, 0.0, GTK_UNIT_MM);    
-  arrange_orientation(self, page_setup);
   gtk_print_operation_set_default_page_setup(print, page_setup);
 
   if (settings) gtk_print_operation_set_print_settings(print, settings);
