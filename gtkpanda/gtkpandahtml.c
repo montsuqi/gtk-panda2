@@ -158,16 +158,34 @@ cb_new_window(WebKitWebView *webview,
 }
 
 static void
+cb_document_load_finished(
+  WebKitWebView *webview,
+  WebKitWebFrame *frame,
+  GtkScrolledWindow *scroll)
+{
+  GtkAdjustment *vadj;
+  GtkAdjustment *hadj;
+  vadj = gtk_scrolled_window_get_vadjustment(scroll);
+  hadj = gtk_scrolled_window_get_hadjustment(scroll);
+  gtk_adjustment_set_value(vadj,0);
+  gtk_adjustment_set_value(hadj,0);
+}
+
+static void
 gtk_panda_html_init (GtkPandaHTML *self)
 {
   gtk_panda_html_set_proxy();
+  self->scroll = gtk_scrolled_window_new(NULL,NULL);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(self->scroll),
+    GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
   self->webview = webkit_web_view_new();
   g_signal_connect(WEBKIT_WEB_VIEW(self->webview), 
     "new-window-policy-decision-requested",
     G_CALLBACK(cb_new_window), NULL);
-  self->scroll = gtk_scrolled_window_new(NULL,NULL);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(self->scroll),
-    GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
+  g_signal_connect(WEBKIT_WEB_VIEW(self->webview), 
+    "document-load-finished",
+    G_CALLBACK(cb_document_load_finished), 
+    GTK_SCROLLED_WINDOW(self->scroll));
   gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(self->scroll),
     self->webview);
   
