@@ -420,8 +420,8 @@ gtk_panda_entry_insert_text (GtkEditable *editable,
           strcpy (buff, "ン");
         } else {
           sprintf (buff, "ン%c", this);
-          new_text = buff;
         }
+        new_text = buff;
       }
       else if (this == last)
       {
