@@ -84,3 +84,20 @@ set_im_state_post_focus(
     }
   }
 }
+
+gboolean
+get_im_state(
+  GtkIMMulticontext *mim)
+{
+  GtkIMContext *im;
+  gboolean *state;
+
+  if (!strcmp("ibus", mim->context_id)) {
+    im = mim->slave;
+    state = (gboolean *)g_object_get_data(G_OBJECT(im), "im-state");
+    if (state != NULL) {
+      return *state;
+    }
+  }
+  return FALSE;
+}

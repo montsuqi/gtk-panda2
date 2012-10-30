@@ -303,10 +303,20 @@ gtk_panda_table_key_press(GtkWidget *widget,
       for(i=0;i<g_list_length(list);i++){
         cell = GTK_CELL_RENDERER(g_list_nth_data(list,i));
         if (PANDA_IS_CELL_RENDERER_TEXT(cell)) {
-          gtk_im_context_filter_keypress(
-            panda_cell_renderer_text_get_im(
-              PANDA_CELL_RENDERER_TEXT(cell)),
-              event);
+            if (event->keyval == GDK_BackSpace) {
+              panda_cell_renderer_text_eval_backspace();
+#if 0
+            } else if (event->keyval == GDK_Zenkaku_Hankaku) {
+              /* preciseでは半角/全角キーで日本語入力ONにならない  */
+              /* g_idle_addでkeypressしてもONになったりならなかったりする */
+              panda_cell_renderer_text_eval_zenhankaku();
+#endif
+            } else {
+              gtk_im_context_filter_keypress(
+                panda_cell_renderer_text_get_im(
+                  PANDA_CELL_RENDERER_TEXT(cell)),
+                  event);
+            }
         }
       }
       g_list_free(list);
@@ -326,7 +336,7 @@ cb_text_renderer_edited(GtkCellRendererText *renderer,
   gpointer user_data)
 {
   GtkPandaTable *table = GTK_PANDA_TABLE(user_data);
-  guint row,column;
+  guint column;
   gpointer data = g_object_get_data(G_OBJECT(renderer),"column_num");
   GtkTreeIter iter;
   GtkTreeModel *model;
@@ -334,7 +344,6 @@ cb_text_renderer_edited(GtkCellRendererText *renderer,
   
   if (data == NULL) { return; }
   column = GPOINTER_TO_UINT(data);
-  row = atoi(pathstr);
   path = gtk_tree_path_new_from_string(pathstr);
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(table));
   if (gtk_tree_model_get_iter(model,&iter,path)) {

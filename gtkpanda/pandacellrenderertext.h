@@ -53,6 +53,8 @@ struct _PandaCellRendererTextClass
 GType            panda_cell_renderer_text_get_type (void);
 GtkCellRenderer *panda_cell_renderer_text_new      (void);
 GtkIMContext	*panda_cell_renderer_text_get_im(PandaCellRendererText* rend);
+void             panda_cell_renderer_text_eval_backspace(void);
+void             panda_cell_renderer_text_eval_zenhankaku(void);
 
 G_END_DECLS
 

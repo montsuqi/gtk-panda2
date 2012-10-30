@@ -26,9 +26,11 @@
 #include <gtk/gtk.h>
 
 #include <gdk/gdk.h>
+#include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 #include "pandacellrenderertext.h"
 #include "pandamarshal.h"
+#include "imcontrol.h"
 
 static void panda_cell_renderer_text_class_init
     (PandaCellRendererTextClass *cell_text_class);
@@ -148,9 +150,10 @@ editing_done (GtkCellEditable *_entry,
 
 
 static gboolean
-focus_out_event (GtkWidget *entry,
-                            GdkEvent  *event,
-          gpointer   data)
+focus_out_event (
+  GtkWidget *entry,
+  GdkEvent  *event,
+  gpointer   data)
 {
   g_object_set (entry,
                 "editing-canceled", TRUE,
@@ -245,8 +248,7 @@ start_editing (GtkCellRenderer      *cell,
         G_CALLBACK (editing_entry_key_press),
         celltext);
   focus_out_id = g_signal_connect_after (entry, "focus-out-event",
-                 G_CALLBACK (focus_out_event),
-                 celltext);
+                 G_CALLBACK(focus_out_event), celltext);
   gtk_widget_show (entry);
   gtk_editable_set_position(GTK_EDITABLE(entry),-1);
 
@@ -262,4 +264,41 @@ panda_cell_renderer_text_get_im(PandaCellRendererText *rend)
     im = GTK_IM_CONTEXT(GTK_ENTRY(entry)->im_context);
   }
   return im;
+}
+
+void
+panda_cell_renderer_text_eval_backspace(void)
+{
+  gint pos;
+
+  if (entry != NULL) {
+    gtk_editable_set_position(GTK_EDITABLE(entry),-1);
+    pos = gtk_editable_get_position(GTK_EDITABLE(entry));
+    gtk_editable_delete_text(GTK_EDITABLE(entry),pos-1, -1);
+  }
+}
+
+gboolean
+zenhankaku(
+  gpointer data)
+{
+  GtkIMMulticontext *mim;
+
+  if (entry != NULL) {
+    gtk_widget_grab_focus(entry);
+    mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(entry)->im_context);
+    set_im_state_post_focus(entry,mim,TRUE);
+  }
+
+  return !get_im_state(mim);
+}
+
+void
+panda_cell_renderer_text_eval_zenhankaku(void)
+{
+#if 1
+  g_idle_add(zenhankaku,NULL);
+#else
+  zenhankaku(NULL);
+#endif
 }
