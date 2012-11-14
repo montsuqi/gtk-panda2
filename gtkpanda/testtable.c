@@ -36,7 +36,7 @@ reset_data(GtkPandaTable *table)
     if (i%2==0) {
       colors[0] = colors[1] = colors[2] = colors[3] = "";
     } else {
-      colors[0] = colors[1] = colors[2] = colors[3] = "azure";
+      colors[0] = colors[1] = colors[2] = colors[3] = "#CCCCFF";
     }
     gtk_panda_table_set_bgcolor(table,i,colors);
   }

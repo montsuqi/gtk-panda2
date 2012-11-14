@@ -206,38 +206,32 @@ start_editing (GtkCellRenderer      *cell,
             "xalign", cell->xalign,
             NULL);
 
-  if (celltext->text)
+
+  if (celltext->text) {
     gtk_entry_set_text (GTK_ENTRY (entry), celltext->text);
+  }
 
   g_object_set_data_full (G_OBJECT (entry), PANDA_CELL_RENDERER_TEXT_PATH, g_strdup (path), g_free);
   
   gtk_widget_size_request (entry, &requisition);
-  if (requisition.height < cell_area->height)
-    {
-      GtkBorder *style_border;
-      GtkBorder border;
+  if (requisition.height < cell_area->height) {
+    GtkBorder *style_border;
+    GtkBorder border;
 
-      gtk_widget_style_get (entry,
-          "inner-border", &style_border,
-          NULL);
-
-      if (style_border)
-        {
-    border = *style_border;
-    g_boxed_free (GTK_TYPE_BORDER, style_border);
-  }
-      else
-        {
-    /* Since boxed style properties can't have default values ... */
-    border.left = 2;
-    border.right = 2;
-  }
-
-      border.top = (cell_area->height - requisition.height) / 2;
-      border.bottom = (cell_area->height - requisition.height) / 2;
-      gtk_entry_set_inner_border (GTK_ENTRY (entry), &border);
+    gtk_widget_style_get (entry,"inner-border",&style_border,NULL);
+    if (style_border) {
+      border = *style_border;
+      g_boxed_free (GTK_TYPE_BORDER, style_border);
+    } else {
+      /* Since boxed style properties can't have default values ... */
+      border.left = 2;
+      border.right = 2;
     }
 
+    border.top = (cell_area->height - requisition.height) / 2;
+    border.bottom = (cell_area->height - requisition.height) / 2;
+    gtk_entry_set_inner_border (GTK_ENTRY (entry), &border);
+  }
 
   g_signal_connect (entry,
         "editing-done",
@@ -251,6 +245,14 @@ start_editing (GtkCellRenderer      *cell,
                  G_CALLBACK(focus_out_event), celltext);
   gtk_widget_show (entry);
   gtk_editable_set_position(GTK_EDITABLE(entry),-1);
+
+#if 0
+  {
+    GdkColor color;
+    gdk_color_parse("#FFDDDD",&color);
+    gtk_widget_modify_base(GTK_WIDGET(entry),GTK_STATE_NORMAL,&color); 
+  }
+#endif
 
   return GTK_CELL_EDITABLE (entry);
 }
@@ -288,9 +290,10 @@ zenhankaku(
     gtk_widget_grab_focus(entry);
     mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(entry)->im_context);
     set_im_state_post_focus(entry,mim,TRUE);
+    return !get_im_state(mim);
   }
 
-  return !get_im_state(mim);
+  return FALSE;
 }
 
 void
