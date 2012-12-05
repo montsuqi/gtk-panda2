@@ -183,6 +183,20 @@ editing_entry_key_press (GtkWidget *entry,
   return FALSE;
 }
 
+static gboolean
+cb_button_press_event(GtkWidget *widget,
+  GdkEventButton *event,
+  gpointer data)
+{
+  if (event->button == 1) {
+    /* left click */
+    return FALSE;
+  } else {
+    /* other click */
+    return TRUE;
+  }
+}
+
 static GtkCellEditable *
 start_editing (GtkCellRenderer      *cell,
               GdkEvent             *event,
@@ -241,6 +255,10 @@ start_editing (GtkCellRenderer      *cell,
         "key-press-event",
         G_CALLBACK (editing_entry_key_press),
         celltext);
+  g_signal_connect(entry,
+         "button-press-event",
+         G_CALLBACK(cb_button_press_event),
+         NULL);
   focus_out_id = g_signal_connect_after (entry, "focus-out-event",
                  G_CALLBACK(focus_out_event), celltext);
   gtk_widget_show (entry);
