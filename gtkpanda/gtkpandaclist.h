@@ -50,8 +50,8 @@ struct _GtkPandaCList {
 
   GList *prev_selection;
   gboolean show_titles;
-  gint columns;
   gchar *column_widths;
+  int columns;
   GtkSelectionMode selection_mode;
 };
 
@@ -63,19 +63,27 @@ struct _GtkPandaCListClass {
 };
 
 GType gtk_panda_clist_get_type (void);
+
 GtkWidget *gtk_panda_clist_new ();
-void gtk_panda_clist_set_columns(GtkPandaCList *clist, 
+
+void gtk_panda_clist_set_columns(
+  GtkPandaCList *clist, 
   gint n_columns);
-void gtk_panda_clist_set_column_widths(GtkPandaCList *clist,
+
+void gtk_panda_clist_set_column_widths(
+  GtkPandaCList *clist, 
   const gchar *column_widths);
 
-void gtk_panda_clist_set_column_width (GtkPandaCList *clist,
-  gint      column, 
-  gint      width);
+void gtk_panda_clist_set_column_width(
+  GtkPandaCList *clist, 
+  gint column, 
+  gint width);
 
-void gtk_panda_clist_set_selection_mode (GtkPandaCList *clist,
+void gtk_panda_clist_set_selection_mode (
+  GtkPandaCList *clist,
   GtkSelectionMode  mode);
-GtkSelectionMode gtk_panda_clist_get_selection_mode (GtkPandaCList *clist);
+
+GtkSelectionMode gtk_panda_clist_get_selection_mode(GtkPandaCList *clist);
 
 void gtk_panda_clist_moveto (GtkPandaCList *clist,
   gint      row,
@@ -103,6 +111,8 @@ void gtk_panda_clist_unselect_row (GtkPandaCList *clist,
   gint      column);
 void gtk_panda_clist_set_show_titles(GtkPandaCList *clist,
   gboolean show_titles);
+void gtk_panda_clist_set_bgcolor(GtkPandaCList *clist,int row,gchar *c);
+void gtk_panda_clist_set_fgcolor(GtkPandaCList *clist,int row,gchar *c);
 
 #ifdef __cplusplus
 }

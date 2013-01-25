@@ -110,7 +110,9 @@ main (int argc, char *argv[])
   gtk_panda_clist_set_columns(GTK_PANDA_CLIST(clist1),COLUMNS);
   column = gtk_tree_view_get_column(GTK_TREE_VIEW(clist1),0);
   gtk_tree_view_column_set_widget(column, label1);
+  column = gtk_tree_view_get_column(GTK_TREE_VIEW(clist1),1);
   gtk_tree_view_column_set_widget(column, label2);
+
 
   gtk_panda_clist_clear(GTK_PANDA_CLIST(clist1));
 
@@ -140,6 +142,11 @@ main (int argc, char *argv[])
     }
     gtk_panda_clist_append(GTK_PANDA_CLIST(clist1), text);
   }
+
+  gtk_panda_clist_set_fgcolor(GTK_PANDA_CLIST(clist1),0,"#FF2222");
+  gtk_panda_clist_set_fgcolor(GTK_PANDA_CLIST(clist1),1,"#2222FF");
+  gtk_panda_clist_set_bgcolor(GTK_PANDA_CLIST(clist1),0,"#FFEEEE");
+  gtk_panda_clist_set_bgcolor(GTK_PANDA_CLIST(clist1),1,"#EEEEFF");
 
   button = gtk_button_new_with_label("toggle sensitive");
   gtk_box_pack_start (GTK_BOX (vbox1), button, FALSE, FALSE, 0);
