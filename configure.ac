@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(gtk+panda, 2.0.4)
+AC_INIT(gtk+panda, 2.0.5)
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([gtkpanda/gtkpandaentry.c])
 AC_CONFIG_HEADER([config.h])
@@ -20,7 +20,7 @@ fi
 AC_GNU_SOURCE
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
-AC_PATH_PROG(GNOME_MOZ_REMOTE_PROG, gnome-moz-remote, /usr/bin/firefox)
+AC_PATH_PROG(GNOME_MOZ_REMOTE_PROG, firefox, "")
 AC_DEFINE_UNQUOTED(OPEN_BROWSER_COMMAND, "$GNOME_MOZ_REMOTE_PROG", "")
 
 # Checks for libraries.
