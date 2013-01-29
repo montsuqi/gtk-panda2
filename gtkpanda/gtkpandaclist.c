@@ -215,8 +215,8 @@ gtk_panda_clist_new ()
 
 #define CLIST_MAX_COLUMNS 100
 
-void
-gtk_panda_clist_set_columns (
+static void
+_gtk_panda_clist_set_columns (
   GtkPandaCList *clist,
   gint new_columns) 
 {
@@ -261,6 +261,75 @@ gtk_panda_clist_set_columns (
   }
   store = gtk_list_store_newv(j,types);
   gtk_tree_view_set_model(GTK_TREE_VIEW(clist), GTK_TREE_MODEL(store));
+}
+
+static void
+monsia3_gtk_panda_clist_set_columns (
+  GtkPandaCList *clist,
+  gint new_columns) 
+{
+  GtkTreeViewColumn *column;
+  GtkListStore *store;
+  GType *types;
+  int i;
+  int columns;
+
+  g_return_if_fail(clist != NULL);
+  g_return_if_fail(new_columns >= 0);
+
+  if (new_columns == 0) {
+    GList *list;
+    list = gtk_tree_view_get_columns(GTK_TREE_VIEW(clist));
+    for (i=0; i < g_list_length(list); i++) {
+      gtk_tree_view_remove_column(GTK_TREE_VIEW(clist),g_list_nth_data(list,i));
+    }
+    gtk_tree_view_set_model(GTK_TREE_VIEW(clist), NULL);
+    g_list_free(list);
+    clist->columns = 0;
+    return;
+  }
+
+  columns = gtk_panda_clist_get_columns(clist);
+  if (columns == new_columns) {
+    return;
+  } else if (columns > new_columns){
+    for (i = columns - 1; i >= new_columns; i-- ){ 
+      column = gtk_tree_view_get_column(GTK_TREE_VIEW(clist), i);
+      if (column != NULL) {
+        gtk_tree_view_remove_column(GTK_TREE_VIEW(clist),column);
+      }
+    }
+  } else {
+    for (i = columns ; i < new_columns; i++ ){ 
+      gtk_tree_view_insert_column_with_attributes (
+        GTK_TREE_VIEW(clist),
+        -1,
+        "",
+        gtk_cell_renderer_text_new (),
+        "text", i,
+        NULL);
+    }
+  }
+
+  clist->columns = new_columns;
+  types = g_new0(GType, new_columns);
+  for (i = 0; i < new_columns; i++) {
+    types[i] =  G_TYPE_STRING;
+  }
+  store = gtk_list_store_newv(new_columns, types);
+  gtk_tree_view_set_model(GTK_TREE_VIEW(clist), GTK_TREE_MODEL(store));
+}
+
+void
+gtk_panda_clist_set_columns (
+  GtkPandaCList *clist,
+  gint new_columns) 
+{
+  if (!getenv("MONSIA3_GTKPANDA")) {
+    _gtk_panda_clist_set_columns (clist,new_columns);
+  } else {
+    monsia3_gtk_panda_clist_set_columns (clist,new_columns);
+  }
 }
 
 void 
