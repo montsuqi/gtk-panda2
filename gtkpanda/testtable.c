@@ -91,7 +91,7 @@ main (int argc, char *argv[])
 
   gtk_panda_table_set_columns(GTK_PANDA_TABLE(table),4);
   gtk_panda_table_set_types(GTK_PANDA_TABLE(table),
-    "icon,text,label,check");
+    "text,text,label,check");
   gtk_panda_table_set_titles(GTK_PANDA_TABLE(table),
     "icon1,text1,label1,check1");
   gtk_panda_table_set_column_widths(GTK_PANDA_TABLE(table),
