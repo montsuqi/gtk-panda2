@@ -71,8 +71,6 @@ static void  gtk_panda_table_get_property(GObject *object,
 static gboolean cb_button_release_event(GtkWidget *widget,
   GdkEvent *event,
   gpointer data);
-static void cb_cursor_changed(GtkTreeView *view,
-  gpointer data);
 static gboolean gtk_panda_table_key_press(
   GtkWidget *widget,
   GdkEventKey *event);
@@ -169,8 +167,6 @@ gtk_panda_table_init ( GtkPandaTable * table)
 
   g_signal_connect(G_OBJECT(table),"button-release-event",
     G_CALLBACK(cb_button_release_event),NULL);
-  g_signal_connect(G_OBJECT(table),"cursor-changed",
-    G_CALLBACK(cb_cursor_changed),NULL);
 }
 
 GType
@@ -207,128 +203,118 @@ gtk_panda_table_new ()
   return (GtkWidget*)g_object_new(GTK_PANDA_TYPE_TABLE, NULL);
 }
 
+static void
+start_editing(GtkTreeView * view)
+{
+  GtkTreePath *path;
+  GtkTreeViewColumn *column;
+
+  path = NULL;
+
+  gtk_tree_view_get_cursor(view,&path,&column);
+  if (path != NULL && column != NULL) { 
+    gtk_tree_view_set_cursor(view,path,column,TRUE);
+  }
+  if (path != NULL) {
+    gtk_tree_path_free(path);
+  }
+}
+
+static void
+move_left(GtkTreeView * view)
+{
+  GtkTreePath *path;
+  GtkTreeViewColumn *column;
+  GList *list;
+  int i,n;
+
+  path = NULL;
+  list = gtk_tree_view_get_columns(view);
+
+  gtk_tree_view_get_cursor(view,&path,&column);
+  if (path != NULL && column != NULL) { 
+    for(i=n=0;i<g_list_length(list);i++) {
+      if (column == g_list_nth_data(list,i)) {
+        n = i;
+      }
+    }
+    if (n > 0) {
+      column = GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,n-1));
+    } else {
+      column = GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,g_list_length(list)-1));
+    }
+    gtk_tree_view_set_cursor(view,path,column,TRUE);
+  }
+  g_list_free(list);
+  if (path != NULL) {
+    gtk_tree_path_free(path);
+  }
+}
+
+static void
+move_right(GtkTreeView * view)
+{
+  GtkTreePath *path;
+  GtkTreeViewColumn *column;
+  GList *list;
+  int i,n;
+
+  path = NULL;
+  list = gtk_tree_view_get_columns(view);
+
+  gtk_tree_view_get_cursor(view,&path,&column);
+  if (path != NULL && column != NULL) { 
+    for(i=n=0;i<g_list_length(list);i++) {
+      if (column == g_list_nth_data(list,i)) {
+        n = i;
+      }
+    }
+    if (n < g_list_length(list) - 1) {
+      column = GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,n+1));
+    } else {
+      column = GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,0));
+    }
+    gtk_tree_view_set_cursor(view,path,column,TRUE);
+  }
+  g_list_free(list);
+  if (path != NULL) {
+    gtk_tree_path_free(path);
+  }
+}
+
 static gboolean
 gtk_panda_table_key_press(GtkWidget *widget,
   GdkEventKey *event)
 {
-  GtkTreeView *view;
-  GtkTreePath *path;
-  GtkTreeViewColumn *column;
-  GtkTreeIter iter;
-  GtkTreeModel *model;
-  GList *list;
-  GtkCellRenderer *cell;
-  GtkPandaTable *table;
-  int i;
-  gboolean hook = FALSE;
-  int nrow,ncol;
-
-  view = GTK_TREE_VIEW(widget);
-  table = GTK_PANDA_TABLE(widget);
-  model = gtk_tree_view_get_model(view);
-
   switch (event->keyval) {
+  case GDK_Left:
+  case GDK_KP_Left:
+    move_left(GTK_TREE_VIEW(widget));
+    return TRUE;
+    break;
+  case GDK_Right:
+  case GDK_KP_Right:
+    move_right(GTK_TREE_VIEW(widget));
+    return TRUE;
+    break;
   case GDK_Tab:
   case GDK_ISO_Left_Tab:
-    if (event->state & GDK_SHIFT_MASK) {
-      return gtk_widget_child_focus(widget,GTK_DIR_TAB_BACKWARD);
+    if (event->state & GDK_CONTROL_MASK) {
+      if (event->state & GDK_SHIFT_MASK) {
+        gtk_widget_child_focus(widget,GTK_DIR_TAB_BACKWARD);
+      } else {
+        gtk_widget_child_focus(widget,GTK_DIR_TAB_FORWARD);
+      }
     } else {
-      return gtk_widget_child_focus(widget,GTK_DIR_TAB_FORWARD);
-    }
-    break;
-  }
-
-  /* 非編集モードでEnterキーを押した場合は確定 */
-  if (!(event->state & GDK_SHIFT_MASK ) &&
-      !(event->state & GDK_CONTROL_MASK) &&
-      !(event->state & GDK_MOD1_MASK) 
-     ) {
-    if ((event->keyval == GDK_Return || event->keyval == GDK_KP_Enter)){
-      gtk_tree_view_get_cursor(view,&path,&column);
-      if (path != NULL && column != NULL) {
-        nrow = atoi(gtk_tree_path_to_string(path));
-        ncol = GPOINTER_TO_INT(
-          g_object_get_data(G_OBJECT(column),"column_num"));
-        gtk_tree_model_get_iter(model,&iter,path);
-        if (table->renderer_types[ncol] == GTK_PANDA_TABLE_RENDERER_TEXT) {
-           gchar *text;
-
-           gtk_tree_model_get(model,&iter,ncol,&text,-1);
-           g_signal_emit(G_OBJECT(widget),signals[CELL_EDITED],0,
-             nrow,ncol,text);
-           if (text != NULL) {
-             g_free(text);
-           }
-        }
-
-        if (path != NULL) {
-          gtk_tree_path_free(path);
-        }
-        return TRUE;
+      if (event->state & GDK_SHIFT_MASK) {
+        move_left(GTK_TREE_VIEW(widget));
+      } else {
+        move_right(GTK_TREE_VIEW(widget));
       }
-      return GTK_WIDGET_CLASS(parent_class)->key_press_event(widget,event);
-    }
-  }
-
-  if (!(event->state & GDK_SHIFT_MASK ) &&
-      !(event->state & GDK_CONTROL_MASK) &&
-      !(event->state & GDK_MOD1_MASK) 
-     ) {
-    if ((event->keyval >= GDK_space && event->keyval <= GDK_z) || 
-        (event->keyval >= GDK_KP_0 && event->keyval <= GDK_KP_9) ||
-        (event->keyval == GDK_KP_Multiply) ||
-        (event->keyval == GDK_KP_Add) ||
-        (event->keyval == GDK_KP_Separator) ||
-        (event->keyval == GDK_KP_Subtract) ||
-        (event->keyval == GDK_KP_Divide) ||
-        (event->keyval == GDK_KP_Decimal) ||
-        (event->keyval == GDK_BackSpace) ||
-        (event->keyval == GDK_Zenkaku_Hankaku)) {
-      hook = TRUE;
-    }
-  }
-
-  if ((event->state & GDK_SHIFT_MASK ) &&
-      !(event->state & GDK_CONTROL_MASK) &&
-      !(event->state & GDK_MOD1_MASK) &&
-      (event->keyval >= GDK_space && event->keyval <= GDK_z)
-     ) {
-      hook = TRUE;
-  }
-
-  /* 非編集モードでその他の文字キーを押した場合、編集モードにした上で
-     その文字をエントリーに送る */
-  if (hook) {
-    gtk_tree_view_get_cursor(view,&path,&column);
-    if (path != NULL && column != NULL) {
-      gtk_tree_view_set_cursor(view,path,column,TRUE);
-      list = gtk_cell_layout_get_cells(GTK_CELL_LAYOUT(column));
-      for(i=0;i<g_list_length(list);i++){
-        cell = GTK_CELL_RENDERER(g_list_nth_data(list,i));
-        if (PANDA_IS_CELL_RENDERER_TEXT(cell)) {
-            if (event->keyval == GDK_BackSpace) {
-              panda_cell_renderer_text_eval_backspace();
-#if 0
-            } else if (event->keyval == GDK_Zenkaku_Hankaku) {
-              /* preciseでは半角/全角キーで日本語入力ONにならない  */
-              /* g_idle_addでkeypressしてもONになったりならなかったりする */
-              panda_cell_renderer_text_eval_zenhankaku();
-#endif
-            } else {
-              gtk_im_context_filter_keypress(
-                panda_cell_renderer_text_get_im(
-                  PANDA_CELL_RENDERER_TEXT(cell)),
-                  event);
-            }
-        }
-      }
-      g_list_free(list);
-    }
-    if (path != NULL) {
-      gtk_tree_path_free(path);
     }
     return TRUE;
-  } 
+    break;
+  }
   return GTK_WIDGET_CLASS(parent_class)->key_press_event(widget,event);
 }
 
@@ -374,13 +360,11 @@ cb_text_renderer_edited_by_key(GtkCellRendererText *renderer,
 {
   GtkPandaTable *table = GTK_PANDA_TABLE(user_data);
   guint row,column;
-  gpointer data = g_object_get_data(G_OBJECT(renderer),"column_num");
   GtkTreeIter iter;
   GtkTreeModel *model;
   GtkTreePath *path;
   
-  if (data == NULL) { return; }
-  column = GPOINTER_TO_UINT(data);
+  column = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(renderer),"column_num"));
   row = atoi(pathstr);
   path = gtk_tree_path_new_from_string(pathstr);
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(table));
@@ -460,7 +444,7 @@ apply_prop_types(GtkPandaTable *table)
         G_CALLBACK(cb_text_renderer_edited_by_key),table);
       break;
     case GTK_PANDA_TABLE_RENDERER_LABEL:
-      renderer = gtk_cell_renderer_text_new();
+      renderer = panda_cell_renderer_text_new();
       gtk_tree_view_column_pack_start(col, renderer, TRUE);
       g_object_set(G_OBJECT(renderer),
         "editable",FALSE,
@@ -468,8 +452,8 @@ apply_prop_types(GtkPandaTable *table)
       break;
     }
     if (renderer != NULL) {
-      g_object_set_data(G_OBJECT(renderer),
-       "column_num", GUINT_TO_POINTER(i));
+      g_object_set_data(G_OBJECT(renderer),"column_num",GUINT_TO_POINTER(i));
+      g_object_set_data(G_OBJECT(renderer),"treeview",GTK_TREE_VIEW(table));
       gtk_tree_view_column_set_attributes(col, renderer, 
         "text",i,
         "foreground",table->columns+i,
@@ -667,51 +651,6 @@ color_darker(gchar *src)
 }
 
 void
-cb_cursor_changed(GtkTreeView *view,
-  gpointer data)
-{
-  GtkPandaTable *table;
-  GtkTreeModel *model;
-  GtkTreeIter iter;
-  GtkTreeViewColumn *column;
-  GtkTreePath *path;
-  gchar strpath[16];
-  gchar *color1,*color2;
-  int i,j,nrow,ncol;
-
-  table = GTK_PANDA_TABLE(view);
-  gtk_tree_view_get_cursor(view,&path,&column);
-  if (path == NULL || column == NULL) {
-    return;
-  }
-  nrow = atoi(gtk_tree_path_to_string(path));
-  ncol = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(column),"column_num"));
-  gtk_tree_path_free(path);
-
-  model = gtk_tree_view_get_model(GTK_TREE_VIEW(table));
-  for (i=0;i<table->rows;i++) {
-    for(j=0;j<table->columns;j++) {
-      sprintf(strpath,"%d",i);
-      if (gtk_tree_model_get_iter_from_string(model,&iter,strpath)) {
-        gtk_tree_model_get(model,&iter,table->columns*3+j,&color1,-1);
-        if (i == nrow && j == ncol) {
-          color2 = color_darker(color1);
-          gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns*2+j,color2,-1);
-          if (color2 != NULL) {
-            g_free(color2);
-          }
-        } else {
-          gtk_list_store_set(GTK_LIST_STORE(model),&iter,table->columns*2+j,color1,-1);
-        }
-        if (color1 != NULL) {
-          g_free(color1);
-        }
-      }
-    }
-  }
-}
-
-void
 gtk_panda_table_set_bgcolor(
   GtkPandaTable *table,
   int row,
@@ -845,6 +784,13 @@ gtk_panda_table_get_column_type(GtkPandaTable *table,
   return table->renderer_types[col];
 }
 
+static gint
+_start_editing(gpointer data)
+{
+  start_editing(GTK_TREE_VIEW(data));
+  return FALSE;
+}
+
 void 
 gtk_panda_table_moveto (
   GtkPandaTable *table,
@@ -863,9 +809,10 @@ gtk_panda_table_moveto (
   path = gtk_tree_path_new_from_indices(row, -1);
   col = gtk_tree_view_get_column(GTK_TREE_VIEW(table), column);
 
-  gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,FALSE);
   gtk_tree_view_scroll_to_cell(
     GTK_TREE_VIEW(table), path, col, use_align, row_align, col_align);
+  gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,FALSE);
+  g_idle_add(_start_editing,table);
   gtk_tree_path_free(path);
 }
 
@@ -956,4 +903,3 @@ cb_button_release_event(GtkWidget *widget,
   }
   return FALSE;
 }
-
