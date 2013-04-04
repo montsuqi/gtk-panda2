@@ -855,10 +855,12 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   gtk_box_pack_start(GTK_BOX (self), self->scroll, TRUE, TRUE, 0);
   gtk_widget_show_all(GTK_WIDGET(self));
 
-  gtk_widget_set_can_focus(save_button,FALSE);
-  gtk_widget_set_can_focus(print_button,FALSE);
+  gtk_widget_set_can_focus(prev_button,TRUE);
+  gtk_widget_set_can_focus(next_button,TRUE);
+  gtk_widget_set_can_focus(save_button,TRUE);
+  gtk_widget_set_can_focus(print_button,TRUE);
   gtk_widget_set_can_focus(self->scale,FALSE);
-  gtk_widget_set_can_focus(GTK_WIDGET(self),TRUE);
+  gtk_widget_set_can_focus(GTK_WIDGET(self),FALSE);
 }
 
 // public API
