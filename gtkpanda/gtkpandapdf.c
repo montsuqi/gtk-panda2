@@ -33,6 +33,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <math.h>
+#include <time.h>
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
@@ -455,48 +456,59 @@ void
 gtk_panda_pdf_print(GtkPandaPDF *self,
   gboolean showdialog)
 {
-  GtkPrintOperation *print;
+  GtkPrintOperation *operation;
   static GtkPrintSettings *settings = NULL;
   GtkPageSetup *page_setup;
   GtkPrintOperationResult r;
   GtkPrintOperationAction action;
+  char job_name[128];
+  time_t t;
+  struct tm *tmp;
 
   if (self->doc == NULL) return;
 
-  print = gtk_print_operation_new();
-  g_assert(print);
-  g_signal_connect(print, "draw_page", 
-    G_CALLBACK(draw_page), (gpointer) self);  
-  g_signal_connect(print, "begin_print", 
-    G_CALLBACK(begin_print), (gpointer) self);
+  operation = gtk_print_operation_new();
 
-  page_setup = gtk_print_operation_get_default_page_setup(print);
-  if (page_setup == NULL)
+  if (settings) gtk_print_operation_set_print_settings(operation, settings);
+
+  page_setup = gtk_print_operation_get_default_page_setup(operation);
+  if (page_setup == NULL) {
     page_setup = gtk_page_setup_new();
+  }
   gtk_page_setup_set_top_margin(page_setup, 0.0, GTK_UNIT_MM);    
   gtk_page_setup_set_bottom_margin(page_setup, 0.0, GTK_UNIT_MM);    
   gtk_page_setup_set_left_margin(page_setup, 0.0, GTK_UNIT_MM);    
   gtk_page_setup_set_right_margin(page_setup, 0.0, GTK_UNIT_MM);    
-  gtk_print_operation_set_default_page_setup(print, page_setup);
+  gtk_print_operation_set_default_page_setup(operation, page_setup);
 
-  if (settings) gtk_print_operation_set_print_settings(print, settings);
-  gtk_print_operation_set_job_name(print, "gtk_panda_pdf_print");
-  gtk_print_operation_set_n_pages(print , 
+  t = time(NULL);
+  tmp = localtime(&t);
+  strftime(job_name,sizeof(job_name),"%Y%m%d%H%M%S",tmp);
+
+  gtk_print_operation_set_job_name(operation, job_name);
+  gtk_print_operation_set_n_pages(operation , 
     poppler_document_get_n_pages(self->doc));
+  gtk_print_operation_set_embed_page_setup(operation, TRUE);
+
+  g_signal_connect(operation, "draw_page", 
+    G_CALLBACK(draw_page), (gpointer) self);  
+  g_signal_connect(operation, "begin_print", 
+    G_CALLBACK(begin_print), (gpointer) self);
+
   if (showdialog) {
     action = GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG;
   } else {
     action = GTK_PRINT_OPERATION_ACTION_PRINT;
   }
-  r = gtk_print_operation_run(print, action, NULL, NULL);
+  r = gtk_print_operation_run(operation, action, NULL, NULL);
 
-  if (r == GTK_PRINT_OPERATION_RESULT_APPLY)
-  {   
-      if (settings)
-          g_object_unref(settings);
-      settings = g_object_ref(gtk_print_operation_get_print_settings(print));
+  if (r == GTK_PRINT_OPERATION_RESULT_APPLY) {   
+    if (settings) {
+      g_object_unref(settings);
+    }
+    settings = g_object_ref(gtk_print_operation_get_print_settings(operation));
   }
-  g_object_unref(print);
+  g_object_unref(operation);
 }
 
 void
