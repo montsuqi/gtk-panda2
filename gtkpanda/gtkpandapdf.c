@@ -379,7 +379,7 @@ gtk_panda_pdf_save (GtkPandaPDF *self)
     GTK_FILE_CHOOSER (dialog), TRUE);
   
   gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), 
-    "preview.pdf");
+    "*.pdf");
   
   if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
       char *filename;
