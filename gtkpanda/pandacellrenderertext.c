@@ -131,6 +131,9 @@ editing_done (GtkCellEditable *_entry,
                 "editing-canceled", &canceled,
                 NULL);
   gtk_cell_renderer_stop_editing (GTK_CELL_RENDERER (data), canceled);
+  if (canceled) {
+    return;
+  }
 
   path = g_object_get_data (G_OBJECT (_entry), PANDA_CELL_RENDERER_TEXT_PATH);
   new_text = gtk_entry_get_text (GTK_ENTRY (_entry));
