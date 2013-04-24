@@ -5,10 +5,10 @@ AUTOMAKE_OPTIONS = 1.4
 LTVERSION = 2:1:0
 
 gtkpanda_public_h_sources = \
-	debug.h 			\
-	numeric.h 			\
+	debug.h 				\
+	numeric.h 				\
 	gtknumberentry.h		\
-	gtkpanda.h 			\
+	gtkpanda.h 				\
 	gtkpandaclist.h			\
 	gtkpandacombo.h			\
 	gtkpandafileentry.h		\
@@ -17,17 +17,18 @@ gtkpanda_public_h_sources = \
 	gtkpandatext.h			\
 	gtkpandatimer.h			\
 	gtkpandadownload.h		\
+	gtkpandadownload2.h		\
 	gtkpandaprint.h			\
-	imcontrol.h			\
+	imcontrol.h				\
 	gtkpandapdf.h			\
 	gtkpandapixmap.h		\
 	gtkpandawindow.h		\
 	gtkpandatable.h			\
-	pandacellrenderertext.h		\
+	pandacellrenderertext.h	\
 	pandamarshal.h
 
-gtkpanda_c_sources = 			\
-	numeric.c 			\
+gtkpanda_c_sources = 		\
+	numeric.c 				\
 	gtkpandaclist.c			\
 	gtkpandacombo.c			\
 	gtkpandafileentry.c		\
@@ -36,16 +37,16 @@ gtkpanda_c_sources = 			\
 	gtkpandatext.c			\
 	gtkpandatimer.c			\
 	gtkpandadownload.c		\
+	gtkpandadownload2.c		\
 	gtkpandaprint.c			\
-	imcontrol.h			\
-	imcontrol.c			\
+	imcontrol.c				\
 	gtkpandapdf.c			\
 	gtkpandapixmap.c		\
 	gtkpandawindow.c		\
 	gtkpandatable.c			\
 	gtkpandamain.c			\
 	gtkpandahtml.c			\
-	pandacellrenderertext.c		\
+	pandacellrenderertext.c	\
 	pandamarshal.c
 
 gtkpanda_private_h_sources =
