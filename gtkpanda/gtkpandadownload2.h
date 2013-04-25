@@ -24,8 +24,8 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#ifndef __GTK_PANDA_DOWNLOAD_H__
-#define __GTK_PANDA_DOWNLOAD_H__
+#ifndef __GTK_PANDA_DOWNLOAD2_H__
+#define __GTK_PANDA_DOWNLOAD2_H__
 
 #include <glib-object.h>
 #include <gtk/gtk.h>
@@ -61,4 +61,4 @@ GtkWidget* gtk_panda_download2_new (void);
 #endif /* __cplusplus */
 
 
-#endif /* __GTK_PANDA_DOWNLOAD_H__ */
+#endif /* __GTK_PANDA_DOWNLOAD2_H__ */
