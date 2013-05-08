@@ -113,9 +113,6 @@ main (int argc, char *argv[])
   column = gtk_tree_view_get_column(GTK_TREE_VIEW(clist1),1);
   gtk_tree_view_column_set_widget(column, label2);
 
-
-  gtk_panda_clist_clear(GTK_PANDA_CLIST(clist1));
-
   gtk_widget_show_all (clist1);
   gtk_panda_clist_set_column_widths(GTK_PANDA_CLIST(clist1), "50,50,50,50,50,50,50,50");
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), clist1);
@@ -133,14 +130,14 @@ main (int argc, char *argv[])
   g_signal_connect (G_OBJECT(clist1), "unselect_row",
       G_CALLBACK(unselect_row), clist1);
 
-  gtk_panda_clist_clear(GTK_PANDA_CLIST(clist1));
+  gtk_panda_clist_set_rows(GTK_PANDA_CLIST(clist1),50);
   text = malloc(sizeof(char *)*COLUMNS);
   for (i=0; i<50; i++) {
     for (j=0; j<COLUMNS; j++) {
       sprintf(str, "cel_%d_%d", i, j);
       text[j] = strdup(str);
     }
-    gtk_panda_clist_append(GTK_PANDA_CLIST(clist1), text);
+    gtk_panda_clist_set_row(GTK_PANDA_CLIST(clist1),i,text);
   }
 
   gtk_panda_clist_set_fgcolor(GTK_PANDA_CLIST(clist1),0,"#FF2222");

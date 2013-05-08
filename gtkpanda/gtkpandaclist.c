@@ -78,7 +78,6 @@ static void gtk_panda_clist_init (GtkPandaCList *clist);
 
 static gboolean gtk_panda_clist_button_press (GtkWidget *widget, GdkEventButton *event);
 static gboolean gtk_panda_clist_key_press (GtkWidget *widget, GdkEventKey *event);
-static void preserve_selection (GtkPandaCList *clist, GList *selection);
 static void selection_changed (GtkTreeSelection *selection, gpointer user_data);
 
 static void  gtk_panda_clist_set_property(
@@ -164,7 +163,6 @@ gtk_panda_clist_init ( GtkPandaCList * clist)
 {
   GtkTreeSelection *selection;
   
-  clist->prev_selection = NULL;
   clist->show_titles = TRUE;
   clist->column_widths = g_strdup("");
   clist->selection_mode = GTK_SELECTION_SINGLE;
@@ -374,39 +372,36 @@ gtk_panda_clist_set_column_width (
   gtk_tree_view_column_set_resizable(col, TRUE);
 }
 
-void 
-gtk_panda_clist_clear (GtkPandaCList *clist)
-{
-  GtkTreeModel *model;
-  GtkTreeIter iter;
-  g_return_if_fail(clist != NULL);
-  g_return_if_fail(GTK_IS_PANDA_CLIST(clist));
-
-  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
-  if (gtk_tree_model_get_iter_first(model, &iter)) {
-    gtk_list_store_clear(GTK_LIST_STORE(model));
-    preserve_selection(clist, NULL);
-
-  }
-}
-
 void
-gtk_panda_clist_append  (
+gtk_panda_clist_set_rows(
   GtkPandaCList *clist,
-  gchar *text[])
+  int new)
 {
-  GtkListStore *store;
+  static int nrows = 0;
+  GtkTreeModel *model;
   GtkTreeIter iter;
   int i;
   
-  g_return_if_fail(clist != NULL);
-  g_return_if_fail(GTK_IS_PANDA_CLIST(clist));
-
-  store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(clist)));
-  gtk_list_store_append (store, &iter);
-  for (i = 0; i < clist->columns; i++){
-    gtk_list_store_set(store, &iter, i, text[i],-1);
-  } 
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
+  if (new > nrows) {
+    for(i=nrows;i<new;i++) {
+      gtk_list_store_append(GTK_LIST_STORE(model),&iter);
+    }
+  } else if (new < nrows) {
+    if (!gtk_tree_model_get_iter_first(model, &iter)) {
+      return;
+    }
+    for(i=0;i<nrows;i++) {
+      if (i < new) {
+        if (!gtk_tree_model_iter_next(model,&iter)) {
+          return;
+        }
+      } else {
+        gtk_list_store_remove(GTK_LIST_STORE(model),&iter);
+      }
+    }
+  }
+  nrows = new;
 }
 
 gint
@@ -431,6 +426,31 @@ gtk_panda_clist_get_n_rows(
   return nrows;
 }
 
+void
+gtk_panda_clist_set_row(
+  GtkPandaCList *clist,
+  int row,
+  gchar **rdata)
+{
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  gchar path[16];
+  int i;
+
+  g_return_if_fail(clist != NULL);
+  g_return_if_fail(GTK_IS_PANDA_CLIST(clist));
+
+  sprintf(path,"%d",row);
+fprintf(stderr,"path[%s]\n",path);
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
+  if (gtk_tree_model_get_iter_from_string(model,&iter,path)) {
+    for(i=0;rdata[i] !=NULL && i<gtk_panda_clist_get_columns(clist);i++) {
+fprintf(stderr,"rdata[%s]\n",rdata[i]);
+      gtk_list_store_set(GTK_LIST_STORE(model),&iter,i,rdata[i],-1);
+    }
+  }
+}
+
 gint
 gtk_panda_clist_get_columns(
   GtkPandaCList *clist)
@@ -444,7 +464,7 @@ gtk_panda_clist_get_columns(
   if (store == NULL) {
     return 0;
   }
-  return gtk_tree_model_get_n_columns(GTK_TREE_MODEL(store));
+  return gtk_tree_model_get_n_columns(GTK_TREE_MODEL(store)) - 2;
 }
 
 void 
@@ -736,68 +756,32 @@ gtk_panda_clist_key_press(
 }
 
 static void 
-preserve_selection(
-  GtkPandaCList *clist,
-  GList *selection)
-{
-  if (clist->prev_selection != NULL) {
-    g_list_foreach (clist->prev_selection, (GFunc)gtk_tree_path_free, NULL);
-    g_list_free (clist->prev_selection);
-  }
-  clist->prev_selection = selection;
-}
-
-static void 
 selection_changed(
   GtkTreeSelection *selection,
   gpointer user_data)
 {
+  static int prev_length = 0;
   GtkPandaCList *clist;
-  GList *prev_selection;
-  GList *current_selection;
-  guint curlen;
-  guint prelen;
-  GtkTreePath *cpath, *ppath;
-  int i,j;
   gboolean emit_select;
-  gboolean emit_unselect;
+  int length;
+  GList * selected;
 
-  emit_select = emit_unselect = FALSE;
-
+  emit_select = FALSE;
   clist = (GtkPandaCList *)user_data;
-  prev_selection = clist->prev_selection;
-  current_selection = gtk_tree_selection_get_selected_rows (selection, NULL);
-  if(current_selection == NULL) {
-    emit_unselect = TRUE;
-  } else {
-    if(prev_selection != NULL) {
-      prelen = g_list_length(prev_selection);
-      curlen = g_list_length(current_selection);
-      if (curlen == prelen){
-        for(i = 0; i < curlen;  i++) {
-          cpath = (GtkTreePath *)g_list_nth_data(current_selection, i);
-          for( j = 0; j < prelen; j++) {
-            ppath = (GtkTreePath *)g_list_nth_data(prev_selection, j);
-            if(!gtk_tree_path_compare(cpath,ppath))
-              break;
-          }
-          if (j == prelen)
-            emit_select = TRUE;
-        }
-      } else if(curlen > prelen) {
-        emit_select = TRUE;
-      } else {
-        emit_unselect = TRUE;
-      }
-    } else {
+  selected = gtk_tree_selection_get_selected_rows(selection,NULL);
+
+  if (selected != NULL) {
+    length = g_list_length(selected);
+    if (prev_length <= length) {
       emit_select = TRUE;
     }
+    prev_length = length;
+    g_list_free(selected);
   }
-  preserve_selection(clist, current_selection);
   if (emit_select) {
     // now don't return ROW, COLUMN.
     g_signal_emit (clist, clist_signals[SELECT_ROW], 0, 0, 0);
-  } else if(emit_unselect) {
+  } else {
     // now don't return ROW, COLUMN.
     g_signal_emit (clist, clist_signals[UNSELECT_ROW], 0, 0, 0);
   }
