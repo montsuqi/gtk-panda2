@@ -441,11 +441,9 @@ gtk_panda_clist_set_row(
   g_return_if_fail(GTK_IS_PANDA_CLIST(clist));
 
   sprintf(path,"%d",row);
-fprintf(stderr,"path[%s]\n",path);
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
   if (gtk_tree_model_get_iter_from_string(model,&iter,path)) {
-    for(i=0;rdata[i] !=NULL && i<gtk_panda_clist_get_columns(clist);i++) {
-fprintf(stderr,"rdata[%s]\n",rdata[i]);
+    for(i=0;rdata[i] !=NULL && i<gtk_panda_clist_get_columns(clist)-2;i++) {
       gtk_list_store_set(GTK_LIST_STORE(model),&iter,i,rdata[i],-1);
     }
   }
@@ -455,16 +453,16 @@ gint
 gtk_panda_clist_get_columns(
   GtkPandaCList *clist)
 {
-  GtkListStore *store;
+  GtkTreeModel *model;
 
   g_return_val_if_fail(clist != NULL, 0);
   g_return_val_if_fail(GTK_IS_PANDA_CLIST(clist), 0);
 
-  store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(clist)));
-  if (store == NULL) {
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
+  if (model == NULL) {
     return 0;
   }
-  return gtk_tree_model_get_n_columns(GTK_TREE_MODEL(store)) - 2;
+  return gtk_tree_model_get_n_columns(model);
 }
 
 void 
