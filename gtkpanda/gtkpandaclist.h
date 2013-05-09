@@ -51,6 +51,7 @@ struct _GtkPandaCList {
   gboolean show_titles;
   gchar *column_widths;
   int columns;
+  int prev_selected_num;
   GtkSelectionMode selection_mode;
 };
 

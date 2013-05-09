@@ -34,7 +34,7 @@ select_row(
 {
 	int i;
   	fprintf(stderr, "select:");
-	for (i=0; i < gtk_panda_clist_get_n_rows(clist); i++) {
+	for (i=0; i < gtk_panda_clist_get_rows(clist); i++) {
     	if (gtk_panda_clist_row_is_selected(clist, i)) {
   			fprintf(stderr, "%d ", i);
 		}

@@ -166,6 +166,7 @@ gtk_panda_clist_init ( GtkPandaCList * clist)
   clist->show_titles = TRUE;
   clist->column_widths = g_strdup("");
   clist->selection_mode = GTK_SELECTION_SINGLE;
+  clist->prev_selected_num = 0;
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(clist));
   gtk_panda_clist_set_columns(clist,0);
   g_signal_connect (G_OBJECT(selection), "changed",
@@ -405,7 +406,7 @@ gtk_panda_clist_set_rows(
 }
 
 gint
-gtk_panda_clist_get_n_rows(
+gtk_panda_clist_get_rows(
   GtkPandaCList *clist)
 {
   GtkTreeModel *model;
@@ -758,10 +759,9 @@ selection_changed(
   GtkTreeSelection *selection,
   gpointer user_data)
 {
-  static int prev_length = 0;
   GtkPandaCList *clist;
   gboolean emit_select;
-  int length;
+  int num;
   GList * selected;
 
   emit_select = FALSE;
@@ -769,11 +769,11 @@ selection_changed(
   selected = gtk_tree_selection_get_selected_rows(selection,NULL);
 
   if (selected != NULL) {
-    length = g_list_length(selected);
-    if (prev_length <= length) {
+    num = g_list_length(selected);
+    if (clist->prev_selected_num <= num) {
       emit_select = TRUE;
     }
-    prev_length = length;
+    clist->prev_selected_num = num;
     g_list_free(selected);
   }
   if (emit_select) {
