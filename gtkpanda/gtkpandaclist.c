@@ -444,7 +444,7 @@ gtk_panda_clist_set_row(
   sprintf(path,"%d",row);
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
   if (gtk_tree_model_get_iter_from_string(model,&iter,path)) {
-    for(i=0;rdata[i] !=NULL && i<gtk_panda_clist_get_columns(clist)-2;i++) {
+    for(i=0;i<gtk_panda_clist_get_columns(clist)-2;i++) {
       gtk_list_store_set(GTK_LIST_STORE(model),&iter,i,rdata[i],-1);
     }
   }
