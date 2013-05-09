@@ -167,6 +167,7 @@ gtk_panda_clist_init ( GtkPandaCList * clist)
   clist->column_widths = g_strdup("");
   clist->selection_mode = GTK_SELECTION_SINGLE;
   clist->prev_selected_num = 0;
+  clist->nrows = 0;
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(clist));
   gtk_panda_clist_set_columns(clist,0);
   g_signal_connect (G_OBJECT(selection), "changed",
@@ -378,21 +379,20 @@ gtk_panda_clist_set_rows(
   GtkPandaCList *clist,
   int new)
 {
-  static int nrows = 0;
   GtkTreeModel *model;
   GtkTreeIter iter;
   int i;
   
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
-  if (new > nrows) {
-    for(i=nrows;i<new;i++) {
+  if (new > clist->nrows) {
+    for(i=clist->nrows;i<new;i++) {
       gtk_list_store_append(GTK_LIST_STORE(model),&iter);
     }
-  } else if (new < nrows) {
+  } else if (new < clist->nrows) {
     if (!gtk_tree_model_get_iter_first(model, &iter)) {
       return;
     }
-    for(i=0;i<nrows;i++) {
+    for(i=0;i<clist->nrows;i++) {
       if (i < new) {
         if (!gtk_tree_model_iter_next(model,&iter)) {
           return;
@@ -402,7 +402,7 @@ gtk_panda_clist_set_rows(
       }
     }
   }
-  nrows = new;
+  clist->nrows = new;
 }
 
 gint

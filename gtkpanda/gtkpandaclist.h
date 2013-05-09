@@ -52,6 +52,7 @@ struct _GtkPandaCList {
   gchar *column_widths;
   int columns;
   int prev_selected_num;
+  int nrows;
   GtkSelectionMode selection_mode;
 };
 
