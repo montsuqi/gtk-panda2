@@ -422,7 +422,6 @@ gtk_panda_clist_moveto (
 
   gtk_tree_view_scroll_to_cell(
 	GTK_TREE_VIEW(clist), path, col, TRUE, row_align, col_align);
-  gtk_tree_view_set_cursor(GTK_TREE_VIEW(clist),path,col,FALSE);
   gtk_tree_path_free(path);
 }
 
