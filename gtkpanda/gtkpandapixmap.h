@@ -47,6 +47,7 @@ typedef struct _GtkPandaPixmapClass  GtkPandaPixmapClass;
 struct _GtkPandaPixmap
 {
   GtkImage image;
+  GdkPixbuf *pixbuf;
 };
 
 struct _GtkPandaPixmapClass

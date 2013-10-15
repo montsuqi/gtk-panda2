@@ -47,6 +47,7 @@ gtk_panda_pixmap_class_init (GtkPandaPixmapClass *klass)
 static void
 gtk_panda_pixmap_init (GtkPandaPixmap *pixmap)
 {
+  pixmap->pixbuf = NULL;
 }
 
 GtkWidget*
@@ -86,7 +87,6 @@ gtk_panda_pixmap_set_image(GtkPandaPixmap *pixmap,
   gchar *buf,
   gsize size)
 {
-  GdkPixbuf *pixbuf;
   gchar *filename;
   GtkRequisition req;
   
@@ -102,10 +102,13 @@ gtk_panda_pixmap_set_image(GtkPandaPixmap *pixmap,
     return;
   }
   gtk_widget_size_request(GTK_WIDGET(pixmap), &req);
-  pixbuf = gdk_pixbuf_new_from_file_at_size(filename,
+  if (pixmap->pixbuf != NULL) {
+    g_object_unref(pixmap->pixbuf);
+  }
+  pixmap->pixbuf = gdk_pixbuf_new_from_file_at_size(filename,
     req.width, req.height, NULL);
-  if (pixbuf != NULL) {
-    gtk_image_set_from_pixbuf(GTK_IMAGE(pixmap), pixbuf);
+  if (pixmap->pixbuf != NULL) {
+    gtk_image_set_from_pixbuf(GTK_IMAGE(pixmap), pixmap->pixbuf);
   }
   unlink(filename); 
   g_free(filename);
