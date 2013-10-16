@@ -36,3 +36,17 @@ m4
 po/*.gmo
 po/stamp-po
 po/POTFILES
+gtkpanda/pandamarshal.c
+gtkpanda/pandamarshal.h
+gtkpanda/testclist
+gtkpanda/testcombo
+gtkpanda/testentry
+gtkpanda/testfileentry
+gtkpanda/testhtml
+gtkpanda/testnumeric
+gtkpanda/testpdf
+gtkpanda/testpixmap
+gtkpanda/testtable
+gtkpanda/testtext
+gtkpanda/testtimer
+gtkpanda2.pc
