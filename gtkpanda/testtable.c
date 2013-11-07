@@ -61,6 +61,8 @@ cb_cell_edited(GtkPandaTable *table,
 
   colors[column] = "red";
   gtk_panda_table_set_bgcolor(table,row,colors);
+  gtk_panda_table_set_xim_enabled(table,
+   !gtk_panda_table_get_xim_enabled(table));
   fprintf(stderr,"[%d,%d][%s]\n",row,column,value);
 }
 

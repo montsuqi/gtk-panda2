@@ -59,6 +59,7 @@ struct _GtkPandaTable {
   gchar *types;
   gchar *titles;
   gchar *widths;
+  gboolean xim_enabled;
   int renderer_types[GTK_PANDA_TABLE_MAX_COLS];
   GType model_types[GTK_PANDA_TABLE_MAX_COLS];
 };
@@ -100,6 +101,12 @@ void gtk_panda_table_moveto(GtkPandaTable *table,
 gint gtk_panda_table_get_n_rows(GtkPandaTable *table);
 gint gtk_panda_table_get_columns(GtkPandaTable *table);
 gint gtk_panda_table_get_column_type(GtkPandaTable *table,gint column);
+void gtk_panda_table_stay(GtkPandaTable *table);
+void gtk_panda_table_set_xim_enabled(GtkPandaTable *table,
+  gboolean enabled);
+gboolean gtk_panda_table_get_xim_enabled(GtkPandaTable *table);
+
+
 
 #ifdef __cplusplus
 }

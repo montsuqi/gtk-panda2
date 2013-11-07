@@ -31,6 +31,8 @@
 #include "pandacellrenderertext.h"
 #include "pandamarshal.h"
 #include "imcontrol.h"
+#include "gtkpandaentry.h"
+#include "gtkpandatable.h"
 
 static void panda_cell_renderer_text_class_init
     (PandaCellRendererTextClass *cell_text_class);
@@ -280,6 +282,7 @@ start_editing (GtkCellRenderer      *cell,
 {
   GtkRequisition requisition;
   GtkCellRendererText *celltext;
+  gboolean xim_enabled;
 
   celltext = GTK_CELL_RENDERER_TEXT (cell);
 
@@ -287,13 +290,21 @@ start_editing (GtkCellRenderer      *cell,
   if (celltext->editable == FALSE)
     return NULL;
 
-  entry = g_object_new (GTK_TYPE_ENTRY,
+  xim_enabled = FALSE;
+  if (GTK_IS_PANDA_TABLE(widget)) {
+    xim_enabled = gtk_panda_table_get_xim_enabled(GTK_PANDA_TABLE(widget));
+  }
+
+  entry = g_object_new (GTK_PANDA_TYPE_ENTRY,
             "has-frame", FALSE,
             "xalign", cell->xalign,
             NULL);
 
-
   if (celltext->text) {
+    if (xim_enabled) {
+      gtk_panda_entry_set_xim_enabled(GTK_PANDA_ENTRY(entry),
+        GTK_PANDA_ENTRY_XIM);
+    }
     gtk_entry_set_text (GTK_ENTRY (entry), celltext->text);
   }
 

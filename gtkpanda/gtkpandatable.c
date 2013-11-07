@@ -151,6 +151,7 @@ gtk_panda_table_init ( GtkPandaTable * table)
 {
   GtkTreeSelection *selection;
   
+  table->xim_enabled = FALSE;
   table->types = g_strdup("");
   table->titles = g_strdup("");
   table->widths = g_strdup("");
@@ -902,4 +903,19 @@ cb_button_release_event(GtkWidget *widget,
     gtk_tree_path_free(path);
   }
   return FALSE;
+}
+
+void
+gtk_panda_table_set_xim_enabled(
+  GtkPandaTable *table,
+  gboolean enabled)
+{
+  table->xim_enabled = enabled;
+}
+
+gboolean
+gtk_panda_table_get_xim_enabled(
+  GtkPandaTable *table)
+{
+  return table->xim_enabled;
 }
