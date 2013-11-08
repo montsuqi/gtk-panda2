@@ -817,6 +817,16 @@ gtk_panda_table_moveto (
   gtk_tree_path_free(path);
 }
 
+void 
+gtk_panda_table_stay (
+  GtkPandaTable *table)
+{
+  g_return_if_fail (table != NULL);
+  g_return_if_fail (GTK_IS_PANDA_TABLE (table));
+
+  g_idle_add(_start_editing,table);
+}
+
 static void 
 gtk_panda_table_set_property (GObject *object,
   guint prop_id,
