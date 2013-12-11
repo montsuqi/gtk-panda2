@@ -8,46 +8,10 @@
 #include <gtk/gtk.h>
 #include "gtkpanda.h"
 
-#define ROW_SIZE 100
-
-void
-reset_data(GtkPandaTable *table)
-{
-  static int num = 1;
-  gchar *rowdata[5] = {GTK_STOCK_YES,"text","label","T",NULL};
-  gchar *colors[5] = {"","","","",NULL};
-  int i;
-
-  for(i=0;i<ROW_SIZE;i++) {
-    if (i%2==0) {
-      rowdata[0] = GTK_STOCK_YES;
-      rowdata[1] = g_strdup_printf("even%d",num);
-      rowdata[2] = "label";
-      rowdata[3] = "T";
-    } else {
-      rowdata[0] = GTK_STOCK_NO;
-      rowdata[1] = g_strdup_printf("odddddddddddddddddddddddddddddddddddddd%d",num);
-      rowdata[2] = "LABEL";
-      rowdata[3] = "F";
-    }
-    gtk_panda_table_set_row(table,i,rowdata);
-    colors[0] = colors[1] = colors[2] = colors[3] = "black";
-    gtk_panda_table_set_fgcolor(table,i,colors);
-    if (i%2==0) {
-      colors[0] = colors[1] = colors[2] = colors[3] = "";
-    } else {
-      colors[0] = colors[1] = colors[2] = colors[3] = "#CCCCFF";
-    }
-    gtk_panda_table_set_bgcolor(table,i,colors);
-  }
-  num++;
-}
-
 void
 cb_clicked(GtkWidget *widget,
   gpointer data)
 {
-  reset_data(GTK_PANDA_TABLE(data));
 }
 
 void
@@ -57,20 +21,19 @@ cb_cell_edited(GtkPandaTable *table,
   gchar *value,
   gpointer data)
 {
-  gchar *colors[5] = {"","","","",NULL};
-
-  colors[column] = "red";
-  gtk_panda_table_set_bgcolor(table,row,colors);
+  fprintf(stderr,"cell_edited[%d,%d][%s]\n",row,column,value);
+  gtk_panda_table_set_cell_color(table,row,column,"#FF0000","#FFFF00");
   gtk_panda_table_set_xim_enabled(table,
-   !gtk_panda_table_get_xim_enabled(table));
-  fprintf(stderr,"[%d,%d][%s]\n",row,column,value);
+    !gtk_panda_table_get_xim_enabled(table));
+#if 1
+  gtk_panda_table_moveto(table,50,1,0.5,0.5);
+#endif
 }
 
 int
 main (int argc, char *argv[])
 {
   GtkWidget *window;
-  GtkWidget *scroll;
   GtkWidget *vbox;
   GtkWidget *table;
   GtkWidget *button;
@@ -85,23 +48,24 @@ main (int argc, char *argv[])
   vbox = gtk_vbox_new(FALSE,0);
   gtk_container_add(GTK_CONTAINER(window),vbox);
 
-  scroll = gtk_scrolled_window_new(NULL,NULL);
-  gtk_box_pack_start(GTK_BOX(vbox),scroll,TRUE,TRUE,0);
 
   table = gtk_panda_table_new();
-  gtk_container_add(GTK_CONTAINER(scroll),table);
 
-  gtk_panda_table_set_columns(GTK_PANDA_TABLE(table),4);
-  gtk_panda_table_set_types(GTK_PANDA_TABLE(table),
-    "text,text,label,check");
-  gtk_panda_table_set_titles(GTK_PANDA_TABLE(table),
-    "icon1,text1,label1,check1");
-  gtk_panda_table_set_column_widths(GTK_PANDA_TABLE(table),
-    "50,100,100,50");
-  gtk_panda_table_set_rows(GTK_PANDA_TABLE(table),ROW_SIZE);
+  g_object_set(G_OBJECT(table),
+    "rows",100,
+    "columns",4,
+    "column_types","label,text,text",
+    "column_widths","150,150,150",
+    "column_titles","label,text1,text2,text3",
+    NULL);
+  gtk_panda_table_build(GTK_PANDA_TABLE(table));
+  gtk_panda_table_set_cell_text(GTK_PANDA_TABLE(table),0,0,"もげ");
+  gtk_panda_table_set_cell_text(GTK_PANDA_TABLE(table),1,1,"ぬふ");
+  gtk_panda_table_set_cell_text(GTK_PANDA_TABLE(table),2,2,"ぐぬ");
+  gtk_box_pack_start(GTK_BOX(vbox),table,TRUE,TRUE,0);
+
   g_signal_connect (G_OBJECT(table), "cell-edited",
     G_CALLBACK(cb_cell_edited), NULL);
-  reset_data(GTK_PANDA_TABLE(table));
 
   button = gtk_button_new_with_label("reset");
   gtk_box_pack_start(GTK_BOX(vbox),button,FALSE,FALSE,0);
@@ -110,7 +74,7 @@ main (int argc, char *argv[])
 
   gtk_widget_show_all(window);
 
-  gtk_main ();
+  gtk_main();
   return 0;
 }
 
