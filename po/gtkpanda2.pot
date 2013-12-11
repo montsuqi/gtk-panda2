@@ -8,133 +8,155 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-05 15:17+0900\n"
+"POT-Creation-Date: 2013-12-11 15:09+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gtkpanda/gtknumberentry.c:118
+#: gtkpanda/gtknumberentry.c:112
 msgid "Format"
 msgstr ""
 
-#: gtkpanda/gtknumberentry.c:119
+#: gtkpanda/gtknumberentry.c:113
 msgid "The format of the entry"
 msgstr ""
 
-#: gtkpanda/gtkpandaclist.c:138
+#: gtkpanda/gtkpandaclist.c:140
 msgid "Show header title"
 msgstr ""
 
-#: gtkpanda/gtkpandaclist.c:139
+#: gtkpanda/gtkpandaclist.c:141
 msgid "Whether show header title"
 msgstr ""
 
-#: gtkpanda/gtkpandaclist.c:146 gtkpanda/gtkpandaclist.c:147
+#: gtkpanda/gtkpandaclist.c:148 gtkpanda/gtkpandaclist.c:149
+#: gtkpanda/gtkpandatable.c:113 gtkpanda/gtkpandatable.c:114
 msgid "Number of columns"
 msgstr ""
 
-#: gtkpanda/gtkpandaclist.c:156
+#: gtkpanda/gtkpandaclist.c:158 gtkpanda/gtkpandatable.c:139
 msgid "The list of column width"
 msgstr ""
 
-#: gtkpanda/gtkpandaclist.c:157
+#: gtkpanda/gtkpandaclist.c:159 gtkpanda/gtkpandatable.c:140
 msgid "The list of column width(comma separated string)"
 msgstr ""
 
-#: gtkpanda/gtkpandaclist.c:164
+#: gtkpanda/gtkpandaclist.c:166
 msgid "Selection Mode"
 msgstr ""
 
-#: gtkpanda/gtkpandaclist.c:165
+#: gtkpanda/gtkpandaclist.c:167
 msgid "The mode of selection"
 msgstr ""
 
-#: gtkpanda/gtkpandacombo.c:102 gtkpanda/gtkpandacombo.c:103
+#: gtkpanda/gtkpandacombo.c:95 gtkpanda/gtkpandacombo.c:96
 msgid "Case Sensitive"
 msgstr ""
 
-#: gtkpanda/gtkpandacombo.c:110 gtkpanda/gtkpandacombo.c:111
+#: gtkpanda/gtkpandacombo.c:103 gtkpanda/gtkpandacombo.c:104
 msgid "Use Arrows"
 msgstr ""
 
-#: gtkpanda/gtkpandacombo.c:118 gtkpanda/gtkpandacombo.c:119
+#: gtkpanda/gtkpandacombo.c:111 gtkpanda/gtkpandacombo.c:112
 msgid "Loop Selection"
 msgstr ""
 
-#: gtkpanda/gtkpandaentry.c:146
+#: gtkpanda/gtkpandaentry.c:141
 msgid "Input Mode"
 msgstr ""
 
-#: gtkpanda/gtkpandaentry.c:147
+#: gtkpanda/gtkpandaentry.c:142
 msgid "The mode of input"
 msgstr ""
 
-#: gtkpanda/gtkpandaentry.c:155
+#: gtkpanda/gtkpandaentry.c:150
 msgid "Enable Input Method"
 msgstr ""
 
-#: gtkpanda/gtkpandaentry.c:156
+#: gtkpanda/gtkpandaentry.c:151
 msgid "Whether enable input method controll"
 msgstr ""
 
-#: gtkpanda/gtkpandafileentry.c:156
+#: gtkpanda/gtkpandafileentry.c:140
 msgid "Specify filename..."
 msgstr ""
 
-#: gtkpanda/gtkpandafileentry.c:190
+#: gtkpanda/gtkpandafileentry.c:174
 #, c-format
 msgid "Succeeded in writing %s"
 msgstr ""
 
-#: gtkpanda/gtkpandahtml.cpp:126 gtkpanda/gtkpandahtml.cpp:127
+#: gtkpanda/gtkpandahtml.c:109 gtkpanda/gtkpandahtml.c:110
 msgid "URI"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:63
+#: gtkpanda/gtkpandapdf.c:61
 msgid "Fit Page"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:64
+#: gtkpanda/gtkpandapdf.c:62
 msgid "Fit Page Width"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:66
+#: gtkpanda/gtkpandapdf.c:64
 msgid "50%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:67
+#: gtkpanda/gtkpandapdf.c:65
 msgid "75%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:68
+#: gtkpanda/gtkpandapdf.c:66
 msgid "100%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:69
+#: gtkpanda/gtkpandapdf.c:67
 msgid "125%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:70
+#: gtkpanda/gtkpandapdf.c:68
 msgid "150%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:71
+#: gtkpanda/gtkpandapdf.c:69
 msgid "175%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:72
+#: gtkpanda/gtkpandapdf.c:70
 msgid "200%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:73
+#: gtkpanda/gtkpandapdf.c:71
 msgid "300%"
 msgstr ""
 
-#: gtkpanda/gtkpandapdf.c:74
+#: gtkpanda/gtkpandapdf.c:72
 msgid "400%"
+msgstr ""
+
+#: gtkpanda/gtkpandatable.c:103 gtkpanda/gtkpandatable.c:104
+msgid "Number of rows"
+msgstr ""
+
+#: gtkpanda/gtkpandatable.c:123
+msgid "The list of column type"
+msgstr ""
+
+#: gtkpanda/gtkpandatable.c:124
+msgid "The list of column type(comma separated string)"
+msgstr ""
+
+#: gtkpanda/gtkpandatable.c:131
+msgid "The list of column title"
+msgstr ""
+
+#: gtkpanda/gtkpandatable.c:132
+msgid "The list of column title(comma separated string)"
 msgstr ""
 
 #: gtkpanda/numeric.c:1348
