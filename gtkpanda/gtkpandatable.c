@@ -160,6 +160,10 @@ gtk_panda_table_init (GtkPandaTable *table)
   table->row_height = 30;
   table->inset = 1;
 
+  if (getenv("MONSIA_EDITING") != NULL) {
+    return;
+  }
+
   hadj = GTK_ADJUSTMENT(gtk_adjustment_new(0,0,100,1,1,1));
   vadj = GTK_ADJUSTMENT(gtk_adjustment_new(0,0,100,1,1,1));
 
