@@ -74,13 +74,44 @@ static void cb_size_allocate(GtkWidget *widget,
 static void cb_set_focus_child(GtkContainer *con,
   GtkWidget *child,
   gpointer data);
+static void gtk_panda_table_set_adjustments(GtkPandaTable *table,
+  GtkAdjustment *hadj,
+  GtkAdjustment *vadj);
+
+GType
+gtk_panda_table_get_type (void)
+{
+  static GType table_type = 0;
+
+  if (!table_type)
+    {
+      static const GTypeInfo table_info =
+      {
+        sizeof (GtkPandaTableClass),
+        NULL, /* base_init */
+        NULL, /* base_finalize */
+        (GClassInitFunc) gtk_panda_table_class_init,           
+        NULL, /* class_finalize */
+        NULL, /* class_data */
+        sizeof (GtkPandaTable),
+        0,
+        (GInstanceInitFunc) gtk_panda_table_init
+      };
+
+      table_type = g_type_register_static( GTK_TYPE_VBOX,
+        "GtkPandaTable", &table_info, 0);
+    }
+  return table_type;
+}
 
 static void
-gtk_panda_table_class_init ( GtkPandaTableClass * klass)
+gtk_panda_table_class_init (GtkPandaTableClass *klass)
 {
-  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
+  GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
+  GtkWidgetClass *widget_class = (GtkWidgetClass*)klass;;
   parent_class = g_type_class_ref(GTK_TYPE_VBOX);
+
+  klass->set_scroll_adjustments = gtk_panda_table_set_adjustments;
 
   signals[CELL_EDITED] =
   g_signal_new ("cell-edited",
@@ -140,13 +171,22 @@ gtk_panda_table_class_init ( GtkPandaTableClass * klass)
       _("The list of column width(comma separated string)"),
       "",
       G_PARAM_READWRITE));
+
+  widget_class->set_scroll_adjustments_signal =
+    g_signal_new ("set-scroll-adjustments",
+		  G_TYPE_FROM_CLASS (gobject_class),
+		  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+		  G_STRUCT_OFFSET (GtkPandaTableClass, set_scroll_adjustments),
+		  NULL, NULL,
+		  panda_marshal_VOID__OBJECT_OBJECT,
+		  G_TYPE_NONE, 2,
+		  GTK_TYPE_ADJUSTMENT,
+		  GTK_TYPE_ADJUSTMENT);
 }
 
 static void
 gtk_panda_table_init (GtkPandaTable *table)
 {
-  GtkAdjustment *hadj,*vadj;
-
   table->xim_enabled = FALSE;
   table->types = g_strdup("");
   table->titles = g_strdup("");
@@ -159,16 +199,15 @@ gtk_panda_table_init (GtkPandaTable *table)
   table->cols = 1;
   table->row_height = 30;
   table->inset = 1;
+  table->hupper = 0;
+  table->hlower = 0;
 
   if (getenv("MONSIA_EDITING") != NULL) {
     return;
   }
 
-  hadj = GTK_ADJUSTMENT(gtk_adjustment_new(0,0,100,1,1,1));
-  vadj = GTK_ADJUSTMENT(gtk_adjustment_new(0,0,100,1,1,1));
-
   /*header*/
-  table->hscroll = gtk_scrolled_window_new(hadj,NULL);
+  table->hscroll = gtk_scrolled_window_new(NULL,NULL);
   gtk_widget_set_can_focus(table->hscroll,FALSE);
   table->hbox = gtk_hbox_new(FALSE,0);
   gtk_widget_set_can_focus(table->hbox,FALSE);
@@ -181,11 +220,14 @@ gtk_panda_table_init (GtkPandaTable *table)
     GTK_POLICY_NEVER,GTK_POLICY_NEVER);
 
   /*contents*/
-  table->cscroll = gtk_scrolled_window_new(hadj,vadj);
+  table->cscroll = gtk_scrolled_window_new(NULL,NULL);
   table->fixed = gtk_fixed_new();
   gtk_scrolled_window_add_with_viewport(
     GTK_SCROLLED_WINDOW(table->cscroll),
     table->fixed);
+  gtk_scrolled_window_set_policy(
+    GTK_SCROLLED_WINDOW(table->cscroll),
+    GTK_POLICY_NEVER,GTK_POLICY_NEVER);
 
   gtk_box_set_homogeneous(GTK_BOX(table),FALSE);
   gtk_box_set_spacing(GTK_BOX(table),0);
@@ -200,30 +242,36 @@ gtk_panda_table_init (GtkPandaTable *table)
     G_CALLBACK(cb_set_focus_child),table);
 }
 
-GType
-gtk_panda_table_get_type (void)
+
+static void
+gtk_panda_table_set_adjustments(GtkPandaTable *table,
+  GtkAdjustment *hadj,
+  GtkAdjustment *vadj)
 {
-  static GType table_type = 0;
+  int w,h;
 
-  if (!table_type)
-    {
-      static const GTypeInfo table_info =
-      {
-        sizeof (GtkPandaTableClass),
-        NULL, /* base_init */
-        NULL, /* base_finalize */
-        (GClassInitFunc) gtk_panda_table_class_init,           
-        NULL, /* class_finalize */
-        NULL, /* class_data */
-        sizeof (GtkPandaTable),
-        0,
-        (GInstanceInitFunc) gtk_panda_table_init
-      };
+  gtk_widget_get_size_request(GTK_WIDGET(table),&w,&h);
 
-      table_type = g_type_register_static( GTK_TYPE_VBOX,
-        "GtkPandaTable", &table_info, 0);
-    }
-  return table_type;
+  gtk_adjustment_set_lower(hadj,table->hlower);
+  gtk_adjustment_set_upper(hadj,table->hupper);
+  if (w > 0) {
+    gtk_adjustment_set_page_size(hadj,w);
+    gtk_adjustment_set_page_increment(hadj,w);
+    gtk_adjustment_set_step_increment(hadj,w/10.0);
+  }
+
+  gtk_adjustment_set_lower(vadj,table->vlower);
+  gtk_adjustment_set_upper(vadj,table->vupper);
+  h -= table->row_height - table->inset *2;
+  if (h > 0) {
+    gtk_adjustment_set_page_size(vadj,h);
+    gtk_adjustment_set_page_increment(vadj,h);
+    gtk_adjustment_set_step_increment(vadj,h/10.0);
+  }
+
+  gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(table->hscroll),hadj);
+  gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(table->cscroll),hadj);
+  gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(table->cscroll),vadj);
 }
 
 static void
@@ -243,16 +291,24 @@ cb_size_allocate(GtkWidget *widget,
   page_size = rect->width;
   adj = gtk_scrolled_window_get_hadjustment(
     GTK_SCROLLED_WINDOW(table->cscroll));
-  gtk_adjustment_set_page_size(adj,page_size);
-  gtk_adjustment_set_page_increment(adj,page_size);
-  gtk_adjustment_set_step_increment(adj,page_size/10.0);
+  if (adj != NULL) {
+    gtk_adjustment_set_lower(adj,table->hlower);
+    gtk_adjustment_set_upper(adj,table->hupper);
+    gtk_adjustment_set_page_size(adj,page_size);
+    gtk_adjustment_set_page_increment(adj,page_size);
+    gtk_adjustment_set_step_increment(adj,page_size/10.0);
+  }
 
   page_size = rect->height - table->row_height - table->inset *2;
   adj = gtk_scrolled_window_get_vadjustment(
     GTK_SCROLLED_WINDOW(table->cscroll));
-  gtk_adjustment_set_page_size(adj,page_size);
-  gtk_adjustment_set_page_increment(adj,page_size);
-  gtk_adjustment_set_step_increment(adj,page_size/10.0);
+  if (adj != NULL) {
+    gtk_adjustment_set_lower(adj,table->vlower);
+    gtk_adjustment_set_upper(adj,table->vupper);
+    gtk_adjustment_set_page_size(adj,page_size);
+    gtk_adjustment_set_page_increment(adj,page_size);
+    gtk_adjustment_set_step_increment(adj,page_size/10.0);
+  }
 }
 
 static void
@@ -279,29 +335,37 @@ cb_set_focus_child(GtkContainer *con,
   gtk_widget_get_size_request(child,&w,&h);
   /*row*/
   adj = gtk_scrolled_window_get_vadjustment(scroll);
-  value = gtk_adjustment_get_value(adj);
-  page_size = gtk_adjustment_get_page_size(adj);
+  if (adj != NULL) {
+    value = gtk_adjustment_get_value(adj);
+    page_size = gtk_adjustment_get_page_size(adj);
 
-  if ((y+h) > (value + page_size)) {
-    gtk_adjustment_set_value(adj,
-      y - page_size + h + table->inset * 2);
+    if ((y+h) > (value + page_size)) {
+      gtk_adjustment_set_value(adj,
+        y - page_size + h + table->inset * 2);
+    }
+    if (y < value) {
+      gtk_adjustment_set_value(adj,y);
+    }
   }
-  if (y < value) {
-    gtk_adjustment_set_value(adj,y);
-  }
+  gtk_adjustment_get_lower(adj),
+  gtk_adjustment_get_upper(adj);
 
   /*col*/
   adj = gtk_scrolled_window_get_hadjustment(scroll);
-  value = gtk_adjustment_get_value(adj);
-  page_size = gtk_adjustment_get_page_size(adj);
+  if (adj != NULL) {
+    value = gtk_adjustment_get_value(adj);
+    page_size = gtk_adjustment_get_page_size(adj);
 
-  if ((x+w) > (value + page_size)) {
-    gtk_adjustment_set_value(adj,
-      x - page_size + w + table->inset * 2);
+    if ((x+w) > (value + page_size)) {
+      gtk_adjustment_set_value(adj,
+        x - page_size + w + table->inset * 2);
+    }
+    if (x < value) {
+      gtk_adjustment_set_value(adj,x);
+    }
   }
-  if (x < value) {
-    gtk_adjustment_set_value(adj,x);
-  }
+  gtk_adjustment_get_lower(adj),
+  gtk_adjustment_get_upper(adj);
 }
 
 static void 
@@ -512,14 +576,23 @@ gtk_panda_table_build(
   }
   h = table->row_height*(table->rows) + table->inset * 2;
 
+  table->hlower = 0;
+  table->hupper = w;
   adj = gtk_scrolled_window_get_hadjustment(
     GTK_SCROLLED_WINDOW(table->cscroll));
-  gtk_adjustment_set_lower(adj,0);
-  gtk_adjustment_set_upper(adj,w);
+  if (adj != NULL) {
+    gtk_adjustment_set_lower(adj,0);
+    gtk_adjustment_set_upper(adj,w);
+  } 
+
+  table->vlower = 0;
+  table->vupper = h;
   adj = gtk_scrolled_window_get_vadjustment(
     GTK_SCROLLED_WINDOW(table->cscroll));
-  gtk_adjustment_set_lower(adj,0);
-  gtk_adjustment_set_upper(adj,h);
+  if (adj != NULL) {
+    gtk_adjustment_set_lower(adj,0);
+    gtk_adjustment_set_upper(adj,h);
+  }
 
   /*label*/
   for(i=0;i<table->cols;i++) {
@@ -719,15 +792,19 @@ gtk_panda_table_moveto (
 
   /*row*/
   adj = gtk_scrolled_window_get_vadjustment(scroll);
-  page_size = gtk_adjustment_get_page_size(adj);
-  value = y - page_size * row_align + h + table->inset * 2;
-  gtk_adjustment_set_value(adj,value);
+  if (adj != NULL) {
+    page_size = gtk_adjustment_get_page_size(adj);
+    value = y - page_size * row_align + h + table->inset * 2;
+    gtk_adjustment_set_value(adj,value);
+  }
 
   /*col*/
   adj = gtk_scrolled_window_get_hadjustment(scroll);
-  page_size = gtk_adjustment_get_page_size(adj);
-  value = x - page_size * col_align + w + table->inset * 2;
-  gtk_adjustment_set_value(adj,value);
+  if (adj != NULL) {
+    page_size = gtk_adjustment_get_page_size(adj);
+    value = x - page_size * col_align + w + table->inset * 2;
+    gtk_adjustment_set_value(adj,value);
+  }
 
   gtk_widget_grab_focus(child);
 }

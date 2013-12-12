@@ -62,8 +62,10 @@ struct _GtkPandaTable {
   gint cols;
   gint row_height;
   gint inset;
-  gint step_inc;
-  gint page_inc;
+  gint hupper;
+  gint hlower;
+  gint vupper;
+  gint vlower;
   gchar *types;
   gchar *titles;
   gchar *widths;
@@ -77,6 +79,9 @@ struct _GtkPandaTable {
 struct _GtkPandaTableClass {
   GtkVBoxClass parent_class;
 
+  void (*set_scroll_adjustments)(GtkPandaTable *table,
+    GtkAdjustment *hadjustment,
+    GtkAdjustment *vadjustment);
   void (*cell_edited) (GtkPandaTable *table,int row,int column,gchar *data);
 };
 
