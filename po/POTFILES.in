@@ -4,10 +4,9 @@ gtkpanda/gtkpandaclist.c
 gtkpanda/gtkpandacombo.c
 gtkpanda/gtkpandaentry.c
 gtkpanda/gtkpandafileentry.c
-gtkpanda/gtkpandahtml.c
+gtkpanda/gtkpandahtml.cpp
 gtkpanda/gtkpandapdf.c
 gtkpanda/gtkpandadownload.c
 gtkpanda/gtkpandapixmap.c
 gtkpanda/gtkpandaprint.c
-gtkpanda/gtkpandatable.c
 gtkpanda/numeric.c

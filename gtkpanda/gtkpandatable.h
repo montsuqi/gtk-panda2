@@ -52,63 +52,59 @@ typedef struct _GtkPandaTableClass	GtkPandaTableClass;
 
 /* you should access only the entry and list fields directly */
 struct _GtkPandaTable {
-  GtkVBox parent;
-  GtkWidget *hscroll;
-  GtkWidget *cscroll;
-  GtkWidget *hbox;
-  GtkWidget *fixed;
+  GtkTreeView tree;
 
   gint rows;
-  gint cols;
-  gint row_height;
-  gint inset;
-  gint hupper;
-  gint hlower;
-  gint vupper;
-  gint vlower;
+  gint columns;
   gchar *types;
   gchar *titles;
   gchar *widths;
   gboolean xim_enabled;
-  GList *hseparators;
-  GList *cseparators;
-  GList *entries;
-  GList *labels;
+  int renderer_types[GTK_PANDA_TABLE_MAX_COLS];
+  GType model_types[GTK_PANDA_TABLE_MAX_COLS];
 };
 
 struct _GtkPandaTableClass {
-  GtkVBoxClass parent_class;
+  GtkTreeViewClass parent_class;
 
-  void (*set_scroll_adjustments)(GtkPandaTable *table,
-    GtkAdjustment *hadjustment,
-    GtkAdjustment *vadjustment);
   void (*cell_edited) (GtkPandaTable *table,int row,int column,gchar *data);
 };
 
 GType gtk_panda_table_get_type (void);
 GtkWidget *gtk_panda_table_new ();
 
-void gtk_panda_table_build(GtkPandaTable *table);
-void gtk_panda_table_set_cell_text(GtkPandaTable *table,
-  gint row,
-  gint col,
-  const gchar *text);
-const gchar* gtk_panda_table_get_cell_text(GtkPandaTable *table,
-  gint row,
-  gint col);
-void gtk_panda_table_set_cell_color(GtkPandaTable *table,
-  gint row,
-  gint col,
-  const gchar *fgcolor,
-  const gchar *bgcolor);
+void gtk_panda_table_set_rows(GtkPandaTable *table, 
+  gint n_rows);
+void gtk_panda_table_set_columns(GtkPandaTable *table, 
+  gint n_columns);
+void gtk_panda_table_set_types(GtkPandaTable *table,
+  const gchar *types);
+void gtk_panda_table_set_titles(GtkPandaTable *table,
+  const gchar *titles);
+void gtk_panda_table_set_column_widths(GtkPandaTable *table,
+  const gchar *widths);
+void gtk_panda_table_set_row(GtkPandaTable *table,
+  gint i,
+  gchar *text[]);
+void gtk_panda_table_set_bgcolor(GtkPandaTable *table,
+  gint i,
+  gchar *colors[]);
+void gtk_panda_table_set_fgcolor(GtkPandaTable *table,
+  gint i,
+  gchar *colors[]);
 void gtk_panda_table_set_xim_enabled(GtkPandaTable *table,
   gboolean enabled);
 gboolean gtk_panda_table_get_xim_enabled(GtkPandaTable *table);
 void gtk_panda_table_moveto(GtkPandaTable *table,
   gint row,
   gint column,
+  gboolean use_align,
   gfloat row_align,
   gfloat col_align);
+void gtk_panda_table_stay(GtkPandaTable *table);
+gint gtk_panda_table_get_n_rows(GtkPandaTable *table);
+gint gtk_panda_table_get_columns(GtkPandaTable *table);
+gint gtk_panda_table_get_column_type(GtkPandaTable *table,gint column);
 
 #ifdef __cplusplus
 }
