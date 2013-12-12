@@ -26,7 +26,7 @@ cb_cell_edited(GtkPandaTable *table,
   gtk_panda_table_set_xim_enabled(table,
     !gtk_panda_table_get_xim_enabled(table));
 #if 1
-  gtk_panda_table_moveto(table,50,1,0.5,0.5);
+  gtk_panda_table_moveto(table,30,1,0.5,0.5);
 #endif
 }
 
@@ -37,6 +37,7 @@ main (int argc, char *argv[])
   GtkWidget *vbox;
   GtkWidget *table;
   GtkWidget *button;
+  GtkWidget *scroll;
 
   gtk_set_locale ();
   gtk_init (&argc, &argv);
@@ -52,9 +53,9 @@ main (int argc, char *argv[])
   table = gtk_panda_table_new();
 
   g_object_set(G_OBJECT(table),
-    "rows",100,
+    "rows",400,
     "columns",4,
-    "column_types","label,text,text",
+    "column_types","label,text,text,text",
     "column_widths","150,150,150",
     "column_titles","label,text1,text2,text3",
     NULL);
@@ -62,7 +63,14 @@ main (int argc, char *argv[])
   gtk_panda_table_set_cell_text(GTK_PANDA_TABLE(table),0,0,"もげ");
   gtk_panda_table_set_cell_text(GTK_PANDA_TABLE(table),1,1,"ぬふ");
   gtk_panda_table_set_cell_text(GTK_PANDA_TABLE(table),2,2,"ぐぬ");
+
+#if 1
+  scroll = gtk_scrolled_window_new(NULL,NULL);
+  gtk_container_add(GTK_CONTAINER(scroll),table);
+  gtk_box_pack_start(GTK_BOX(vbox),scroll,TRUE,TRUE,0);
+#else
   gtk_box_pack_start(GTK_BOX(vbox),table,TRUE,TRUE,0);
+#endif
 
   g_signal_connect (G_OBJECT(table), "cell-edited",
     G_CALLBACK(cb_cell_edited), NULL);
