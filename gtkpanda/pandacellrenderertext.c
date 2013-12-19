@@ -278,13 +278,11 @@ _enable_im(gpointer data)
   enable_im();
 #else
   GtkPandaEntry *entry;
+  GtkIMMulticontext *mim;
   
-  entry = GTK_PANDA_ENTRY(entry);
-  mim = GTK_IM_MULTICONTEXT(entry->im_context);
-  if (!force_feature_off && entry->input_mode == GTK_PANDA_ENTRY_XIM) {
-    set_im_state_post_focus(GTK_WIDGET(entry),mim,entry->xim_enabled);
-  }
-
+  entry = GTK_PANDA_ENTRY(data);
+  mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(entry)->im_context);
+  set_im_state_post_focus(GTK_WIDGET(entry),mim,entry->xim_enabled);
 #endif
   return FALSE;
 }
@@ -371,8 +369,14 @@ start_editing (GtkCellRenderer      *cell,
   gtk_editable_set_position(GTK_EDITABLE(entry),-1);
   for (i=0;i<g_list_length(table->keyevents);i++) {
     data = g_list_nth_data(table->keyevents,i);
+fprintf(stderr,"add key %d\n",i);
+#ifdef USE_DBUS
     gtk_entry_im_context_filter_keypress(GTK_ENTRY(entry),
       (GdkEventKey*)data);
+#else
+    gtk_im_context_filter_keypress(GTK_ENTRY(entry)->im_context,
+      (GdkEventKey*)data);
+#endif
     gdk_event_free((GdkEvent*)data);
   }
   g_list_free(table->keyevents);

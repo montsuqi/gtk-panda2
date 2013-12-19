@@ -79,12 +79,14 @@ PKG_CHECK_MODULES(CHECK_GLIB_VER,
 		ibus-1.0 				>=	1.4.1
 		dbus-1					>=	1.4.18
 	])
-], [])
+], [ 
+	PKG_CHECK_MODULES(CHECK_GLIB_VER,glib-2.0 >= 2.24.1,
+	[])
+])
 
 dnl ***************************************************************************
 dnl gtk version check
 dnl ***************************************************************************
-PKG_CHECK_MODULES(CHECK_GTK_VER,gtk+-2.0 >= 2.14.0)
 
 AC_CONFIG_FILES([	Makefile 
 					docs/Makefile 
