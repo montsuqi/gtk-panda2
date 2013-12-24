@@ -50,3 +50,4 @@ gtkpanda/testtable
 gtkpanda/testtext
 gtkpanda/testtimer
 gtkpanda2.pc
+*.org

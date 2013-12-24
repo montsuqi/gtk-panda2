@@ -156,6 +156,7 @@ gtk_panda_table_init ( GtkPandaTable * table)
   table->titles = g_strdup("");
   table->widths = g_strdup("");
   table->rows = 0;
+  table->keyevents = NULL;
   gtk_panda_table_set_columns(table,1);
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(table), FALSE );
   gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(table), FALSE );
@@ -287,6 +288,10 @@ static gboolean
 gtk_panda_table_key_press(GtkWidget *widget,
   GdkEventKey *event)
 {
+  GtkPandaTable *table;
+
+  table = GTK_PANDA_TABLE(widget);
+
   switch (event->keyval) {
   case GDK_Left:
   case GDK_KP_Left:
@@ -316,6 +321,8 @@ gtk_panda_table_key_press(GtkWidget *widget,
     return TRUE;
     break;
   }
+  table->keyevents = g_list_append(table->keyevents,
+    gdk_event_copy((const GdkEvent *)event));
   return GTK_WIDGET_CLASS(parent_class)->key_press_event(widget,event);
 }
 

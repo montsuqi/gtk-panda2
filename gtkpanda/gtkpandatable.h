@@ -62,6 +62,7 @@ struct _GtkPandaTable {
   gboolean xim_enabled;
   int renderer_types[GTK_PANDA_TABLE_MAX_COLS];
   GType model_types[GTK_PANDA_TABLE_MAX_COLS];
+  GList *keyevents;
 };
 
 struct _GtkPandaTableClass {
