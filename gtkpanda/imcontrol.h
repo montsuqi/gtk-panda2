@@ -28,8 +28,6 @@
  * function
  */
 
-void set_im_state_pre_focus(GtkWidget *widget, 
-  GtkIMMulticontext *mim, gboolean enabled);
 void set_im_state_post_focus(GtkWidget *widget, 
   GtkIMMulticontext *mim, gboolean enabled);
-gboolean get_im_state(GtkIMMulticontext *mim);
+void enable_im();

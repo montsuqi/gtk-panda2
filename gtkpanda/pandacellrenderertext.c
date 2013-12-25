@@ -271,6 +271,24 @@ cb_button_press_event(GtkWidget *widget,
   }
 }
 
+static gint
+_enable_im(gpointer data)
+{
+#ifdef USE_DBUS
+  enable_im();
+#else
+  GtkPandaEntry *entry;
+  
+  entry = GTK_PANDA_ENTRY(entry);
+  mim = GTK_IM_MULTICONTEXT(entry->im_context);
+  if (!force_feature_off && entry->input_mode == GTK_PANDA_ENTRY_XIM) {
+    set_im_state_post_focus(GTK_WIDGET(entry),mim,entry->xim_enabled);
+  }
+
+#endif
+  return FALSE;
+}
+
 static GtkCellEditable *
 start_editing (GtkCellRenderer      *cell,
               GdkEvent             *event,
@@ -359,6 +377,10 @@ start_editing (GtkCellRenderer      *cell,
   }
   g_list_free(table->keyevents);
   table->keyevents = NULL;
+
+  if (table->xim_enabled) {
+    g_idle_add(_enable_im,entry);
+  }
 
 #if 0
   {

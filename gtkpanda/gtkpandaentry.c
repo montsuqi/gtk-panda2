@@ -199,10 +199,6 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
   pentry = GTK_PANDA_ENTRY (widget);
   mim = GTK_IM_MULTICONTEXT(entry->im_context);
 
-  if (!force_feature_off && pentry->input_mode == GTK_PANDA_ENTRY_XIM) {
-    set_im_state_pre_focus(widget, mim, pentry->xim_enabled);
-  }
-
   if (GTK_WIDGET_CLASS (parent_class)->focus_in_event) {
     (* GTK_WIDGET_CLASS (parent_class)->focus_in_event)
       (widget, event);
