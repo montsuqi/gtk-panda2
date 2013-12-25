@@ -62,6 +62,7 @@ struct _GtkPandaTable {
   gboolean xim_enabled;
   int renderer_types[GTK_PANDA_TABLE_MAX_COLS];
   GType model_types[GTK_PANDA_TABLE_MAX_COLS];
+  GList *keyevents;
 };
 
 struct _GtkPandaTableClass {
@@ -92,21 +93,19 @@ void gtk_panda_table_set_bgcolor(GtkPandaTable *table,
 void gtk_panda_table_set_fgcolor(GtkPandaTable *table,
   gint i,
   gchar *colors[]);
+void gtk_panda_table_set_xim_enabled(GtkPandaTable *table,
+  gboolean enabled);
+gboolean gtk_panda_table_get_xim_enabled(GtkPandaTable *table);
 void gtk_panda_table_moveto(GtkPandaTable *table,
   gint row,
   gint column,
   gboolean use_align,
   gfloat row_align,
   gfloat col_align);
+void gtk_panda_table_stay(GtkPandaTable *table);
 gint gtk_panda_table_get_n_rows(GtkPandaTable *table);
 gint gtk_panda_table_get_columns(GtkPandaTable *table);
 gint gtk_panda_table_get_column_type(GtkPandaTable *table,gint column);
-void gtk_panda_table_stay(GtkPandaTable *table);
-void gtk_panda_table_set_xim_enabled(GtkPandaTable *table,
-  gboolean enabled);
-gboolean gtk_panda_table_get_xim_enabled(GtkPandaTable *table);
-
-
 
 #ifdef __cplusplus
 }

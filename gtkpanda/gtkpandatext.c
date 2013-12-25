@@ -205,8 +205,6 @@ gtk_panda_text_focus_in (GtkWidget     *widget,
   ptext = GTK_PANDA_TEXT(widget);
   mim = GTK_IM_MULTICONTEXT(text->im_context);
 
-  set_im_state_pre_focus(widget, mim, ptext->xim_enabled);
-
   if (GTK_WIDGET_CLASS (parent_class)->focus_in_event)
     (* GTK_WIDGET_CLASS (parent_class)->focus_in_event) (widget, event);
 

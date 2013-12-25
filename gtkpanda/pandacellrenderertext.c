@@ -28,11 +28,11 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
+#include "gtkpandaentry.h"
+#include "gtkpandatable.h"
 #include "pandacellrenderertext.h"
 #include "pandamarshal.h"
 #include "imcontrol.h"
-#include "gtkpandaentry.h"
-#include "gtkpandatable.h"
 
 static void panda_cell_renderer_text_class_init
     (PandaCellRendererTextClass *cell_text_class);
@@ -271,6 +271,22 @@ cb_button_press_event(GtkWidget *widget,
   }
 }
 
+static gint
+_enable_im(gpointer data)
+{
+#ifdef USE_DBUS
+  enable_im();
+#else
+  GtkPandaEntry *entry;
+  GtkIMMulticontext *mim;
+  
+  entry = GTK_PANDA_ENTRY(data);
+  mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(entry)->im_context);
+  set_im_state_post_focus(GTK_WIDGET(entry),mim,entry->xim_enabled);
+#endif
+  return FALSE;
+}
+
 static GtkCellEditable *
 start_editing (GtkCellRenderer      *cell,
               GdkEvent             *event,
@@ -280,11 +296,15 @@ start_editing (GtkCellRenderer      *cell,
               GdkRectangle         *cell_area,
               GtkCellRendererState  flags)
 {
+  GtkPandaTable *table;
   GtkRequisition requisition;
   GtkCellRendererText *celltext;
   gboolean xim_enabled;
+  gpointer data;
+  int i;
 
-  celltext = GTK_CELL_RENDERER_TEXT (cell);
+  celltext = GTK_CELL_RENDERER_TEXT(cell);
+  table = GTK_PANDA_TABLE(widget);
 
   /* If the cell isn't editable we return NULL. */
   if (celltext->editable == FALSE)
@@ -292,7 +312,7 @@ start_editing (GtkCellRenderer      *cell,
 
   xim_enabled = FALSE;
   if (GTK_IS_PANDA_TABLE(widget)) {
-    xim_enabled = gtk_panda_table_get_xim_enabled(GTK_PANDA_TABLE(widget));
+    xim_enabled = gtk_panda_table_get_xim_enabled(table);
   }
 
   entry = g_object_new (GTK_PANDA_TYPE_ENTRY,
@@ -303,12 +323,13 @@ start_editing (GtkCellRenderer      *cell,
   if (celltext->text) {
     if (xim_enabled) {
       gtk_panda_entry_set_xim_enabled(GTK_PANDA_ENTRY(entry),
-        GTK_PANDA_ENTRY_XIM);
+        TRUE);
     }
-    gtk_entry_set_text (GTK_ENTRY (entry), celltext->text);
+    gtk_entry_set_text(GTK_ENTRY (entry),celltext->text);
   }
 
-  g_object_set_data_full (G_OBJECT (entry), PANDA_CELL_RENDERER_TEXT_PATH, g_strdup (path), g_free);
+  g_object_set_data_full(G_OBJECT(entry),
+    PANDA_CELL_RENDERER_TEXT_PATH, g_strdup(path),g_free);
   
   gtk_widget_size_request (entry, &requisition);
   if (requisition.height < cell_area->height) {
@@ -346,6 +367,23 @@ start_editing (GtkCellRenderer      *cell,
                  G_CALLBACK(focus_out_event), celltext);
   gtk_widget_show (entry);
   gtk_editable_set_position(GTK_EDITABLE(entry),-1);
+  for (i=0;i<g_list_length(table->keyevents);i++) {
+    data = g_list_nth_data(table->keyevents,i);
+#ifdef USE_DBUS
+    gtk_entry_im_context_filter_keypress(GTK_ENTRY(entry),
+      (GdkEventKey*)data);
+#else
+    gtk_im_context_filter_keypress(GTK_ENTRY(entry)->im_context,
+      (GdkEventKey*)data);
+#endif
+    gdk_event_free((GdkEvent*)data);
+  }
+  g_list_free(table->keyevents);
+  table->keyevents = NULL;
+
+  if (table->xim_enabled) {
+    g_idle_add(_enable_im,entry);
+  }
 
 #if 0
   {

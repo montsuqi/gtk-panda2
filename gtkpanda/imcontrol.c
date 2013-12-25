@@ -20,6 +20,7 @@
 #include <config.h>
 #include <string.h>
 #include <stdlib.h>
+#include <glib.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
@@ -27,6 +28,102 @@
 
 #include "config.h"
 #include "imcontrol.h"
+
+#ifdef USE_DBUS
+#include <ibus.h>
+#include <dbus/dbus.h>
+
+static GDBusConnection *
+get_ibus_connect(void)
+{
+  GDBusConnection *connect = NULL;
+
+  if ( ibus_get_address() != NULL) {
+    connect = g_dbus_connection_new_for_address_sync (ibus_get_address (),
+						      G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
+						      G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
+						      NULL, NULL, NULL);
+  }
+  return connect;
+}
+
+static gchar *
+get_ibus_CurrentInputContext(
+			     GDBusConnection *connect)
+{
+  gchar *current = NULL;
+  GVariant *result;
+
+  result = g_dbus_connection_call_sync(connect,
+					IBUS_SERVICE_IBUS,
+					IBUS_PATH_IBUS,
+					IBUS_INTERFACE_IBUS,
+					"CurrentInputContext",
+					NULL,
+					NULL,
+					G_DBUS_CALL_FLAGS_NO_AUTO_START,
+					-1,
+					NULL,
+					NULL);
+  if (result != NULL) {
+    g_variant_get(result,"(o)", &current);
+    g_variant_unref (result);
+  }
+  return current;
+}
+
+static gboolean
+is_ibus_enable(
+	       GDBusConnection *connect,
+	       gchar *current)
+{
+  gboolean bool;
+  GVariant *result;
+
+  result = g_dbus_connection_call_sync (connect,
+					IBUS_SERVICE_IBUS,
+					current,
+					IBUS_INTERFACE_INPUT_CONTEXT,
+					"IsEnabled",
+					NULL,
+					NULL,
+					G_DBUS_CALL_FLAGS_NO_AUTO_START,
+					-1,
+					NULL,
+					NULL);
+  if (result != NULL) {
+    g_variant_get(result,"(b)", &bool);
+    g_variant_unref (result);
+  } else {
+    return FALSE;
+  }
+  return bool;
+}
+
+static void
+ibus_change_state(
+		  GDBusConnection *connect,
+		  gchar *current,
+		  const gchar *state)
+{
+  GVariant *result;
+  result = g_dbus_connection_call_sync (connect,
+					IBUS_SERVICE_IBUS,
+					current,
+					IBUS_INTERFACE_INPUT_CONTEXT,
+					state,
+					NULL,
+					NULL,
+					G_DBUS_CALL_FLAGS_NO_AUTO_START,
+					-1,
+					NULL,
+					NULL);
+  if (result != NULL) {
+    g_variant_unref (result);
+  }
+}
+
+#endif
 
 static void
 emit_toggle_key(GtkWidget *widget,
@@ -45,24 +142,25 @@ emit_toggle_key(GtkWidget *widget,
   gtk_im_context_filter_keypress(im, (GdkEventKey *)kevent);
 }
 
-void 
-set_im_state_pre_focus(
-  GtkWidget *widget, 
-  GtkIMMulticontext *mim,
-  gboolean enabled)
+void
+enable_im(void)
 {
-  GtkIMContext *im;
-  gboolean *state;
+#ifdef USE_DBUS
+  GDBusConnection *connect = NULL;
+  gchar *current = NULL;
 
-  if (!strcmp("scim-bridge", mim->context_id)) {
-    im = mim->slave;
-    state = (gboolean *)g_object_get_data(G_OBJECT(im), "im-state");
-    if (state != NULL) {
-      if (*state != enabled) {
-          emit_toggle_key(widget, im);
-      }
-    }
+  connect = get_ibus_connect();
+  if (connect == NULL) {
+    return;
   }
+  current = get_ibus_CurrentInputContext(connect);
+  if (current == NULL) {
+    return;
+  }
+  ibus_change_state(connect, current, "Enable");
+  g_dbus_connection_close_sync(connect,NULL,NULL);
+  g_object_unref(connect);
+#endif
 }
 
 void 
@@ -71,6 +169,11 @@ set_im_state_post_focus(
   GtkIMMulticontext *mim,
   gboolean enabled)
 {
+#ifdef USE_DBUS
+  if (enabled) {
+    enable_im();
+  }
+#else
   GtkIMContext *im;
   gboolean *state;
 
@@ -83,21 +186,5 @@ set_im_state_post_focus(
       }
     }
   }
-}
-
-gboolean
-get_im_state(
-  GtkIMMulticontext *mim)
-{
-  GtkIMContext *im;
-  gboolean *state;
-
-  if (!strcmp("ibus", mim->context_id)) {
-    im = mim->slave;
-    state = (gboolean *)g_object_get_data(G_OBJECT(im), "im-state");
-    if (state != NULL) {
-      return *state;
-    }
-  }
-  return FALSE;
+#endif
 }
