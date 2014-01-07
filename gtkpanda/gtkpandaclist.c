@@ -632,14 +632,12 @@ gtk_panda_clist_set_bgcolor(
   GtkTreeModel *model;
   GtkTreeIter iter;
   gchar path[16];
-  int columns;
 
   g_return_if_fail(clist != NULL);
   g_return_if_fail(GTK_IS_PANDA_CLIST(clist));
 
   sprintf(path,"%d",row);
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
-  columns = gtk_tree_model_get_n_columns(model);
   gtk_tree_model_get_iter_from_string(model,&iter,path);
 
   if (color == NULL || strlen(color) == 0) {
