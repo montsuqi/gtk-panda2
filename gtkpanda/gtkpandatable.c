@@ -45,6 +45,7 @@ PROP_ROWS,
 PROP_COLUMNS,
 PROP_TYPES,
 PROP_TITLES,
+PROP_IM_CONTROLS,
 PROP_WIDTHS
 };
 
@@ -144,6 +145,14 @@ gtk_panda_table_class_init ( GtkPandaTableClass * klass)
       _("The list of column width(comma separated string)"),
       "",
       G_PARAM_READWRITE));
+
+  g_object_class_install_property (gobject_class,
+    PROP_WIDTHS,
+    g_param_spec_string ("im_controls",
+      _("The list of enable im control flag"),
+      _("The list of enable im control flag"),
+      "",
+      G_PARAM_READWRITE));
 }
 
 static void
@@ -151,10 +160,10 @@ gtk_panda_table_init ( GtkPandaTable * table)
 {
   GtkTreeSelection *selection;
   
-  table->xim_enabled = FALSE;
   table->types = g_strdup("");
   table->titles = g_strdup("");
   table->widths = g_strdup("");
+  table->im_controls = g_strdup("");
   table->rows = 0;
   table->keyevents = NULL;
   gtk_panda_table_set_columns(table,1);
@@ -526,6 +535,30 @@ apply_prop_widths(GtkPandaTable *table)
   g_list_free(list);
 }
 
+static void
+apply_prop_im_controls(GtkPandaTable *table)
+{
+  int i;
+  gchar **splits;
+
+  g_return_if_fail(table != NULL);
+
+  if (table->im_controls == NULL) {
+    return;
+  }
+
+  splits = g_strsplit(table->im_controls,",",GTK_PANDA_TABLE_MAX_COLS);
+  for(i = 0; i<GTK_PANDA_TABLE_MAX_COLS; i++) {
+      table->_im_controls[i] = FALSE;
+  }
+  for(i = 0; splits[i] != NULL; i++) {
+    if (*splits[i] == 'T' || *splits[i] == 't') {
+      table->_im_controls[i] = TRUE;
+    }
+  }
+  g_strfreev(splits);
+}
+
 void
 gtk_panda_table_set_columns (
   GtkPandaTable *table,
@@ -759,6 +792,21 @@ gtk_panda_table_set_column_widths(
   apply_prop_widths(table);
 }
 
+void
+gtk_panda_table_set_im_controls(
+  GtkPandaTable *table,
+  const gchar *ics)
+{
+  g_return_if_fail(table != NULL);
+  g_return_if_fail(ics != NULL);
+
+  if (table->im_controls != NULL) {
+    g_free(table->im_controls);
+  }
+  table->im_controls = g_strdup(ics);
+  apply_prop_im_controls(table);
+}
+
 gint
 gtk_panda_table_get_n_rows(
   GtkPandaTable *table)
@@ -834,6 +882,14 @@ gtk_panda_table_stay (
   g_idle_add(_start_editing,table);
 }
 
+gboolean
+gtk_panda_table_get_im_control(
+  GtkPandaTable *table,
+  gint column)
+{
+  return table->_im_controls[column];
+}
+
 static void 
 gtk_panda_table_set_property (GObject *object,
   guint prop_id,
@@ -861,6 +917,9 @@ gtk_panda_table_set_property (GObject *object,
       break;
     case PROP_WIDTHS:
       gtk_panda_table_set_column_widths(table,g_value_get_string(value));
+      break;
+    case PROP_IM_CONTROLS:
+      gtk_panda_table_set_im_controls(table,g_value_get_string(value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -896,6 +955,9 @@ gtk_panda_table_get_property (GObject         *object,
     case PROP_WIDTHS:
       g_value_set_string (value, g_strdup(table->widths));
       break;
+    case PROP_IM_CONTROLS:
+      g_value_set_string (value, g_strdup(table->im_controls));
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -920,19 +982,4 @@ cb_button_release_event(GtkWidget *widget,
     gtk_tree_path_free(path);
   }
   return FALSE;
-}
-
-void
-gtk_panda_table_set_xim_enabled(
-  GtkPandaTable *table,
-  gboolean enabled)
-{
-  table->xim_enabled = enabled;
-}
-
-gboolean
-gtk_panda_table_get_xim_enabled(
-  GtkPandaTable *table)
-{
-  return table->xim_enabled;
 }

@@ -61,8 +61,6 @@ cb_cell_edited(GtkPandaTable *table,
 
   colors[column] = "red";
   gtk_panda_table_set_bgcolor(table,row,colors);
-  gtk_panda_table_set_xim_enabled(table,
-   !gtk_panda_table_get_xim_enabled(table));
   fprintf(stderr,"[%d,%d][%s]\n",row,column,value);
 }
 
@@ -98,6 +96,8 @@ main (int argc, char *argv[])
     "icon1,text1,label1,check1");
   gtk_panda_table_set_column_widths(GTK_PANDA_TABLE(table),
     "50,100,100,50");
+  gtk_panda_table_set_im_controls(GTK_PANDA_TABLE(table),
+    "t,f,f,t");
   gtk_panda_table_set_rows(GTK_PANDA_TABLE(table),ROW_SIZE);
   g_signal_connect (G_OBJECT(table), "cell-edited",
     G_CALLBACK(cb_cell_edited), NULL);

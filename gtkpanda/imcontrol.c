@@ -29,6 +29,8 @@
 #include "config.h"
 #include "imcontrol.h"
 
+static gboolean im_control_enabled = TRUE;
+
 #ifdef USE_DBUS
 #include <ibus.h>
 #include <dbus/dbus.h>
@@ -145,6 +147,9 @@ emit_toggle_key(GtkWidget *widget,
 void
 enable_im(void)
 {
+  if (!im_control_enabled) {
+    return;
+  }
 #ifdef USE_DBUS
   GDBusConnection *connect = NULL;
   gchar *current = NULL;
@@ -169,6 +174,9 @@ set_im_state_post_focus(
   GtkIMMulticontext *mim,
   gboolean enabled)
 {
+  if (!im_control_enabled) {
+    return;
+  }
 #ifdef USE_DBUS
   if (enabled) {
     enable_im();
@@ -177,8 +185,11 @@ set_im_state_post_focus(
   GtkIMContext *im;
   gboolean *state;
 
-  if (!strcmp("ibus", mim->context_id)) {
+  if (mim != NULL && !strcmp("ibus", mim->context_id)) {
     im = mim->slave;
+    if (mim->slave == NULL) {
+      return;
+    }
     state = (gboolean *)g_object_get_data(G_OBJECT(im), "im-state");
     if (state != NULL) {
       if (*state != enabled) {
@@ -187,4 +198,16 @@ set_im_state_post_focus(
     }
   }
 #endif
+}
+
+void
+set_im_control_enabled(gboolean enabled)
+{
+  im_control_enabled = enabled;
+}
+
+gboolean
+get_im_control_enabled(void)
+{
+  return im_control_enabled;
 }
