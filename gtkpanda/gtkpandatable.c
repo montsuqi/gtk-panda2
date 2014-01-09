@@ -45,8 +45,8 @@ PROP_ROWS,
 PROP_COLUMNS,
 PROP_TYPES,
 PROP_TITLES,
-PROP_IM_CONTROLS,
-PROP_WIDTHS
+PROP_WIDTHS,
+PROP_IM_CONTROLS
 };
 
 enum
@@ -147,7 +147,7 @@ gtk_panda_table_class_init ( GtkPandaTableClass * klass)
       G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class,
-    PROP_WIDTHS,
+    PROP_IM_CONTROLS,
     g_param_spec_string ("im_controls",
       _("The list of enable im control flag"),
       _("The list of enable im control flag"),
