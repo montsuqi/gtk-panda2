@@ -274,6 +274,9 @@ cb_button_press_event(GtkWidget *widget,
 static gint
 _enable_im(gpointer data)
 {
+  if (!GTK_IS_PANDA_ENTRY(data)) {
+    return FALSE;
+  }
 #ifdef USE_DBUS
   enable_im();
 #else
@@ -299,9 +302,9 @@ start_editing (GtkCellRenderer      *cell,
   GtkPandaTable *table;
   GtkRequisition requisition;
   GtkCellRendererText *celltext;
-  gboolean xim_enabled;
+  gboolean im_enabled;
   gpointer data;
-  int i;
+  int i,column_num;
 
   celltext = GTK_CELL_RENDERER_TEXT(cell);
   table = GTK_PANDA_TABLE(widget);
@@ -310,9 +313,10 @@ start_editing (GtkCellRenderer      *cell,
   if (celltext->editable == FALSE)
     return NULL;
 
-  xim_enabled = FALSE;
+  column_num = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(cell),"column_num"));
+  im_enabled = FALSE;
   if (GTK_IS_PANDA_TABLE(widget)) {
-    xim_enabled = gtk_panda_table_get_xim_enabled(table);
+    im_enabled = gtk_panda_table_get_im_control(table,column_num);
   }
 
   entry = g_object_new (GTK_PANDA_TYPE_ENTRY,
@@ -321,7 +325,7 @@ start_editing (GtkCellRenderer      *cell,
             NULL);
 
   if (celltext->text) {
-    if (xim_enabled) {
+    if (im_enabled) {
       gtk_panda_entry_set_xim_enabled(GTK_PANDA_ENTRY(entry),
         TRUE);
     }
@@ -381,7 +385,7 @@ start_editing (GtkCellRenderer      *cell,
   g_list_free(table->keyevents);
   table->keyevents = NULL;
 
-  if (table->xim_enabled) {
+  if (im_enabled) {
     g_idle_add(_enable_im,entry);
   }
 

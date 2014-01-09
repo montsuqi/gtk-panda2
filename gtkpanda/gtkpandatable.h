@@ -59,7 +59,8 @@ struct _GtkPandaTable {
   gchar *types;
   gchar *titles;
   gchar *widths;
-  gboolean xim_enabled;
+  gchar *im_controls;
+  gboolean _im_controls[GTK_PANDA_TABLE_MAX_COLS];
   int renderer_types[GTK_PANDA_TABLE_MAX_COLS];
   GType model_types[GTK_PANDA_TABLE_MAX_COLS];
   GList *keyevents;
@@ -84,6 +85,10 @@ void gtk_panda_table_set_titles(GtkPandaTable *table,
   const gchar *titles);
 void gtk_panda_table_set_column_widths(GtkPandaTable *table,
   const gchar *widths);
+void gtk_panda_table_set_im_controls(GtkPandaTable *table,
+  const gchar *widths);
+gboolean gtk_panda_table_get_im_control(GtkPandaTable *table,
+  gint column);
 void gtk_panda_table_set_row(GtkPandaTable *table,
   gint i,
   gchar *text[]);
@@ -93,9 +98,6 @@ void gtk_panda_table_set_bgcolor(GtkPandaTable *table,
 void gtk_panda_table_set_fgcolor(GtkPandaTable *table,
   gint i,
   gchar *colors[]);
-void gtk_panda_table_set_xim_enabled(GtkPandaTable *table,
-  gboolean enabled);
-gboolean gtk_panda_table_get_xim_enabled(GtkPandaTable *table);
 void gtk_panda_table_moveto(GtkPandaTable *table,
   gint row,
   gint column,

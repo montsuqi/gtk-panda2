@@ -87,7 +87,6 @@ static void  gtk_panda_entry_get_property       (GObject         *object,
                        GParamSpec      *pspec);
 
 static GtkWidgetClass *parent_class = NULL;
-static gboolean force_feature_off = FALSE;
 
 GType
 gtk_panda_entry_get_type (void)
@@ -204,7 +203,7 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
       (widget, event);
   }
 
-  if (!force_feature_off && pentry->input_mode == GTK_PANDA_ENTRY_XIM) {
+  if (pentry->input_mode == GTK_PANDA_ENTRY_XIM) {
     set_im_state_post_focus(widget, mim, pentry->xim_enabled);
   }
 
@@ -238,7 +237,7 @@ gtk_panda_entry_key_press (GtkWidget      *widget,
 
   entry = GTK_PANDA_ENTRY (widget);
 
-  if (!force_feature_off && entry->input_mode == GTK_PANDA_ENTRY_KANA)
+  if (!entry->input_mode == GTK_PANDA_ENTRY_KANA)
     {
       if (event->keyval == GDK_Return)
         {
@@ -367,8 +366,7 @@ gtk_panda_entry_insert_text (GtkEditable *editable,
   entry = GTK_ENTRY (editable);
 
   /* Handle kana input */
-  if (!force_feature_off &&
-    GTK_PANDA_ENTRY (entry)->input_mode == GTK_PANDA_ENTRY_KANA) {
+  if (GTK_PANDA_ENTRY (entry)->input_mode == GTK_PANDA_ENTRY_KANA) {
     gchar buff[8];
     gint prefix_start, prefix_end;
     gchar this, last;
@@ -508,10 +506,4 @@ void
 gtk_panda_entry_set_xim_enabled (GtkPandaEntry *entry, gboolean flag)
 {
   entry->xim_enabled = flag;
-}
-
-void
-gtk_panda_entry_force_feature_off()
-{
-  force_feature_off = TRUE;
 }

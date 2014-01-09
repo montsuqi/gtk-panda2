@@ -70,7 +70,6 @@ void gtk_panda_entry_set_input_mode (
 	GtkPandaEntry *entry, 
 	GtkPandaEntryInputMode mode);
 void gtk_panda_entry_set_xim_enabled (GtkPandaEntry *entry, gboolean flag);
-void gtk_panda_entry_force_feature_off();
 
 #ifdef __cplusplus
 }
