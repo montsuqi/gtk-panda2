@@ -151,20 +151,20 @@ enable_im(void)
     return;
   }
 #ifdef USE_DBUS
-  GDBusConnection *connect = NULL;
+  static GDBusConnection *connect = NULL;
   gchar *current = NULL;
 
-  connect = get_ibus_connect();
   if (connect == NULL) {
-    return;
+    connect = get_ibus_connect();
+    if (connect == NULL) {
+      return;
+    }
   }
   current = get_ibus_CurrentInputContext(connect);
   if (current == NULL) {
     return;
   }
   ibus_change_state(connect, current, "Enable");
-  g_dbus_connection_close_sync(connect,NULL,NULL);
-  g_object_unref(connect);
 #endif
 }
 
