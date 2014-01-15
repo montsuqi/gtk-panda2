@@ -36,6 +36,7 @@ m4
 po/*.gmo
 po/stamp-po
 po/POTFILES
+po/remove-potcdate.sed
 gtkpanda/pandamarshal.c
 gtkpanda/pandamarshal.h
 gtkpanda/testclist
