@@ -39,6 +39,7 @@
 #include <gtkpanda/gtkpandawindow.h>
 #include <gtkpanda/gtkpandatable.h>
 #include <gtkpanda/pandacellrenderertext.h>
+#include <gtkpanda/imcontrol.h>
 
 void gtk_panda_init (int *argc, char ***argv);
 
