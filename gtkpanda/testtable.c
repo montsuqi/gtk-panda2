@@ -17,6 +17,12 @@ reset_data(GtkPandaTable *table)
   gchar *rowdata[5] = {GTK_STOCK_YES,"text","label","T",NULL};
   gchar *colors[5] = {"","","","",NULL};
   int i;
+  gint r,c;
+
+  r = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(table),"changed_row"));
+  c = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(table),"changed_column"));
+
+  fprintf(stderr,"changed row:col [%d:%d]\n",r,c);
 
   for(i=0;i<ROW_SIZE;i++) {
     if (i%2==0) {
