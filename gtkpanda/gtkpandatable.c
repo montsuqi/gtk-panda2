@@ -72,6 +72,9 @@ static void  gtk_panda_table_get_property(GObject *object,
 static gboolean cb_button_release_event(GtkWidget *widget,
   GdkEvent *event,
   gpointer data);
+static void cb_cursor_changed(
+  GtkTreeView *,
+  gpointer );
 static gboolean gtk_panda_table_key_press(
   GtkWidget *widget,
   GdkEventKey *event);
@@ -178,6 +181,8 @@ gtk_panda_table_init ( GtkPandaTable * table)
 
   g_signal_connect(G_OBJECT(table),"button-release-event",
     G_CALLBACK(cb_button_release_event),NULL);
+  g_signal_connect(G_OBJECT(table),"cursor-changed",
+    G_CALLBACK(cb_cursor_changed),NULL);
 }
 
 GType
@@ -368,6 +373,7 @@ cb_text_renderer_edited(GtkCellRendererText *renderer,
   g_signal_emit(table, signals[CELL_EDITED],0,row,column,new_text);
 #endif
 }
+
 
 static void
 cb_text_renderer_edited_by_key(GtkCellRendererText *renderer,
@@ -982,4 +988,35 @@ cb_button_release_event(GtkWidget *widget,
     gtk_tree_path_free(path);
   }
   return FALSE;
+}
+
+static void
+cb_cursor_changed(GtkTreeView *view,
+  gpointer data)
+{
+  GtkTreePath *path;
+  GtkTreeViewColumn *column;
+  gint row,col,*indices;
+
+  col = 0;
+  row = 0;
+
+  gtk_tree_view_get_cursor(view,&path,&column);
+  if (path != NULL && column != NULL) {
+    col = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(column),"column_num"));
+    indices = gtk_tree_path_get_indices(path);
+    if (indices != NULL) {
+      row = indices[0];
+    }
+  }
+  if (path != NULL) {
+    gtk_tree_path_free(path);
+  }
+
+  g_object_set_data(G_OBJECT(view),"changed_row",
+    GINT_TO_POINTER(row));
+  g_object_set_data(G_OBJECT(view),"changed_column",
+    GINT_TO_POINTER(col));
+  g_object_set_data(G_OBJECT(view),"changed_value",
+    NULL);
 }
