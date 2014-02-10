@@ -75,6 +75,10 @@ static gboolean cb_button_release_event(GtkWidget *widget,
 static void cb_cursor_changed(
   GtkTreeView *,
   gpointer );
+static gboolean cb_key_press_event(
+  GtkWidget *,
+  GdkEventKey *event,
+  gpointer);
 static gboolean gtk_panda_table_key_press(
   GtkWidget *widget,
   GdkEventKey *event);
@@ -183,6 +187,8 @@ gtk_panda_table_init ( GtkPandaTable * table)
     G_CALLBACK(cb_button_release_event),NULL);
   g_signal_connect(G_OBJECT(table),"cursor-changed",
     G_CALLBACK(cb_cursor_changed),NULL);
+  g_signal_connect_after(G_OBJECT(table),"key-press-event",
+    G_CALLBACK(cb_key_press_event),NULL);
 }
 
 GType
@@ -1019,4 +1025,63 @@ cb_cursor_changed(GtkTreeView *view,
     GINT_TO_POINTER(col));
   g_object_set_data(G_OBJECT(view),"changed_value",
     NULL);
+}
+
+static gint
+_move_to_start(gpointer data)
+{
+  GtkTreeView *view;
+  GtkTreeViewColumn *column;
+  GtkTreePath *start,*end,*path;
+
+  view = GTK_TREE_VIEW(data);
+  if (gtk_tree_view_get_visible_range(view, &start, &end)) {
+    gtk_tree_view_get_cursor(view,&path,&column);
+    if (path != NULL && column != NULL) {
+      gtk_tree_view_set_cursor(view,start,column,FALSE);
+      start_editing(view);
+      gtk_tree_path_free(path);
+    }
+  }
+  gtk_tree_path_free(start);
+  gtk_tree_path_free(end);
+  return FALSE;
+}
+
+static gint
+_move_to_end(gpointer data)
+{
+  GtkTreeView *view;
+  GtkTreeViewColumn *column;
+  GtkTreePath *start,*end,*path;
+
+  view = GTK_TREE_VIEW(data);
+  if (gtk_tree_view_get_visible_range(view, &start, &end)) {
+    gtk_tree_view_get_cursor(view,&path,&column);
+    if (path != NULL && column != NULL) {
+      gtk_tree_view_set_cursor(view,end,column,FALSE);
+      start_editing(view);
+      gtk_tree_path_free(path);
+    }
+  }
+  gtk_tree_path_free(start);
+  gtk_tree_path_free(end);
+  return FALSE;
+}
+static gboolean 
+cb_key_press_event(GtkWidget *widget,
+  GdkEventKey *event,
+  gpointer data)
+{
+  if (!(event->state & GDK_SHIFT_MASK ) &&
+      !(event->state & GDK_CONTROL_MASK) &&
+      !(event->state & GDK_MOD1_MASK) 
+     ) {
+    if (event->keyval == GDK_KEY_Page_Down) {
+		g_idle_add(_move_to_end,widget);
+    } else if (event->keyval == GDK_KEY_Page_Up) {
+		g_idle_add(_move_to_start,widget);
+    }
+  }
+  return FALSE;
 }
