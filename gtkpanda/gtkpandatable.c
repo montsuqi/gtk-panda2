@@ -351,10 +351,10 @@ gtk_panda_table_key_press(GtkWidget *widget,
   table = GTK_PANDA_TABLE(widget);
 
   switch (event->keyval) {
-  case GDK_KEY_Page_Up:
+  case GDK_Page_Up:
     g_idle_add(_move_to_start,widget);
     break;
-  case GDK_KEY_Page_Down:
+  case GDK_Page_Down:
     g_idle_add(_move_to_start,widget);
     break;
   case GDK_Left:
