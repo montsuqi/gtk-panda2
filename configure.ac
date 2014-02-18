@@ -65,24 +65,6 @@ PKG_CHECK_MODULES(CHECK_POPPLER_VER,poppler-glib >= 0.8.0,
 	AC_DEFINE(POPPLER_0_8,1,"")
 ], [])
 
-dnl ***************************************************************************
-dnl glib version check
-dnl ***************************************************************************
-PKG_CHECK_MODULES(CHECK_GLIB_VER,
-[
-	glib-2.0 >= 2.32.4
-],
-[
-	AC_DEFINE(USE_DBUS,1,"")
-	PKG_CHECK_MODULES(IBUS,
-	[
-		ibus-1.0 				>=	1.4.1
-		dbus-1					>=	1.4.18
-	])
-], [ 
-	PKG_CHECK_MODULES(CHECK_GLIB_VER,glib-2.0 >= 2.24.1,
-	[])
-])
 AC_CONFIG_FILES([	Makefile 
 					docs/Makefile 
 					gtkpanda/Makefile 
