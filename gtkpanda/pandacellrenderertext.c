@@ -277,16 +277,12 @@ _enable_im(gpointer data)
   if (!GTK_IS_PANDA_ENTRY(data)) {
     return FALSE;
   }
-#ifdef USE_DBUS
-  enable_im();
-#else
   GtkPandaEntry *entry;
   GtkIMMulticontext *mim;
   
   entry = GTK_PANDA_ENTRY(data);
   mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(entry)->im_context);
   set_im_state_post_focus(GTK_WIDGET(entry),mim,entry->xim_enabled);
-#endif
   return FALSE;
 }
 

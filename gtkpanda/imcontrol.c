@@ -31,102 +31,6 @@
 
 static gboolean im_control_enabled = TRUE;
 
-#ifdef USE_DBUS
-#include <ibus.h>
-#include <dbus/dbus.h>
-
-static GDBusConnection *
-get_ibus_connect(void)
-{
-  GDBusConnection *connect = NULL;
-
-  if ( ibus_get_address() != NULL) {
-    connect = g_dbus_connection_new_for_address_sync (ibus_get_address (),
-						      G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT |
-						      G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
-						      NULL, NULL, NULL);
-  }
-  return connect;
-}
-
-static gchar *
-get_ibus_CurrentInputContext(
-			     GDBusConnection *connect)
-{
-  gchar *current = NULL;
-  GVariant *result;
-
-  result = g_dbus_connection_call_sync(connect,
-					IBUS_SERVICE_IBUS,
-					IBUS_PATH_IBUS,
-					IBUS_INTERFACE_IBUS,
-					"CurrentInputContext",
-					NULL,
-					NULL,
-					G_DBUS_CALL_FLAGS_NO_AUTO_START,
-					-1,
-					NULL,
-					NULL);
-  if (result != NULL) {
-    g_variant_get(result,"(o)", &current);
-    g_variant_unref (result);
-  }
-  return current;
-}
-
-static gboolean
-is_ibus_enable(
-	       GDBusConnection *connect,
-	       gchar *current)
-{
-  gboolean bool;
-  GVariant *result;
-
-  result = g_dbus_connection_call_sync (connect,
-					IBUS_SERVICE_IBUS,
-					current,
-					IBUS_INTERFACE_INPUT_CONTEXT,
-					"IsEnabled",
-					NULL,
-					NULL,
-					G_DBUS_CALL_FLAGS_NO_AUTO_START,
-					-1,
-					NULL,
-					NULL);
-  if (result != NULL) {
-    g_variant_get(result,"(b)", &bool);
-    g_variant_unref (result);
-  } else {
-    return FALSE;
-  }
-  return bool;
-}
-
-static void
-ibus_change_state(
-		  GDBusConnection *connect,
-		  gchar *current,
-		  const gchar *state)
-{
-  GVariant *result;
-  result = g_dbus_connection_call_sync (connect,
-					IBUS_SERVICE_IBUS,
-					current,
-					IBUS_INTERFACE_INPUT_CONTEXT,
-					state,
-					NULL,
-					NULL,
-					G_DBUS_CALL_FLAGS_NO_AUTO_START,
-					-1,
-					NULL,
-					NULL);
-  if (result != NULL) {
-    g_variant_unref (result);
-  }
-}
-
-#endif
-
 static void
 emit_toggle_key(GtkWidget *widget,
   GtkIMContext *im)
@@ -144,30 +48,6 @@ emit_toggle_key(GtkWidget *widget,
   gtk_im_context_filter_keypress(im, (GdkEventKey *)kevent);
 }
 
-void
-enable_im(void)
-{
-  if (!im_control_enabled) {
-    return;
-  }
-#ifdef USE_DBUS
-  static GDBusConnection *connect = NULL;
-  gchar *current = NULL;
-
-  if (connect == NULL) {
-    connect = get_ibus_connect();
-    if (connect == NULL) {
-      return;
-    }
-  }
-  current = get_ibus_CurrentInputContext(connect);
-  if (current == NULL) {
-    return;
-  }
-  ibus_change_state(connect, current, "Enable");
-#endif
-}
-
 void 
 set_im_state_post_focus(
   GtkWidget *widget, 
@@ -177,11 +57,6 @@ set_im_state_post_focus(
   if (!im_control_enabled) {
     return;
   }
-#ifdef USE_DBUS
-  if (enabled) {
-    enable_im();
-  }
-#else
   GtkIMContext *im;
   gboolean *state;
 
@@ -197,7 +72,6 @@ set_im_state_post_focus(
       }
     }
   }
-#endif
 }
 
 void

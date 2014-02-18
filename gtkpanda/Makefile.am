@@ -52,7 +52,6 @@ gtkpanda_private_h_sources =
 
 INCLUDES = 				\
 	$(GTK_PANDA_CFLAGS) \
-	$(IBUS_CFLAGS)		\
 	-I$(top_srcdir)
 
 AM_CPPFLAGS = -g -DLOCALEDIR=\"$(localedir)\"
@@ -67,7 +66,6 @@ libgtkpanda_2_0_la_SOURCES =	\
 libgtkpanda_2_0_la_LDFLAGS = 	\
 	-version-info  $(LTVERSION)	\
 	-export-dynamic 			\
-	$(IBUS_LIBS)				\
 	$(GTK_PANDA_LIBS)
 
 BUILT_SOURCES = pandamarshal.h pandamarshal.c
@@ -108,7 +106,6 @@ DEPS = \
 	libgtkpanda-2.0.la
 LDADDS =	\
 	./libgtkpanda-2.0.la	\
-	$(IBUS_LIBS)			\
 	$(GTK_PANDA_LIBS)
 
 testclist_DEPENDENCIES = $(DEPS)
