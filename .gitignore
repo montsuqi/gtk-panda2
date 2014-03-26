@@ -3,6 +3,7 @@ Makefile.in
 aclocal.m4
 config.*
 configure
+compile
 gtkpanda-config
 gtkpanda.spec
 libtool
@@ -20,6 +21,7 @@ stamp-h1
 *.swp
 *.tar.gz
 *.o
+*.org
 *.lo
 *.la
 *.deps

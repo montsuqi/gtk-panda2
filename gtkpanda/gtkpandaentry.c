@@ -237,7 +237,7 @@ gtk_panda_entry_key_press (GtkWidget      *widget,
 
   entry = GTK_PANDA_ENTRY (widget);
 
-  if (!entry->input_mode == GTK_PANDA_ENTRY_KANA)
+  if (entry->input_mode == GTK_PANDA_ENTRY_KANA)
     {
       if (event->keyval == GDK_Return)
         {
