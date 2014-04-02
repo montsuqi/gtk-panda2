@@ -182,13 +182,20 @@ editing_entry_key_press (GtkWidget *entry,
   n = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(renderer),"column_num"));
   path = NULL;
 
-  if (!(event->state & GDK_SHIFT_MASK ) &&
-      !(event->state & GDK_CONTROL_MASK) &&
-      !(event->state & GDK_MOD1_MASK) 
-     ) {
-    if ((event->keyval == GDK_Return || event->keyval == GDK_KP_Enter)) {
+  switch(event->keyval) {
+  case GDK_Return:
+  case GDK_KP_Enter:
+    if (!(event->state & GDK_SHIFT_MASK ) && 
+        !(event->state & GDK_CONTROL_MASK) && 
+        !(event->state & GDK_MOD1_MASK) ) {
       keyval = event->keyval;
-    } else if (event->keyval == GDK_Up || event->keyval == GDK_KP_Up) {
+    }
+    break;
+  case GDK_Up:
+  case GDK_KP_Up:
+    if (!(event->state & GDK_SHIFT_MASK ) && 
+        !(event->state & GDK_CONTROL_MASK) && 
+        !(event->state & GDK_MOD1_MASK) ) {
       if (view != NULL) {
         gtk_tree_view_get_cursor(view,&path,&column);
         if (path != NULL && column != NULL) {
@@ -199,7 +206,13 @@ editing_entry_key_press (GtkWidget *entry,
           }
         }
       }
-    } else if (event->keyval == GDK_Down || event->keyval == GDK_KP_Down) {
+    }
+    break;
+  case GDK_Down:
+  case GDK_KP_Down:
+    if (!(event->state & GDK_SHIFT_MASK ) && 
+        !(event->state & GDK_CONTROL_MASK) && 
+        !(event->state & GDK_MOD1_MASK) ) {
       if (view != NULL) {
         gtk_tree_view_get_cursor(view,&path,&column);
         if (path != NULL && column != NULL) {
@@ -215,41 +228,40 @@ editing_entry_key_press (GtkWidget *entry,
           }
         }
       }
-    } else if (event->keyval == GDK_Tab || 
-        event->keyval == GDK_KP_Tab || 
-        event->keyval == GDK_ISO_Left_Tab) {
-      if (view != NULL) {
-        GList *list = gtk_tree_view_get_columns(view);
-        gtk_tree_view_get_cursor(view,&path,&column);
-        if ((n+1) >= g_list_length(list)) {
-          column = GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,0));
+    }
+    break;
+  case GDK_Tab:
+  case GDK_KP_Tab:
+  case GDK_ISO_Left_Tab:
+    if (!(event->state & GDK_MOD1_MASK) && view != NULL) {
+      if (!(event->state & GDK_CONTROL_MASK)) {
+        if (!(event->state & GDK_SHIFT_MASK)) {
+          // TAB
+          GList *list = gtk_tree_view_get_columns(view);
+          gtk_tree_view_get_cursor(view,&path,&column);
+          if ((n+1) >= g_list_length(list)) {
+            column = GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,0));
+          } else {
+            column = GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,n+1));
+          }
+          g_list_free(list);
+          gtk_tree_view_set_cursor(view,path,column,TRUE);
         } else {
-          column = GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,n+1));
+          // SHIFT + TAB
+          GList *list = gtk_tree_view_get_columns(view);
+          gtk_tree_view_get_cursor(view,&path,&column);
+          if (n <=0 ) {
+            column = GTK_TREE_VIEW_COLUMN(
+              g_list_nth_data(list,g_list_length(list)-1));
+          } else {
+            column = GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,n-1));
+          }
+          g_list_free(list);
+          gtk_tree_view_set_cursor(view,path,column,TRUE);
         }
-        g_list_free(list);
-        gtk_tree_view_set_cursor(view,path,column,TRUE);
       }
-	}
-  }
-  if ((event->state & GDK_SHIFT_MASK ) &&
-      !(event->state & GDK_CONTROL_MASK) &&
-      !(event->state & GDK_MOD1_MASK) 
-     ) {
-      if (event->keyval == GDK_Tab || 
-        event->keyval == GDK_KP_Tab || 
-        event->keyval == GDK_ISO_Left_Tab) {
-      if (view != NULL) {
-        GList *list = gtk_tree_view_get_columns(view);
-        gtk_tree_view_get_cursor(view,&path,&column);
-        if (n <=0 ) {
-          column = GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,g_list_length(list)-1));
-        } else {
-          column = GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,n-1));
-        }
-        g_list_free(list);
-        gtk_tree_view_set_cursor(view,path,column,TRUE);
-      }
-	}
+    }
+    break;
   }
   if (path != NULL) {
     gtk_tree_path_free(path);

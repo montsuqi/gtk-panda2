@@ -370,19 +370,16 @@ gtk_panda_table_key_press(GtkWidget *widget,
   case GDK_Tab:
   case GDK_ISO_Left_Tab:
     if (event->state & GDK_CONTROL_MASK) {
-      if (event->state & GDK_SHIFT_MASK) {
-        gtk_widget_child_focus(widget,GTK_DIR_TAB_BACKWARD);
-      } else {
-        gtk_widget_child_focus(widget,GTK_DIR_TAB_FORWARD);
-      }
     } else {
       if (event->state & GDK_SHIFT_MASK) {
+        // SHIFT + TAB
         move_left(GTK_TREE_VIEW(widget));
       } else {
+        // TAB
         move_right(GTK_TREE_VIEW(widget));
       }
+      return TRUE;
     }
-    return TRUE;
     break;
   }
   table->keyevents = g_list_append(table->keyevents,
