@@ -336,8 +336,7 @@ start_editing (GtkCellRenderer      *cell,
 
   if (celltext->text) {
     if (im_enabled) {
-      gtk_panda_entry_set_xim_enabled(GTK_PANDA_ENTRY(entry),
-        TRUE);
+      gtk_panda_entry_set_xim_enabled(GTK_PANDA_ENTRY(entry),TRUE);
     }
     gtk_entry_set_text(GTK_ENTRY (entry),celltext->text);
   }

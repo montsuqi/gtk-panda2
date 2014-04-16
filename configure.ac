@@ -71,7 +71,11 @@ dnl ***************************************************************************
 PKG_CHECK_MODULES(CHECK_IBUS_VER,ibus-1.0 >= 1.5.5,
 [
 	AC_DEFINE(IBUS_1_5,1,"")
-], [])
+], 
+[
+	PKG_CHECK_MODULES(CHECK_IBUS_VER,ibus-1.0 >= 1.4.0,
+	[])
+])
 
 
 

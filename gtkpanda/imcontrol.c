@@ -95,8 +95,8 @@ _set_im(
 
       state = (gboolean *)g_object_get_data(G_OBJECT(im), "im-state");
       if (state != NULL) {
-        if (*state) {
-          emit_toggle_key(widget, im);
+        if (*state!=enable) {
+          emit_toggle_key(widget,im);
         }
       }
     }
