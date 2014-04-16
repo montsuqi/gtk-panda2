@@ -65,6 +65,16 @@ PKG_CHECK_MODULES(CHECK_POPPLER_VER,poppler-glib >= 0.8.0,
 	AC_DEFINE(POPPLER_0_8,1,"")
 ], [])
 
+dnl ***************************************************************************
+dnl ibus version check
+dnl ***************************************************************************
+PKG_CHECK_MODULES(CHECK_IBUS_VER,ibus-1.0 >= 1.5.5,
+[
+	AC_DEFINE(IBUS_1_5,1,"")
+], [])
+
+
+
 AC_CONFIG_FILES([	Makefile 
 					docs/Makefile 
 					gtkpanda/Makefile 

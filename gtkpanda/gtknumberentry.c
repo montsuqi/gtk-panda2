@@ -38,6 +38,7 @@
 #include "config.h"
 #include "gtkpandaintl.h"
 #include "numeric.h"
+#include "imcontrol.h"
 #include "gtknumberentry.h"
 #include "debug.h"
 
@@ -62,6 +63,9 @@ static void gtk_number_entry_get_property (
 static gint gtk_number_entry_key_press (
   GtkWidget         *widget,
   GdkEventKey       *event);
+
+static gint gtk_number_entry_focus_in(GtkWidget *widget,GdkEventFocus *event);
+static GtkWidgetClass *parent_class = NULL;
 
 GType
 gtk_number_entry_get_type (void)
@@ -102,6 +106,9 @@ dbgmsg(">gtk_number_entry_class_init");
   widget_class = (GtkWidgetClass*) klass;
 
   widget_class->key_press_event = gtk_number_entry_key_press;
+  widget_class->focus_in_event = gtk_number_entry_focus_in;
+
+  parent_class = g_type_class_ref (GTK_TYPE_ENTRY);
 
   gobject_class->set_property = gtk_number_entry_set_property;
   gobject_class->get_property = gtk_number_entry_get_property;
@@ -133,6 +140,30 @@ gtk_number_entry_new ()
 
   number_entry = g_object_new (GTK_TYPE_NUMBER_ENTRY, NULL);
   return number_entry;
+}
+
+static gint
+gtk_number_entry_focus_in(
+  GtkWidget     *widget,
+  GdkEventFocus *event)
+{
+  GtkEntry *entry;
+  GtkIMMulticontext *mim;
+
+  g_return_val_if_fail (widget != NULL, FALSE);
+  g_return_val_if_fail (GTK_IS_ENTRY (widget), FALSE);
+  g_return_val_if_fail (event != NULL, FALSE);
+
+  entry = GTK_ENTRY (widget);
+  mim = GTK_IM_MULTICONTEXT(entry->im_context);
+
+  if (GTK_WIDGET_CLASS (parent_class)->focus_in_event) {
+    (* GTK_WIDGET_CLASS (parent_class)->focus_in_event)
+      (widget, event);
+  }
+
+  unset_im(widget,mim);
+  return FALSE;
 }
 
 static void

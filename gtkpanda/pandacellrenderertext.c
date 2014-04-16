@@ -294,7 +294,9 @@ _enable_im(gpointer data)
   
   entry = GTK_PANDA_ENTRY(data);
   mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(entry)->im_context);
-  set_im_state_post_focus(GTK_WIDGET(entry),mim,entry->xim_enabled);
+  if (entry->xim_enabled) {
+    set_im(GTK_WIDGET(entry),mim);
+  }
   return FALSE;
 }
 
@@ -394,7 +396,9 @@ start_editing (GtkCellRenderer      *cell,
   table->keyevents = NULL;
 
   if (im_enabled) {
+#ifndef IBUS_1_5
     g_idle_add(_enable_im,entry);
+#endif
   }
 
 #if 0

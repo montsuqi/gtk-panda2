@@ -51,11 +51,10 @@ gtkpanda_c_sources = 		\
 
 gtkpanda_private_h_sources =
 
-INCLUDES = 				\
+AM_CPPFLAGS = -g -DLOCALEDIR=\"$(localedir)\" \
 	$(GTK_PANDA_CFLAGS) \
 	-I$(top_srcdir)
-
-AM_CPPFLAGS = -g -DLOCALEDIR=\"$(localedir)\"
+	
 
 libgtkpandaincludedir = $(includedir)/gtkpanda-2.0/gtkpanda
 libgtkpandainclude_HEADERS = $(gtkpanda_public_h_sources)

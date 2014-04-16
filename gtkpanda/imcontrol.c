@@ -20,6 +20,8 @@
 #include <config.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -48,30 +50,76 @@ emit_toggle_key(GtkWidget *widget,
   gtk_im_context_filter_keypress(im, (GdkEventKey *)kevent);
 }
 
-void 
-set_im_state_post_focus(
+static void 
+_set_im(
   GtkWidget *widget, 
   GtkIMMulticontext *mim,
-  gboolean enabled)
+  gboolean enable)
 {
+  GtkIMContext *im;
+
   if (!im_control_enabled) {
     return;
   }
-  GtkIMContext *im;
-  gboolean *state;
 
   if (mim != NULL && !strcmp("ibus", mim->context_id)) {
     im = mim->slave;
     if (mim->slave == NULL) {
       return;
     }
-    state = (gboolean *)g_object_get_data(G_OBJECT(im), "im-state");
-    if (state != NULL) {
-      if (*state != enabled) {
+#ifdef IBUS_1_5
+    {
+      gchar *statusfile,*buf;
+      size_t size;
+      int uid;
+
+      uid = (int)getuid();
+      statusfile = g_strdup_printf("/tmp/ibus-im-status.%d.txt",uid);
+      if (g_file_get_contents(statusfile,&buf,&size,NULL)) {
+        if (enable) {
+          if (size > 0 && buf[0] == '0') {
+            emit_toggle_key(widget, im);
+          }
+        } else {
+          if (size > 0 && buf[0] == '1') {
+            emit_toggle_key(widget, im);
+          }
+        }
+        g_free(buf);
+      }
+      g_free(statusfile);
+    }
+#else
+    {
+      gboolean *state;
+
+      state = (gboolean *)g_object_get_data(G_OBJECT(im), "im-state");
+      if (state != NULL) {
+        if (*state) {
           emit_toggle_key(widget, im);
+        }
       }
     }
+#endif
   }
+}
+
+void
+set_im(
+  GtkWidget *widget, 
+  GtkIMMulticontext *mim)
+{
+  _set_im(widget,mim,TRUE);
+}
+
+void
+unset_im(
+  GtkWidget *widget, 
+  GtkIMMulticontext *mim)
+{
+#ifdef IBUS_1_5
+  _set_im(widget,mim,FALSE);
+#endif
 }
 
 void

@@ -205,10 +205,15 @@ gtk_panda_text_focus_in (GtkWidget     *widget,
   ptext = GTK_PANDA_TEXT(widget);
   mim = GTK_IM_MULTICONTEXT(text->im_context);
 
-  if (GTK_WIDGET_CLASS (parent_class)->focus_in_event)
-    (* GTK_WIDGET_CLASS (parent_class)->focus_in_event) (widget, event);
+  if (GTK_WIDGET_CLASS(parent_class)->focus_in_event) {
+    (*GTK_WIDGET_CLASS(parent_class)->focus_in_event)(widget,event);
+  }
 
-  set_im_state_post_focus(widget, mim, ptext->xim_enabled);
+  if (ptext->xim_enabled) {
+    set_im(widget,mim);
+  } else {
+    unset_im(widget,mim);
+  }
 
   return FALSE;
 }

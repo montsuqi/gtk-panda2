@@ -203,8 +203,10 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
       (widget, event);
   }
 
-  if (pentry->input_mode == GTK_PANDA_ENTRY_XIM) {
-    set_im_state_post_focus(widget, mim, pentry->xim_enabled);
+  if (pentry->input_mode == GTK_PANDA_ENTRY_XIM && pentry->xim_enabled) {
+    set_im(widget,mim);
+  } else {
+    unset_im(widget,mim);
   }
 
   gtk_editable_set_position(GTK_EDITABLE(widget), -1);
@@ -223,6 +225,8 @@ gtk_panda_entry_focus_out (GtkWidget     *widget,
     (* GTK_WIDGET_CLASS (parent_class)->focus_out_event) (widget, event);
 
   gtk_editable_set_position(GTK_EDITABLE(widget), 0);
+
+
   return FALSE;
 }
 
