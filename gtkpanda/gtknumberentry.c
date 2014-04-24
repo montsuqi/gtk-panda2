@@ -147,13 +147,9 @@ gtk_number_entry_focus_in(
   GtkWidget     *widget,
   GdkEventFocus *event)
 {
-  GtkEntry *entry;
-
   g_return_val_if_fail (widget != NULL, FALSE);
   g_return_val_if_fail (GTK_IS_ENTRY (widget), FALSE);
   g_return_val_if_fail (event != NULL, FALSE);
-
-  entry = GTK_ENTRY (widget);
 
   if (GTK_WIDGET_CLASS (parent_class)->focus_in_event) {
     (* GTK_WIDGET_CLASS (parent_class)->focus_in_event)
