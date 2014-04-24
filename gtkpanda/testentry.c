@@ -77,7 +77,7 @@ static gboolean focus_out(GtkWidget *w, GdkEvent *e, gpointer data)
 
 static gboolean key_press(GtkWidget *w, GdkEventKey *e, gpointer data)
 {
-
+#if 0
   fprintf(stderr, "type:%d\n", e->type);
   fprintf(stderr, "window:%p\n", e->window);
   fprintf(stderr, "send_event:%d\n", e->send_event);
@@ -88,6 +88,7 @@ static gboolean key_press(GtkWidget *w, GdkEventKey *e, gpointer data)
   fprintf(stderr, "string:%s\n", e->string);
   fprintf(stderr, "hardware_keycode:%d\n", e->hardware_keycode);
   fprintf(stderr, "group:%d\n", e->group);
+#endif
   return FALSE;
 }
 

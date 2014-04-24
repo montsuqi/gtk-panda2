@@ -148,21 +148,18 @@ gtk_number_entry_focus_in(
   GdkEventFocus *event)
 {
   GtkEntry *entry;
-  GtkIMMulticontext *mim;
 
   g_return_val_if_fail (widget != NULL, FALSE);
   g_return_val_if_fail (GTK_IS_ENTRY (widget), FALSE);
   g_return_val_if_fail (event != NULL, FALSE);
 
   entry = GTK_ENTRY (widget);
-  mim = GTK_IM_MULTICONTEXT(entry->im_context);
 
   if (GTK_WIDGET_CLASS (parent_class)->focus_in_event) {
     (* GTK_WIDGET_CLASS (parent_class)->focus_in_event)
       (widget, event);
   }
-
-  unset_im(widget,mim);
+  unset_im(widget);
   return FALSE;
 }
 

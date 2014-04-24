@@ -193,26 +193,22 @@ static gint
 gtk_panda_text_focus_in (GtkWidget     *widget,
              GdkEventFocus *event)
 {
-  GtkTextView *text;
   GtkPandaText *ptext;
-  GtkIMMulticontext *mim;
 
   g_return_val_if_fail (widget != NULL, FALSE);
   g_return_val_if_fail (GTK_IS_TEXT_VIEW (widget), FALSE);
   g_return_val_if_fail (event != NULL, FALSE);
 
-  text = GTK_TEXT_VIEW (widget);
   ptext = GTK_PANDA_TEXT(widget);
-  mim = GTK_IM_MULTICONTEXT(text->im_context);
 
   if (GTK_WIDGET_CLASS(parent_class)->focus_in_event) {
     (*GTK_WIDGET_CLASS(parent_class)->focus_in_event)(widget,event);
   }
 
   if (ptext->xim_enabled) {
-    set_im(widget,mim);
+    set_im(widget);
   } else {
-    unset_im(widget,mim);
+    unset_im(widget);
   }
 
   return FALSE;

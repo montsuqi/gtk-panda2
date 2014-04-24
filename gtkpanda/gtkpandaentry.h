@@ -66,10 +66,10 @@ struct _GtkPandaEntryClass
 
 GType gtk_panda_entry_get_type (void);
 GtkWidget* gtk_panda_entry_new (void);
-void gtk_panda_entry_set_input_mode (
-	GtkPandaEntry *entry, 
-	GtkPandaEntryInputMode mode);
-void gtk_panda_entry_set_xim_enabled (GtkPandaEntry *entry, gboolean flag);
+void gtk_panda_entry_set_input_mode(GtkPandaEntry *e,GtkPandaEntryInputMode mode);
+void gtk_panda_entry_set_xim_enabled(GtkPandaEntry *e,gboolean flag);
+gboolean gtk_panda_entry_get_xim_enalbed(GtkPandaEntry *);
+void gtk_panda_entry_set_im(GtkPandaEntry *);
 
 #ifdef __cplusplus
 }

@@ -29,5 +29,5 @@
  */
 
 void set_im_control_enabled(gboolean enabled);
-void set_im(GtkWidget *widget,GtkIMMulticontext *mim);
-void unset_im(GtkWidget *widget,GtkIMMulticontext *mim);
+void set_im(GtkWidget *widget);
+void unset_im(GtkWidget *widget);

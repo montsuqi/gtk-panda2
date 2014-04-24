@@ -34,8 +34,7 @@
 static gboolean im_control_enabled = TRUE;
 
 static void
-emit_toggle_key(GtkWidget *widget,
-  GtkIMContext *im)
+emit_toggle_key(GtkWidget *widget)
 {
   GdkEvent *kevent;
 
@@ -47,78 +46,84 @@ emit_toggle_key(GtkWidget *widget,
   kevent->key.length = 0;
   kevent->key.string = "";
   kevent->key.keyval = GDK_Zenkaku_Hankaku;
-  gtk_im_context_filter_keypress(im, (GdkEventKey *)kevent);
+  if (GTK_IS_ENTRY(widget)) {
+    gtk_entry_im_context_filter_keypress(GTK_ENTRY(widget),(GdkEventKey*)kevent);
+  } else if (GTK_IS_TEXT_VIEW(widget)) {
+    gtk_text_view_im_context_filter_keypress(GTK_TEXT_VIEW(widget),(GdkEventKey*)kevent);
+  }
 }
 
 static void 
 _set_im(
   GtkWidget *widget, 
-  GtkIMMulticontext *mim,
   gboolean enable)
 {
-  GtkIMContext *im;
+#ifdef IBUS_1_5
+  {
+    gchar *statusfile,*buf;
+    size_t size;
+    int uid;
 
-  if (!im_control_enabled) {
-    return;
+    uid = (int)getuid();
+    statusfile = g_strdup_printf("/tmp/im-status.%d.txt",uid);
+    if (g_file_get_contents(statusfile,&buf,&size,NULL)) {
+      if (enable) {
+        if (size > 0 && buf[0] == '0') {
+          emit_toggle_key(widget);
+        }
+      } else {
+        if (size > 0 && buf[0] == '1') {
+          emit_toggle_key(widget);
+        }
+      }
+      g_free(buf);
+    }
+    g_free(statusfile);
   }
+#else
+  {
+    gboolean *state;
+    GtkIMMulticontext *mim;
+    GtkIMContext *im;
 
-  if (mim != NULL && !strcmp("ibus", mim->context_id)) {
-    im = mim->slave;
-    if (mim->slave == NULL) {
+    if (GTK_IS_ENTRY(widget)) {
+      mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(widget)->im_context);
+    } else if (GTK_IS_TEXT_VIEW(widget)) {
+      mim = GTK_IM_MULTICONTEXT(GTK_TEXT_VIEW(widget)->im_context);
+    } else {
       return;
     }
-#ifdef IBUS_1_5
-    {
-      gchar *statusfile,*buf;
-      size_t size;
-      int uid;
 
-      uid = (int)getuid();
-      statusfile = g_strdup_printf("/tmp/ibus-im-status.%d.txt",uid);
-      if (g_file_get_contents(statusfile,&buf,&size,NULL)) {
-        if (enable) {
-          if (size > 0 && buf[0] == '0') {
-            emit_toggle_key(widget, im);
-          }
-        } else {
-          if (size > 0 && buf[0] == '1') {
-            emit_toggle_key(widget, im);
-          }
-        }
-        g_free(buf);
+    if (mim != NULL && !strcmp("ibus",mim->context_id)) {
+      im = mim->slave;
+      if (im == NULL) {
+        return;
       }
-      g_free(statusfile);
-    }
-#else
-    {
-      gboolean *state;
 
-      state = (gboolean *)g_object_get_data(G_OBJECT(im), "im-state");
+      state = (gboolean *)g_object_get_data(G_OBJECT(im),"im-state");
       if (state != NULL) {
         if (*state!=enable) {
-          emit_toggle_key(widget,im);
+          emit_toggle_key(widget);
         }
       }
     }
-#endif
   }
+#endif
 }
 
 void
 set_im(
-  GtkWidget *widget, 
-  GtkIMMulticontext *mim)
+  GtkWidget *widget)
 {
-  _set_im(widget,mim,TRUE);
+  _set_im(widget,TRUE);
 }
 
 void
 unset_im(
-  GtkWidget *widget, 
-  GtkIMMulticontext *mim)
+  GtkWidget *widget)
 {
 #ifdef IBUS_1_5
-  _set_im(widget,mim,FALSE);
+  _set_im(widget,FALSE);
 #endif
 }
 

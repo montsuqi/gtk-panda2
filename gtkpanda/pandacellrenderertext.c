@@ -129,23 +129,20 @@ editing_done (GtkCellEditable *_entry,
       focus_out_id = 0;
   }
 
-  g_object_get (_entry,
-                "editing-canceled", &canceled,
-                NULL);
+  g_object_get(_entry,"editing-canceled",&canceled,NULL);
   gtk_cell_renderer_stop_editing (GTK_CELL_RENDERER (data), canceled);
 
-  path = g_object_get_data (G_OBJECT (_entry), PANDA_CELL_RENDERER_TEXT_PATH);
-  new_text = gtk_entry_get_text (GTK_ENTRY (_entry));
+  path = g_object_get_data(G_OBJECT(_entry),PANDA_CELL_RENDERER_TEXT_PATH);
+  new_text = gtk_entry_get_text(GTK_ENTRY(_entry));
 
   if (keyval != 0) {
     keyval = 0;
-    g_signal_emit_by_name (data, "edited-by-key", path, new_text);
+    g_signal_emit_by_name(data,"edited-by-key",path,new_text);
   } else {
-    g_signal_emit_by_name (data, "edited", path, new_text);
+    g_signal_emit_by_name(data,"edited",path,new_text);
   }
   keyval = 0;
 }
-
 
 static gboolean
 focus_out_event (
@@ -153,11 +150,9 @@ focus_out_event (
   GdkEvent  *event,
   gpointer   data)
 {
-  g_object_set (entry,
-                "editing-canceled", TRUE,
-                NULL);
-  gtk_cell_editable_editing_done (GTK_CELL_EDITABLE (entry));
-  gtk_cell_editable_remove_widget (GTK_CELL_EDITABLE (entry));
+  g_object_set(entry,"editing-canceled",TRUE,NULL);
+  gtk_cell_editable_editing_done(GTK_CELL_EDITABLE(entry));
+  gtk_cell_editable_remove_widget(GTK_CELL_EDITABLE(entry));
 
   /* entry needs focus-out-event */
   return FALSE;
@@ -174,7 +169,7 @@ editing_entry_key_press (GtkWidget *entry,
   GtkTreeViewColumn *column;
   int n;
 
-  g_return_val_if_fail (GTK_IS_ENTRY (entry),TRUE);
+  g_return_val_if_fail(GTK_IS_ENTRY(entry),TRUE);
   keyval = 0;
 
   renderer = GTK_CELL_RENDERER_TEXT(data);
@@ -284,19 +279,25 @@ cb_button_press_event(GtkWidget *widget,
 }
 
 static gint
-_enable_im(gpointer data)
+_set_im(gpointer data)
 {
   if (!GTK_IS_PANDA_ENTRY(data)) {
     return FALSE;
   }
-  GtkPandaEntry *entry;
-  GtkIMMulticontext *mim;
-  
-  entry = GTK_PANDA_ENTRY(data);
-  mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(entry)->im_context);
-  if (entry->xim_enabled) {
-    set_im(GTK_WIDGET(entry),mim);
+#if IBUS_1_5
+  {
+    GtkIMMulticontext *mim;
+
+    mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(data)->im_context);
+    if (mim != NULL) {
+      if (mim->context_id != NULL && !strcmp("fcitx",mim->context_id)) {
+        gtk_panda_entry_set_im(GTK_PANDA_ENTRY(data));
+      }
+    }
   }
+#else
+  gtk_panda_entry_set_im(GTK_PANDA_ENTRY(data));
+#endif
   return FALSE;
 }
 
@@ -382,31 +383,14 @@ start_editing (GtkCellRenderer      *cell,
   gtk_editable_set_position(GTK_EDITABLE(entry),-1);
   for (i=0;i<g_list_length(table->keyevents);i++) {
     data = g_list_nth_data(table->keyevents,i);
-#ifdef USE_DBUS
     gtk_entry_im_context_filter_keypress(GTK_ENTRY(entry),
       (GdkEventKey*)data);
-#else
-    gtk_im_context_filter_keypress(GTK_ENTRY(entry)->im_context,
-      (GdkEventKey*)data);
-#endif
     gdk_event_free((GdkEvent*)data);
   }
   g_list_free(table->keyevents);
   table->keyevents = NULL;
 
-  if (im_enabled) {
-#ifndef IBUS_1_5
-    g_idle_add(_enable_im,entry);
-#endif
-  }
-
-#if 0
-  {
-    GdkColor color;
-    gdk_color_parse("#FFDDDD",&color);
-    gtk_widget_modify_base(GTK_WIDGET(entry),GTK_STATE_NORMAL,&color); 
-  }
-#endif
+  g_idle_add(_set_im,entry);
 
   return GTK_CELL_EDITABLE (entry);
 }
