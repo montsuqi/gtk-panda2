@@ -17,7 +17,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <config.h>
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -28,7 +32,6 @@
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 
-#include "config.h"
 #include "imcontrol.h"
 
 static gboolean im_control_enabled = TRUE;
