@@ -883,6 +883,16 @@ gtk_panda_table_get_rows(
 }
 
 gint
+gtk_panda_table_get_columns(
+  GtkPandaTable *table)
+{
+  g_return_val_if_fail (table != NULL, 0);
+  g_return_val_if_fail (GTK_IS_PANDA_TABLE (table), 0);
+
+  return table->columns;
+}
+
+gint
 gtk_panda_table_get_column_type(GtkPandaTable *table,
   gint col)
 {
