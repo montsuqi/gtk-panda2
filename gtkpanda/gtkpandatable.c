@@ -861,7 +861,7 @@ gtk_panda_table_set_im_controls(
 }
 
 gint
-gtk_panda_table_get_n_rows(
+gtk_panda_table_get_rows(
   GtkPandaTable *table)
 {
   GtkTreeModel *model;

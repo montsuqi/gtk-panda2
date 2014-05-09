@@ -105,7 +105,7 @@ void gtk_panda_table_moveto(GtkPandaTable *table,
   gfloat row_align,
   gfloat col_align);
 void gtk_panda_table_stay(GtkPandaTable *table);
-gint gtk_panda_table_get_n_rows(GtkPandaTable *table);
+gint gtk_panda_table_get_rows(GtkPandaTable *table);
 gint gtk_panda_table_get_columns(GtkPandaTable *table);
 gint gtk_panda_table_get_column_type(GtkPandaTable *table,gint column);
 
