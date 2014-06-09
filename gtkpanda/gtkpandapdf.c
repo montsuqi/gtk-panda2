@@ -420,9 +420,14 @@ draw_page(GtkPrintOperation *print,
   gint pageno, 
   GtkPandaPDF *self)
 {
+  GtkPageSetup *page_setup;
+  GtkPageOrientation orientation;
   PopplerPage *page;
   gdouble doc_w, doc_h;
   cairo_t *cr;
+
+  page_setup = gtk_print_context_get_page_setup(context);
+  orientation = gtk_page_setup_get_orientation(page_setup);
 
   page = poppler_document_get_page(self->doc, pageno);
   if (page == NULL) return;
@@ -431,9 +436,18 @@ draw_page(GtkPrintOperation *print,
   cr = gtk_print_context_get_cairo_context(context);
 
   /* landscapeをportlaitに変換 */
-  if (doc_w > doc_h) {
-    cairo_translate(cr,doc_h,0);
-    cairo_rotate(cr,M_PI/2.0);
+  if (orientation == GTK_PAGE_ORIENTATION_PORTRAIT ||
+      orientation == GTK_PAGE_ORIENTATION_REVERSE_PORTRAIT) {
+    if (doc_w > doc_h) {
+      cairo_translate(cr,doc_h,0);
+      cairo_rotate(cr,M_PI/2.0);
+    }
+  } else if (orientation == GTK_PAGE_ORIENTATION_LANDSCAPE ||
+      orientation == GTK_PAGE_ORIENTATION_REVERSE_LANDSCAPE) {
+    if (doc_w < doc_h) {
+      cairo_translate(cr,doc_h,0);
+      cairo_rotate(cr,-1.0 * (M_PI/2.0));
+    }
   }
 
 #ifdef POPPLER_0_8
@@ -452,9 +466,10 @@ _gtk_panda_pdf_print(GtkPandaPDF *self)
   gtk_panda_pdf_print(self,TRUE);
 }
 
-void
-gtk_panda_pdf_print(GtkPandaPDF *self,
-  gboolean showdialog)
+static void
+gtk_panda_pdf_print_real(GtkPandaPDF *self,
+  gboolean showdialog,
+  char *printer)
 {
   GtkPrintOperation *operation;
   static GtkPrintSettings *settings = NULL;
@@ -469,7 +484,13 @@ gtk_panda_pdf_print(GtkPandaPDF *self,
 
   operation = gtk_print_operation_new();
 
-  if (settings) gtk_print_operation_set_print_settings(operation, settings);
+  if (!settings) {
+    settings = gtk_print_settings_new();
+  }
+  gtk_print_operation_set_print_settings(operation, settings);
+  if (printer != NULL) {
+    gtk_print_settings_set_printer(settings,printer);  
+  }
 
   page_setup = gtk_print_operation_get_default_page_setup(operation);
   if (page_setup == NULL) {
@@ -509,6 +530,20 @@ gtk_panda_pdf_print(GtkPandaPDF *self,
     settings = g_object_ref(gtk_print_operation_get_print_settings(operation));
   }
   g_object_unref(operation);
+}
+
+void
+gtk_panda_pdf_print(GtkPandaPDF *self,
+  gboolean showdialog)
+{
+  gtk_panda_pdf_print_real(self,showdialog,NULL);
+}
+
+void
+gtk_panda_pdf_print_with_printer(GtkPandaPDF *self,
+  char *printer)
+{
+  gtk_panda_pdf_print_real(self,FALSE,printer);
 }
 
 void
