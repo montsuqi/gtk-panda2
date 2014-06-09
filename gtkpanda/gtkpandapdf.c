@@ -469,7 +469,7 @@ _gtk_panda_pdf_print(GtkPandaPDF *self)
 static void
 gtk_panda_pdf_print_real(GtkPandaPDF *self,
   gboolean showdialog,
-  char *printer)
+  const char *printer)
 {
   GtkPrintOperation *operation;
   static GtkPrintSettings *settings = NULL;
@@ -541,7 +541,7 @@ gtk_panda_pdf_print(GtkPandaPDF *self,
 
 void
 gtk_panda_pdf_print_with_printer(GtkPandaPDF *self,
-  char *printer)
+  const char *printer)
 {
   gtk_panda_pdf_print_real(self,FALSE,printer);
 }
