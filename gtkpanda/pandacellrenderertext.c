@@ -284,20 +284,7 @@ _set_im(gpointer data)
   if (!GTK_IS_PANDA_ENTRY(data)) {
     return FALSE;
   }
-#if IBUS_1_5
-  {
-    GtkIMMulticontext *mim;
-
-    mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(data)->im_context);
-    if (mim != NULL) {
-      if (mim->context_id != NULL && !strcmp("fcitx",mim->context_id)) {
-        gtk_panda_entry_set_im(GTK_PANDA_ENTRY(data));
-      }
-    }
-  }
-#else
   gtk_panda_entry_set_im(GTK_PANDA_ENTRY(data));
-#endif
   return FALSE;
 }
 

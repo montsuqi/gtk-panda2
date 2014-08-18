@@ -35,16 +35,54 @@
 #include "imcontrol.h"
 
 static gboolean im_control_enabled = TRUE;
+static gboolean is_fcitx = FALSE;
+static gboolean check_fcitx = TRUE;
+
+#define IGNORE_TOGGLE_KEY_PERIOD (100)
 
 static void
 emit_toggle_key(GtkWidget *widget)
 {
+  static guint32 prev = 0;
+  guint32 t;
   GdkEvent *kevent;
+  GdkWindow *window;
+  GtkIMMulticontext *mim;
+
+  if (check_fcitx) {
+    if (GTK_IS_ENTRY(widget)) {
+      mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(widget)->im_context);
+      if (mim != NULL) {
+        if (mim->context_id != NULL && !strcmp("fcitx",mim->context_id)) {
+          is_fcitx = TRUE;
+        } else {
+          is_fcitx = FALSE;
+        }
+        check_fcitx = FALSE;
+      }
+    }
+  }
+
+  window = gtk_widget_get_parent_window(widget);
+  t = gdk_x11_get_server_time(window);
+
+#if 0
+fprintf(stderr,"emit_toggle_key %p %ld\n",widget,t);
+#endif
+  if (!is_fcitx) {
+    if ((t - prev) < IGNORE_TOGGLE_KEY_PERIOD) {
+#if 0
+fprintf(stderr,"ignore\n");
+#endif
+      return;
+    }
+  }
+  prev = t;
 
   kevent = gdk_event_new(GDK_KEY_PRESS);
-  kevent->key.window = gtk_widget_get_parent_window(widget);
+  kevent->key.window = window;
   kevent->key.send_event = 0;
-  kevent->key.time = gdk_x11_get_server_time(kevent->key.window);
+  kevent->key.time = t;
   kevent->key.state = 16;
   kevent->key.length = 0;
   kevent->key.string = "";
@@ -61,6 +99,9 @@ _set_im(
   GtkWidget *widget, 
   gboolean enable)
 {
+  if (!gtk_widget_has_focus(widget)) {
+    return;
+  }
 #ifdef IBUS_1_5
   {
     gchar *statusfile,*buf;
@@ -70,6 +111,9 @@ _set_im(
     uid = (int)getuid();
     statusfile = g_strdup_printf("/tmp/im-status.%d.txt",uid);
     if (g_file_get_contents(statusfile,&buf,&size,NULL)) {
+#if 0
+fprintf(stderr,"buf[0]:%c\n",buf[0]);
+#endif
       if (enable) {
         if (size > 0 && buf[0] == '0') {
           emit_toggle_key(widget);
