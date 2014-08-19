@@ -69,15 +69,18 @@ emit_toggle_key(GtkWidget *widget)
 #if 0
 fprintf(stderr,"emit_toggle_key %p %ld\n",widget,t);
 #endif
+
+#ifdef IBUS_1_5
   if (!is_fcitx) {
     if ((t - prev) < IGNORE_TOGGLE_KEY_PERIOD) {
-#if 0
-fprintf(stderr,"ignore\n");
-#endif
+#     if 0
+      fprintf(stderr,"ignore\n");
+#     endif
       return;
     }
   }
   prev = t;
+#endif
 
   kevent = gdk_event_new(GDK_KEY_PRESS);
   kevent->key.window = window;
