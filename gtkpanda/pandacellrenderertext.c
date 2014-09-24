@@ -183,7 +183,7 @@ editing_entry_key_press (GtkWidget *entry,
   path = NULL;
 
   switch(event->keyval) {
-  case GDK_KEY_Menu: /* avoid freeze on ubuntu 12.04*/
+  case GDK_Menu: /* avoid freeze on ubuntu 12.04*/
     return TRUE;
   case GDK_Return:
   case GDK_KP_Enter:
