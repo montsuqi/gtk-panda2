@@ -4,6 +4,7 @@
 
 static  GtkWidget *pdf;
 static  GtkWidget *entry;
+static  GtkWidget *entry2;
 
 static void destroy( GtkWidget *widget,
     gpointer   data )
@@ -14,8 +15,17 @@ static void destroy( GtkWidget *widget,
 static void clicked(GtkWidget *widget,
   gpointer p)
 {
-	gtk_panda_pdf_load(GTK_PANDA_PDF(pdf), 
-		(char*)gtk_entry_get_text(GTK_ENTRY(entry)));
+  gtk_panda_pdf_load(GTK_PANDA_PDF(pdf), 
+    (char*)gtk_entry_get_text(GTK_ENTRY(entry)));
+}
+
+static void
+activated(GtkWidget *widget,
+  gpointer p)
+{
+fprintf(stderr,"-> (%s)\n",(char*)gtk_entry_get_text(GTK_ENTRY(entry2)));
+  gtk_panda_pdf_print_with_printer(GTK_PANDA_PDF(pdf), 
+    (char*)gtk_entry_get_text(GTK_ENTRY(entry2)));
 }
 
 int main( int   argc,
@@ -25,8 +35,6 @@ int main( int   argc,
   GtkWidget *button;
   GtkWidget *vbox;
   GtkWidget *hbox;
-
-
 
   gtk_init (&argc, &argv);
 
@@ -55,12 +63,18 @@ int main( int   argc,
   gtk_box_pack_start(GTK_BOX(vbox), pdf, TRUE, TRUE, 1);
   gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 1);
 
+  entry2 = gtk_entry_new();
+  gtk_box_pack_start(GTK_BOX(vbox), entry2, FALSE, FALSE, 1);
+
   gtk_container_add(GTK_CONTAINER(window), vbox);
 
   g_signal_connect(G_OBJECT(button), "clicked",
     G_CALLBACK(clicked), NULL);
   g_signal_connect(G_OBJECT(entry), "activate",
     G_CALLBACK(clicked), NULL);
+
+  g_signal_connect(G_OBJECT(entry2), "activate",
+    G_CALLBACK(activated), NULL);
 
   gtk_widget_show_all (window);
 

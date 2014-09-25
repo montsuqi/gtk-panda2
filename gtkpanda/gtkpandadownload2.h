@@ -1,5 +1,5 @@
 /* GTK - The GIMP Toolkit
- * Copyright (C) 2010- NaCl
+ * Copyright (C) 1995-1997 Peter Mattis, Spencer Kimball and Josh MacDonald
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,44 +24,41 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#ifndef __GTK_PANDA_PIXMAP_H__
-#define __GTK_PANDA_PIXMAP_H__
+#ifndef __GTK_PANDA_DOWNLOAD2_H__
+#define __GTK_PANDA_DOWNLOAD2_H__
 
 #include <glib-object.h>
 #include <gtk/gtk.h>
-#include <gdk/gdk.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#define GTK_PANDA_TYPE_PIXMAP                  (gtk_panda_pixmap_get_type ())
-#define GTK_PANDA_PIXMAP(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_PIXMAP, GtkPandaPixmap))
-#define GTK_PANDA_PIXMAP_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_PIXMAP, GtkPandaPixmapClass))
-#define GTK_IS_PANDA_PIXMAP(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_PIXMAP))
-#define GTK_IS_PANDA_PIXMAP_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_PIXMAP))
+#define GTK_PANDA_TYPE_DOWNLOAD2                  (gtk_panda_download2_get_type ())
+#define GTK_PANDA_DOWNLOAD2(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_DOWNLOAD2, GtkPandaDownload2))
+#define GTK_PANDA_DOWNLOAD2_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_DOWNLOAD2, GtkPandaDownload2Class))
+#define GTK_IS_PANDA_DOWNLOAD2(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_DOWNLOAD2))
+#define GTK_IS_PANDA_DOWNLOAD2_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_DOWNLOAD2))
 
-typedef struct _GtkPandaPixmap       GtkPandaPixmap;
-typedef struct _GtkPandaPixmapClass  GtkPandaPixmapClass;
+typedef struct _GtkPandaDownload2       GtkPandaDownload2;
+typedef struct _GtkPandaDownload2Class  GtkPandaDownload2Class;
 
-struct _GtkPandaPixmap
+struct _GtkPandaDownload2
 {
-  GtkImage image;
-  GdkPixbuf *pixbuf;
+  GtkWidget widget;
 };
 
-struct _GtkPandaPixmapClass
+struct _GtkPandaDownload2Class
 {
-  GtkImageClass parent_class;
+  GtkWidgetClass parent_class;
 };
 
-GType gtk_panda_pixmap_get_type (void);
-GtkWidget* gtk_panda_pixmap_new (void);
-void gtk_panda_pixmap_set_image (GtkPandaPixmap *pixmap, gchar *buf, gsize size);
+GType gtk_panda_download2_get_type (void);
+GtkWidget* gtk_panda_download2_new (void);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
 
-#endif /* __GTK_PANDA_PIXMAP_H__ */
+#endif /* __GTK_PANDA_DOWNLOAD2_H__ */

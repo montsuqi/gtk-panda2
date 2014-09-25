@@ -17,18 +17,14 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <config.h>
 #include <string.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
-
-#include "config.h"
 
 /*
  * function
  */
 
-void set_im_state_pre_focus(GtkWidget *widget, 
-  GtkIMMulticontext *mim, gboolean enabled);
-void set_im_state_post_focus(GtkWidget *widget, 
-  GtkIMMulticontext *mim, gboolean enabled);
+void set_im_control_enabled(gboolean enabled);
+void set_im(GtkWidget *widget);
+void unset_im(GtkWidget *widget);

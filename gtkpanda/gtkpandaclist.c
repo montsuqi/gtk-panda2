@@ -76,26 +76,14 @@ static guint clist_signals [LAST_SIGNAL] = { 0 };
 static void gtk_panda_clist_class_init (GtkPandaCListClass *klass);
 static void gtk_panda_clist_init (GtkPandaCList *clist);
 
-static gboolean
-gtk_panda_clist_button_press (GtkWidget      *widget,
-  GdkEventButton *event);
-static gboolean
-gtk_panda_clist_key_press (GtkWidget      *widget,
-  GdkEventKey *event);
-static void preserve_selection (GtkPandaCList *clist,
-  GList *selection);
-static void selection_changed (GtkTreeSelection *selection, 
-  gpointer user_data);
+static gboolean gtk_panda_clist_button_press (GtkWidget *widget, GdkEventButton *event);
+static gboolean gtk_panda_clist_key_press (GtkWidget *widget, GdkEventKey *event);
+static void selection_changed (GtkTreeSelection *selection, gpointer user_data);
 
-static void  gtk_panda_clist_set_property       (GObject         *object,
-                       guint            prop_id,
-                       const GValue    *value,
-                       GParamSpec      *pspec);
-static void  gtk_panda_clist_get_property       (GObject         *object,
-                       guint            prop_id,
-                       GValue          *value,
-                       GParamSpec      *pspec);
-
+static void  gtk_panda_clist_set_property(
+  GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
+static void  gtk_panda_clist_get_property(
+  GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
 
 static void
 gtk_panda_clist_class_init ( GtkPandaCListClass * klass)
@@ -175,10 +163,11 @@ gtk_panda_clist_init ( GtkPandaCList * clist)
 {
   GtkTreeSelection *selection;
   
-  clist->prev_selection = NULL;
   clist->show_titles = TRUE;
   clist->column_widths = g_strdup("");
   clist->selection_mode = GTK_SELECTION_SINGLE;
+  clist->prev_selected_num = 0;
+  clist->nrows = 0;
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(clist));
   gtk_panda_clist_set_columns(clist,0);
   g_signal_connect (G_OBJECT(selection), "changed",
@@ -187,6 +176,8 @@ gtk_panda_clist_init ( GtkPandaCList * clist)
   gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(clist), FALSE );
   gtk_widget_set_can_focus(GTK_WIDGET(clist),TRUE);
 }
+
+/* global function  */
 
 GType
 gtk_panda_clist_get_type (void)
@@ -222,8 +213,58 @@ gtk_panda_clist_new ()
   return (GtkWidget*)g_object_new(GTK_PANDA_TYPE_CLIST, NULL);
 }
 
-void
-gtk_panda_clist_set_columns (
+#define CLIST_MAX_COLUMNS 100
+
+static void
+_gtk_panda_clist_set_columns (
+  GtkPandaCList *clist,
+  gint new_columns) 
+{
+  GtkListStore *store;
+  GList *list;
+  GType types[CLIST_MAX_COLUMNS];
+  int i,j;
+
+  g_return_if_fail(clist != NULL);
+  g_return_if_fail(new_columns >= 0);
+
+  if (new_columns <=0 ) {
+    new_columns = 1;
+  }
+  if (new_columns > CLIST_MAX_COLUMNS) {
+    new_columns = CLIST_MAX_COLUMNS;
+  }
+
+  list = gtk_tree_view_get_columns(GTK_TREE_VIEW(clist));
+  for (i=0; i < g_list_length(list); i++) {
+    gtk_tree_view_remove_column(GTK_TREE_VIEW(clist),g_list_nth_data(list,i));
+  }
+  gtk_tree_view_set_model(GTK_TREE_VIEW(clist), NULL);
+  g_list_free(list);
+
+  clist->columns = new_columns;
+
+  for (i=0; i < new_columns; i++) {
+    gtk_tree_view_insert_column_with_attributes (
+      GTK_TREE_VIEW(clist),
+      -1,
+      "",
+      gtk_cell_renderer_text_new (),
+      "text", i,
+      "foreground",new_columns,
+      "cell-background",new_columns+1,
+      NULL);
+  }
+  j = new_columns + 2;
+  for (i = 0; i < j; i++) {
+    types[i] =  G_TYPE_STRING;
+  }
+  store = gtk_list_store_newv(j,types);
+  gtk_tree_view_set_model(GTK_TREE_VIEW(clist), GTK_TREE_MODEL(store));
+}
+
+static void
+monsia3_gtk_panda_clist_set_columns (
   GtkPandaCList *clist,
   gint new_columns) 
 {
@@ -279,6 +320,18 @@ gtk_panda_clist_set_columns (
   gtk_tree_view_set_model(GTK_TREE_VIEW(clist), GTK_TREE_MODEL(store));
 }
 
+void
+gtk_panda_clist_set_columns (
+  GtkPandaCList *clist,
+  gint new_columns) 
+{
+  if (!getenv("MONSIA3_GTKPANDA")) {
+    _gtk_panda_clist_set_columns (clist,new_columns);
+  } else {
+    monsia3_gtk_panda_clist_set_columns (clist,new_columns);
+  }
+}
+
 void 
 gtk_panda_clist_set_column_widths (
   GtkPandaCList *clist,
@@ -321,49 +374,39 @@ gtk_panda_clist_set_column_width (
   gtk_tree_view_column_set_resizable(col, TRUE);
 }
 
-void 
-gtk_panda_clist_clear (GtkPandaCList *clist)
+void
+gtk_panda_clist_set_rows(
+  GtkPandaCList *clist,
+  int new)
 {
   GtkTreeModel *model;
   GtkTreeIter iter;
-  g_return_if_fail(clist != NULL);
-  g_return_if_fail(GTK_IS_PANDA_CLIST(clist));
-
-  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
-  if (gtk_tree_model_get_iter_first(model, &iter)) {
-    gtk_list_store_clear(GTK_LIST_STORE(model));
-    preserve_selection(clist, NULL);
-
-  }
-}
-
-void
-gtk_panda_clist_append  (
-  GtkPandaCList *clist,
-  gchar *text[])
-{
-  GtkListStore *store;
-  GtkTreeIter iter;
-  gint ncols;
   int i;
-  GValue *value;
   
-  g_return_if_fail(clist != NULL);
-  g_return_if_fail(GTK_IS_PANDA_CLIST(clist));
-
-  store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(clist)));
-  ncols = gtk_tree_model_get_n_columns(GTK_TREE_MODEL(store));
-  gtk_list_store_append (store, &iter);
-  for (i = 0; i < ncols; i++){
-    value = g_new0(GValue, 1);
-    g_value_init(value, G_TYPE_STRING);
-    g_value_set_string(value, text[i]);
-    gtk_list_store_set_value(store, &iter, i, value);
-  } 
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
+  if (new > clist->nrows) {
+    for(i=clist->nrows;i<new;i++) {
+      gtk_list_store_append(GTK_LIST_STORE(model),&iter);
+    }
+  } else if (new < clist->nrows) {
+    if (!gtk_tree_model_get_iter_first(model, &iter)) {
+      return;
+    }
+    for(i=0;i<clist->nrows;i++) {
+      if (i < new) {
+        if (!gtk_tree_model_iter_next(model,&iter)) {
+          return;
+        }
+      } else {
+        gtk_list_store_remove(GTK_LIST_STORE(model),&iter);
+      }
+    }
+  }
+  clist->nrows = new;
 }
 
 gint
-gtk_panda_clist_get_n_rows(
+gtk_panda_clist_get_rows(
   GtkPandaCList *clist)
 {
   GtkTreeModel *model;
@@ -384,20 +427,43 @@ gtk_panda_clist_get_n_rows(
   return nrows;
 }
 
+void
+gtk_panda_clist_set_row(
+  GtkPandaCList *clist,
+  int row,
+  gchar **rdata)
+{
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  gchar path[16];
+  int i;
+
+  g_return_if_fail(clist != NULL);
+  g_return_if_fail(GTK_IS_PANDA_CLIST(clist));
+
+  sprintf(path,"%d",row);
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
+  if (gtk_tree_model_get_iter_from_string(model,&iter,path)) {
+    for(i=0;i<gtk_panda_clist_get_columns(clist)-2;i++) {
+      gtk_list_store_set(GTK_LIST_STORE(model),&iter,i,rdata[i],-1);
+    }
+  }
+}
+
 gint
 gtk_panda_clist_get_columns(
   GtkPandaCList *clist)
 {
-  GtkListStore *store;
+  GtkTreeModel *model;
 
   g_return_val_if_fail(clist != NULL, 0);
   g_return_val_if_fail(GTK_IS_PANDA_CLIST(clist), 0);
 
-  store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(clist)));
-  if (store == NULL) {
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
+  if (model == NULL) {
     return 0;
   }
-  return gtk_tree_model_get_n_columns(GTK_TREE_MODEL(store));
+  return gtk_tree_model_get_n_columns(model);
 }
 
 void 
@@ -530,8 +596,59 @@ gtk_panda_clist_set_show_titles (
   gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(clist),show_titles);
 }
 
+void
+gtk_panda_clist_set_fgcolor(
+  GtkPandaCList *clist,
+  int row,
+  gchar *color)
+{
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  gchar path[16];
+
+  g_return_if_fail(clist != NULL);
+  g_return_if_fail(GTK_IS_PANDA_CLIST(clist));
+
+  sprintf(path,"%d",row);
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
+  gtk_tree_model_get_iter_from_string(model,&iter,path);
+
+  if (color == NULL || strlen(color) == 0) {
+    gtk_list_store_set(GTK_LIST_STORE(model),&iter,clist->columns,"black",-1);
+  } else {
+    gtk_list_store_set(GTK_LIST_STORE(model),&iter,clist->columns,color,-1);
+  }
+}
+
+void
+gtk_panda_clist_set_bgcolor(
+  GtkPandaCList *clist,
+  int row,
+  gchar *color)
+{
+  GtkTreeModel *model;
+  GtkTreeIter iter;
+  gchar path[16];
+
+  g_return_if_fail(clist != NULL);
+  g_return_if_fail(GTK_IS_PANDA_CLIST(clist));
+
+  sprintf(path,"%d",row);
+  model = gtk_tree_view_get_model(GTK_TREE_VIEW(clist));
+  gtk_tree_model_get_iter_from_string(model,&iter,path);
+
+  if (color == NULL || strlen(color) == 0) {
+    gtk_list_store_set(GTK_LIST_STORE(model),&iter,clist->columns+1,"white",-1);
+  } else {
+    gtk_list_store_set(GTK_LIST_STORE(model),&iter,clist->columns+1,color,-1);
+  }
+}
+
+/* static function  */
+
 static gboolean
-gtk_panda_clist_button_press (GtkWidget *widget,
+gtk_panda_clist_button_press(
+  GtkWidget *widget,
   GdkEventButton *event)
 {
   GtkTreeModel *model;
@@ -540,6 +657,10 @@ gtk_panda_clist_button_press (GtkWidget *widget,
   GtkTreePath *path;
   gboolean get_path_result;
   gint bx, by;
+
+  if (event->button != 1) {
+    return FALSE;
+  }
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(widget));
   if (!gtk_tree_model_get_iter_first(model, &iter))
@@ -578,8 +699,9 @@ gtk_panda_clist_button_press (GtkWidget *widget,
 }
 
 static gboolean
-gtk_panda_clist_key_press (GtkWidget   *widget,
-			 GdkEventKey *event)
+gtk_panda_clist_key_press(
+  GtkWidget   *widget,
+  GdkEventKey *event)
 {
   GtkTreeView *tree;
   GtkTreeViewColumn *column;
@@ -610,6 +732,14 @@ gtk_panda_clist_key_press (GtkWidget   *widget,
       }
     }
     break;
+  case GDK_Tab:
+  case GDK_ISO_Left_Tab:
+    if (event->state & GDK_SHIFT_MASK) {
+      return gtk_widget_child_focus(widget,GTK_DIR_TAB_BACKWARD);
+    } else {
+      return gtk_widget_child_focus(widget,GTK_DIR_TAB_FORWARD);
+    }
+    break;
   default:
     event->state |= GDK_CONTROL_MASK;
     if (GTK_WIDGET_CLASS (parent_class)->key_press_event &&
@@ -620,74 +750,43 @@ gtk_panda_clist_key_press (GtkWidget   *widget,
 }
 
 static void 
-preserve_selection(GtkPandaCList *clist, GList *selection)
-{
-  if (clist->prev_selection != NULL) {
-    g_list_foreach (clist->prev_selection, (GFunc)gtk_tree_path_free, NULL);
-    g_list_free (clist->prev_selection);
-  }
-  clist->prev_selection = selection;
-}
-
-static void selection_changed(GtkTreeSelection *selection,
+selection_changed(
+  GtkTreeSelection *selection,
   gpointer user_data)
 {
   GtkPandaCList *clist;
-  GList *prev_selection;
-  GList *current_selection;
-  guint curlen;
-  guint prelen;
-  GtkTreePath *cpath, *ppath;
-  int i,j;
   gboolean emit_select;
-  gboolean emit_unselect;
+  int num;
+  GList * selected;
 
-  emit_select = emit_unselect = FALSE;
-
+  emit_select = FALSE;
   clist = (GtkPandaCList *)user_data;
-  prev_selection = clist->prev_selection;
-  current_selection = gtk_tree_selection_get_selected_rows (selection, NULL);
-  if(current_selection == NULL) {
-    emit_unselect = TRUE;
-  } else {
-    if(prev_selection != NULL) {
-      prelen = g_list_length(prev_selection);
-      curlen = g_list_length(current_selection);
-      if (curlen == prelen){
-        for(i = 0; i < curlen;  i++) {
-          cpath = (GtkTreePath *)g_list_nth_data(current_selection, i);
-          for( j = 0; j < prelen; j++) {
-            ppath = (GtkTreePath *)g_list_nth_data(prev_selection, j);
-            if(!gtk_tree_path_compare(cpath,ppath))
-              break;
-          }
-          if (j == prelen)
-            emit_select = TRUE;
-        }
-      } else if(curlen > prelen) {
-        emit_select = TRUE;
-      } else {
-        emit_unselect = TRUE;
-      }
-    } else {
+  selected = gtk_tree_selection_get_selected_rows(selection,NULL);
+
+  if (selected != NULL) {
+    num = g_list_length(selected);
+    if (clist->prev_selected_num <= num) {
       emit_select = TRUE;
     }
+    clist->prev_selected_num = num;
+    g_list_free(selected);
   }
-  preserve_selection(clist, current_selection);
   if (emit_select) {
     // now don't return ROW, COLUMN.
     g_signal_emit (clist, clist_signals[SELECT_ROW], 0, 0, 0);
-  } else if(emit_unselect) {
+  } else {
     // now don't return ROW, COLUMN.
     g_signal_emit (clist, clist_signals[UNSELECT_ROW], 0, 0, 0);
   }
 }
 
-static void 
-gtk_panda_clist_set_property (GObject         *object,
-		      guint            prop_id,
-		      const GValue    *value,
-		      GParamSpec      *pspec)
+static 
+void 
+gtk_panda_clist_set_property (
+  GObject         *object,
+  guint            prop_id,
+  const GValue    *value,
+  GParamSpec      *pspec)
 {
   GtkPandaCList *clist;
 
@@ -714,10 +813,12 @@ gtk_panda_clist_set_property (GObject         *object,
     }
 }
 
-static void gtk_panda_clist_get_property (GObject         *object,
-				  guint            prop_id,
-				  GValue          *value,
-				  GParamSpec      *pspec)
+static void 
+gtk_panda_clist_get_property (
+  GObject         *object,
+  guint            prop_id,
+  GValue          *value,
+  GParamSpec      *pspec)
 {
   GtkPandaCList *clist;
 

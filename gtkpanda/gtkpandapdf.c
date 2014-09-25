@@ -32,6 +32,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <math.h>
+#include <time.h>
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
@@ -377,7 +379,7 @@ gtk_panda_pdf_save (GtkPandaPDF *self)
     GTK_FILE_CHOOSER (dialog), TRUE);
   
   gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), 
-    "preview.pdf");
+    "*.pdf");
   
   if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
       char *filename;
@@ -418,43 +420,43 @@ draw_page(GtkPrintOperation *print,
   gint pageno, 
   GtkPandaPDF *self)
 {
+  GtkPageSetup *page_setup;
+  GtkPageOrientation orientation;
   PopplerPage *page;
   gdouble doc_w, doc_h;
   cairo_t *cr;
+
+  page_setup = gtk_print_context_get_page_setup(context);
+  orientation = gtk_page_setup_get_orientation(page_setup);
 
   page = poppler_document_get_page(self->doc, pageno);
   if (page == NULL) return;
   poppler_page_get_size(page, &doc_w, &doc_h);
 
   cr = gtk_print_context_get_cairo_context(context);
-#if 0
+
+  /* landscapeをportlaitに変換 */
+  if (orientation == GTK_PAGE_ORIENTATION_PORTRAIT ||
+      orientation == GTK_PAGE_ORIENTATION_REVERSE_PORTRAIT) {
+    if (doc_w > doc_h) {
+      cairo_translate(cr,doc_h,0);
+      cairo_rotate(cr,M_PI/2.0);
+    }
+  } else if (orientation == GTK_PAGE_ORIENTATION_LANDSCAPE ||
+      orientation == GTK_PAGE_ORIENTATION_REVERSE_LANDSCAPE) {
+    if (doc_w < doc_h) {
+      cairo_translate(cr,doc_h,0);
+      cairo_rotate(cr,-1.0 * (M_PI/2.0));
+    }
+  }
+
+#ifdef POPPLER_0_8
   /* may be need poppler >= 0.8 */
-  poppler_page_render_for_printing(page, cr):
+  poppler_page_render_for_printing(page, cr);
 #else
   cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 0.0);
   poppler_page_render(page, cr);
 #endif
-  g_object_unref(page);
-}
-
-static void
-arrange_orientation(GtkPandaPDF *self, GtkPageSetup *ps)
-{
-  PopplerPage *page;
-  gdouble doc_w, doc_h;
-  int w, h;
-
-  page = poppler_document_get_page(self->doc, 0);
-  if (page == NULL) return;
-  poppler_page_get_size(page, &doc_w, &doc_h);
-  w = (int)(doc_w); 
-  h = (int)(doc_h);
-
-  if (w > h) {
-    gtk_page_setup_set_orientation(ps, GTK_PAGE_ORIENTATION_LANDSCAPE);
-  } else {
-    gtk_page_setup_set_orientation(ps, GTK_PAGE_ORIENTATION_PORTRAIT);
-  }
   g_object_unref(page);
 }
 
@@ -464,53 +466,84 @@ _gtk_panda_pdf_print(GtkPandaPDF *self)
   gtk_panda_pdf_print(self,TRUE);
 }
 
-void
-gtk_panda_pdf_print(GtkPandaPDF *self,
-  gboolean showdialog)
+static void
+gtk_panda_pdf_print_real(GtkPandaPDF *self,
+  gboolean showdialog,
+  const char *printer)
 {
-  GtkPrintOperation *print;
+  GtkPrintOperation *operation;
   static GtkPrintSettings *settings = NULL;
   GtkPageSetup *page_setup;
   GtkPrintOperationResult r;
   GtkPrintOperationAction action;
+  char job_name[128];
+  time_t t;
+  struct tm *tmp;
 
   if (self->doc == NULL) return;
 
-  print = gtk_print_operation_new();
-  g_assert(print);
-  g_signal_connect(print, "draw_page", 
-    G_CALLBACK(draw_page), (gpointer) self);  
-  g_signal_connect(print, "begin_print", 
-    G_CALLBACK(begin_print), (gpointer) self);
+  operation = gtk_print_operation_new();
 
-  page_setup = gtk_print_operation_get_default_page_setup(print);
-  if (page_setup == NULL)
+  if (!settings) {
+    settings = gtk_print_settings_new();
+  }
+  gtk_print_operation_set_print_settings(operation, settings);
+  if (printer != NULL) {
+    gtk_print_settings_set_printer(settings,printer);  
+  }
+
+  page_setup = gtk_print_operation_get_default_page_setup(operation);
+  if (page_setup == NULL) {
     page_setup = gtk_page_setup_new();
+  }
   gtk_page_setup_set_top_margin(page_setup, 0.0, GTK_UNIT_MM);    
   gtk_page_setup_set_bottom_margin(page_setup, 0.0, GTK_UNIT_MM);    
   gtk_page_setup_set_left_margin(page_setup, 0.0, GTK_UNIT_MM);    
   gtk_page_setup_set_right_margin(page_setup, 0.0, GTK_UNIT_MM);    
-  arrange_orientation(self, page_setup);
-  gtk_print_operation_set_default_page_setup(print, page_setup);
+  gtk_print_operation_set_default_page_setup(operation, page_setup);
 
-  if (settings) gtk_print_operation_set_print_settings(print, settings);
-  gtk_print_operation_set_job_name(print, "gtk_panda_pdf_print");
-  gtk_print_operation_set_n_pages(print , 
+  t = time(NULL);
+  tmp = localtime(&t);
+  strftime(job_name,sizeof(job_name),"%Y%m%d%H%M%S",tmp);
+
+  gtk_print_operation_set_job_name(operation, job_name);
+  gtk_print_operation_set_n_pages(operation , 
     poppler_document_get_n_pages(self->doc));
+  gtk_print_operation_set_embed_page_setup(operation, TRUE);
+
+  g_signal_connect(operation, "draw_page", 
+    G_CALLBACK(draw_page), (gpointer) self);  
+  g_signal_connect(operation, "begin_print", 
+    G_CALLBACK(begin_print), (gpointer) self);
+
   if (showdialog) {
     action = GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG;
   } else {
     action = GTK_PRINT_OPERATION_ACTION_PRINT;
   }
-  r = gtk_print_operation_run(print, action, NULL, NULL);
+  r = gtk_print_operation_run(operation, action, NULL, NULL);
 
-  if (r == GTK_PRINT_OPERATION_RESULT_APPLY)
-  {   
-      if (settings)
-          g_object_unref(settings);
-      settings = g_object_ref(gtk_print_operation_get_print_settings(print));
+  if (r == GTK_PRINT_OPERATION_RESULT_APPLY) {   
+    if (settings) {
+      g_object_unref(settings);
+    }
+    settings = g_object_ref(gtk_print_operation_get_print_settings(operation));
   }
-  g_object_unref(print);
+  g_object_unref(operation);
+}
+
+void
+gtk_panda_pdf_print(GtkPandaPDF *self,
+  gboolean showdialog)
+{
+  gtk_panda_pdf_print_real(self,showdialog,NULL);
+}
+
+void
+gtk_panda_pdf_print_with_printer(GtkPandaPDF *self,
+  const char *printer)
+{
+  gtk_panda_pdf_print_real(self,FALSE,printer);
 }
 
 void
@@ -857,10 +890,12 @@ gtk_panda_pdf_init (GtkPandaPDF *self)
   gtk_box_pack_start(GTK_BOX (self), self->scroll, TRUE, TRUE, 0);
   gtk_widget_show_all(GTK_WIDGET(self));
 
-  gtk_widget_set_can_focus(save_button,FALSE);
-  gtk_widget_set_can_focus(print_button,FALSE);
+  gtk_widget_set_can_focus(prev_button,TRUE);
+  gtk_widget_set_can_focus(next_button,TRUE);
+  gtk_widget_set_can_focus(save_button,TRUE);
+  gtk_widget_set_can_focus(print_button,TRUE);
   gtk_widget_set_can_focus(self->scale,FALSE);
-  gtk_widget_set_can_focus(GTK_WIDGET(self),TRUE);
+  gtk_widget_set_can_focus(GTK_WIDGET(self),FALSE);
 }
 
 // public API

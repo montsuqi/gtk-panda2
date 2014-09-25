@@ -1,5 +1,5 @@
 /* GTK - The GIMP Toolkit
- * Copyright (C) 2010- NaCl
+ * Copyright (C) 1995-1997 Peter Mattis, Spencer Kimball and Josh MacDonald
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,92 +24,66 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <unistd.h>
-
 #include <glib-object.h>
-#include <glib.h>
 #include <gtk/gtk.h>
-
-#include "config.h"
 #include "gtkpandaintl.h"
-#include "gtkpandapixmap.h"
+#include "gtkpandadownload2.h"
 
-
-static void
-gtk_panda_pixmap_class_init (GtkPandaPixmapClass *klass)
-{
-}
-
-static void
-gtk_panda_pixmap_init (GtkPandaPixmap *pixmap)
-{
-  pixmap->pixbuf = NULL;
-}
-
-GtkWidget*
-gtk_panda_pixmap_new (void)
-{
-  return g_object_new (GTK_PANDA_TYPE_PIXMAP, NULL);
-}
+static void gtk_panda_download2_class_init    (GtkPandaDownload2Class *klass);
+static void gtk_panda_download2_init          (GtkPandaDownload2      *download);
 
 GType
-gtk_panda_pixmap_get_type (void)
+gtk_panda_download2_get_type (void)
 {
   static GType type = 0;
 
-  if (!type) {
+  if (!type)
+    {
       static const GTypeInfo info =
       {
-        sizeof (GtkPandaPixmapClass),
+        sizeof (GtkPandaDownload2Class),
         NULL, /* base_init */
         NULL, /* base_finalize */
-        (GClassInitFunc) gtk_panda_pixmap_class_init,
+        (GClassInitFunc) gtk_panda_download2_class_init,
         NULL, /* class_finalize */
         NULL, /* class_data */
-        sizeof (GtkPandaPixmap),
+        sizeof (GtkPandaDownload2),
         0,
-        (GInstanceInitFunc) gtk_panda_pixmap_init
+        (GInstanceInitFunc) gtk_panda_download2_init
       };
-      type = g_type_register_static( GTK_TYPE_IMAGE,
-                                     "GtkPandaPixmap",
+
+      type = g_type_register_static( GTK_TYPE_WIDGET,
+                                     "GtkPandaDownload2",
                                      &info,
                                      0);
-  }
+    }
+
   return type;
 }
 
-void
-gtk_panda_pixmap_set_image(GtkPandaPixmap *pixmap,
-  gchar *buf,
-  gsize size)
+static void
+gtk_panda_download2_class_init (GtkPandaDownload2Class *class)
 {
-  gchar *filename;
-  GtkRequisition req;
-  
-  int fd = g_file_open_tmp("gtk_panda_pixmap_XXXXXX", &filename, NULL);
-  if (fd == 1) {
-    return;
-  }
-  FILE *fp = fdopen(fd, "wb");
-  if (fp != NULL) {
-    fwrite(buf,1,size,fp);
-    fclose(fp);
-  } else {
-    return;
-  }
-  gtk_widget_size_request(GTK_WIDGET(pixmap), &req);
-  if (pixmap->pixbuf != NULL) {
-    g_object_unref(pixmap->pixbuf);
-  }
-  pixmap->pixbuf = gdk_pixbuf_new_from_file_at_size(filename,
-    req.width, req.height, NULL);
-  if (pixmap->pixbuf != NULL) {
-    gtk_image_set_from_pixbuf(GTK_IMAGE(pixmap), pixmap->pixbuf);
-  }
-  unlink(filename); 
-  g_free(filename);
+}
+
+static void
+gtk_panda_download2_init (GtkPandaDownload2 *download)
+{
+  gtk_widget_set_has_window(GTK_WIDGET(download),FALSE);
+}
+
+GtkWidget*
+gtk_panda_download2_new (void)
+{
+  GtkWidget *download2;
+
+  download2 = g_object_new (GTK_PANDA_TYPE_DOWNLOAD2,NULL);
+  return download2;
 }

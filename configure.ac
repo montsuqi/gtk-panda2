@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(gtk+panda, 2.0.3)
+AC_INIT(gtk+panda, 2.0.5)
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([gtkpanda/gtkpandaentry.c])
 AC_CONFIG_HEADER([config.h])
@@ -20,7 +20,7 @@ fi
 AC_GNU_SOURCE
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
-AC_PATH_PROG(GNOME_MOZ_REMOTE_PROG, gnome-moz-remote, /usr/bin/firefox)
+AC_PATH_PROG(GNOME_MOZ_REMOTE_PROG, gnome-open, "")
 AC_DEFINE_UNQUOTED(OPEN_BROWSER_COMMAND, "$GNOME_MOZ_REMOTE_PROG", "")
 
 # Checks for libraries.
@@ -48,23 +48,36 @@ AC_CHECK_FUNCS([dup2 memset putenv setlocale strcasecmp strchr strdup strrchr st
 
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 
-AC_SUBST(GTK_REQUIRED, 2.0.0)
-AC_SUBST(GLIB_REQUIRED, 2.0.0)
-AC_SUBST(POPPLER_REQUIRED, 0.6.4)
-AC_SUBST(WEBKIT_REQUIRED, 1.2.5)
 
 PKG_CHECK_MODULES(GTK_PANDA,
 [
-	glib-2.0					>=	$GLIB_REQUIRED
-	gtk+-2.0 					>=	$GTK_REQUIRED
-	poppler-glib 				>=	$POPPLER_REQUIRED
-	webkit-1.0					>=	$WEBKIT_REQUIRED
+	glib-2.0					>=	2.0.0
+	gtk+-2.0 					>=	2.0.0
+	poppler-glib 				>=	0.6.4
+	webkit-1.0					>=	1.2.5
 ])
 
 dnl ***************************************************************************
-dnl gtk version check
+dnl poppler version check
 dnl ***************************************************************************
-PKG_CHECK_MODULES(CHECK_GTK_VER,gtk+-2.0 >= 2.14.0)
+PKG_CHECK_MODULES(CHECK_POPPLER_VER,poppler-glib >= 0.8.0,
+[
+	AC_DEFINE(POPPLER_0_8,1,"")
+], [])
+
+dnl ***************************************************************************
+dnl ibus version check
+dnl ***************************************************************************
+PKG_CHECK_MODULES(CHECK_IBUS_VER,ibus-1.0 >= 1.5.5,
+[
+	AC_DEFINE(IBUS_1_5,1,"")
+], 
+[
+	PKG_CHECK_MODULES(CHECK_IBUS_VER,ibus-1.0 >= 1.4.0,
+	[])
+])
+
+
 
 AC_CONFIG_FILES([	Makefile 
 					docs/Makefile 

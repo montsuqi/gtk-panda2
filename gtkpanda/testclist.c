@@ -34,7 +34,7 @@ select_row(
 {
 	int i;
   	fprintf(stderr, "select:");
-	for (i=0; i < gtk_panda_clist_get_n_rows(clist); i++) {
+	for (i=0; i < gtk_panda_clist_get_rows(clist); i++) {
     	if (gtk_panda_clist_row_is_selected(clist, i)) {
   			fprintf(stderr, "%d ", i);
 		}
@@ -110,9 +110,8 @@ main (int argc, char *argv[])
   gtk_panda_clist_set_columns(GTK_PANDA_CLIST(clist1),COLUMNS);
   column = gtk_tree_view_get_column(GTK_TREE_VIEW(clist1),0);
   gtk_tree_view_column_set_widget(column, label1);
+  column = gtk_tree_view_get_column(GTK_TREE_VIEW(clist1),1);
   gtk_tree_view_column_set_widget(column, label2);
-
-  gtk_panda_clist_clear(GTK_PANDA_CLIST(clist1));
 
   gtk_widget_show_all (clist1);
   gtk_panda_clist_set_column_widths(GTK_PANDA_CLIST(clist1), "50,50,50,50,50,50,50,50");
@@ -131,15 +130,20 @@ main (int argc, char *argv[])
   g_signal_connect (G_OBJECT(clist1), "unselect_row",
       G_CALLBACK(unselect_row), clist1);
 
-  gtk_panda_clist_clear(GTK_PANDA_CLIST(clist1));
+  gtk_panda_clist_set_rows(GTK_PANDA_CLIST(clist1),50);
   text = malloc(sizeof(char *)*COLUMNS);
   for (i=0; i<50; i++) {
     for (j=0; j<COLUMNS; j++) {
       sprintf(str, "cel_%d_%d", i, j);
       text[j] = strdup(str);
     }
-    gtk_panda_clist_append(GTK_PANDA_CLIST(clist1), text);
+    gtk_panda_clist_set_row(GTK_PANDA_CLIST(clist1),i,text);
   }
+
+  gtk_panda_clist_set_fgcolor(GTK_PANDA_CLIST(clist1),0,"#FF2222");
+  gtk_panda_clist_set_fgcolor(GTK_PANDA_CLIST(clist1),1,"#2222FF");
+  gtk_panda_clist_set_bgcolor(GTK_PANDA_CLIST(clist1),0,"#FFEEEE");
+  gtk_panda_clist_set_bgcolor(GTK_PANDA_CLIST(clist1),1,"#EEEEFF");
 
   button = gtk_button_new_with_label("toggle sensitive");
   gtk_box_pack_start (GTK_BOX (vbox1), button, FALSE, FALSE, 0);

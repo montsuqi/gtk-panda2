@@ -45,8 +45,6 @@ extern "C" {
 enum GtkPandaTableRendererType {
   GTK_PANDA_TABLE_RENDERER_TEXT = 0,
   GTK_PANDA_TABLE_RENDERER_LABEL,
-  GTK_PANDA_TABLE_RENDERER_CHECK,
-  GTK_PANDA_TABLE_RENDERER_ICON
 };
 
 typedef struct _GtkPandaTable		GtkPandaTable;
@@ -61,8 +59,11 @@ struct _GtkPandaTable {
   gchar *types;
   gchar *titles;
   gchar *widths;
+  gchar *im_controls;
+  gboolean _im_controls[GTK_PANDA_TABLE_MAX_COLS];
   int renderer_types[GTK_PANDA_TABLE_MAX_COLS];
   GType model_types[GTK_PANDA_TABLE_MAX_COLS];
+  GList *keyevents;
 };
 
 struct _GtkPandaTableClass {
@@ -84,12 +85,18 @@ void gtk_panda_table_set_titles(GtkPandaTable *table,
   const gchar *titles);
 void gtk_panda_table_set_column_widths(GtkPandaTable *table,
   const gchar *widths);
+void gtk_panda_table_set_im_controls(GtkPandaTable *table,
+  const gchar *widths);
+gboolean gtk_panda_table_get_im_control(GtkPandaTable *table,
+  gint column);
 void gtk_panda_table_set_row(GtkPandaTable *table,
   gint i,
   gchar *text[]);
-void gtk_panda_table_set_bgcolors(GtkPandaTable *table,
+void gtk_panda_table_set_bgcolor(GtkPandaTable *table,
+  gint i,
   gchar *colors[]);
-void gtk_panda_table_set_fgcolors(GtkPandaTable *table,
+void gtk_panda_table_set_fgcolor(GtkPandaTable *table,
+  gint i,
   gchar *colors[]);
 void gtk_panda_table_moveto(GtkPandaTable *table,
   gint row,
@@ -97,7 +104,8 @@ void gtk_panda_table_moveto(GtkPandaTable *table,
   gboolean use_align,
   gfloat row_align,
   gfloat col_align);
-gint gtk_panda_table_get_n_rows(GtkPandaTable *table);
+void gtk_panda_table_stay(GtkPandaTable *table);
+gint gtk_panda_table_get_rows(GtkPandaTable *table);
 gint gtk_panda_table_get_columns(GtkPandaTable *table);
 gint gtk_panda_table_get_column_type(GtkPandaTable *table,gint column);
 
