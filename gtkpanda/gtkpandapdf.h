@@ -81,9 +81,6 @@ struct _GtkPandaPDFClass
 };
 
 extern GType gtk_panda_pdf_get_type (void);
-extern GType gtk_panda_pd_f_get_type (void);
-extern GType gtk_panda_p_df_get_type (void);
-extern GType gtk_panda_p_d_f_get_type (void);
 extern GtkWidget *gtk_panda_pdf_new (void);
 extern gboolean gtk_panda_pdf_set (GtkPandaPDF *pps, int size, char *buff);
 extern gboolean gtk_panda_pdf_load (GtkPandaPDF *pps, char *fname);

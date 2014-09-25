@@ -36,6 +36,7 @@
 #include <gtkpanda/gtkpandaprint.h>
 #include <gtkpanda/gtkpandapdf.h>
 #include <gtkpanda/gtkpandapixmap.h>
+#include <gtkpanda/gtkpandawindow.h>
 #include <gtkpanda/gtkpandatable.h>
 #include <gtkpanda/pandacellrenderertext.h>
 

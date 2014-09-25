@@ -24,56 +24,47 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-#ifndef __GTK_PANDA_ENTRY_H__
-#define __GTK_PANDA_ENTRY_H__
+#ifndef __GTK_PANDA_WINDOW_H__
+#define __GTK_PANDA_WINDOW_H__
 
 #include <glib-object.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
-#include <gtk/gtkentry.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#define GTK_PANDA_TYPE_ENTRY                  (gtk_panda_entry_get_type ())
-#define GTK_PANDA_ENTRY(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_ENTRY, GtkPandaEntry))
-#define GTK_PANDA_ENTRY_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_ENTRY, GtkPandaEntryClass))
-#define GTK_IS_PANDA_ENTRY(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_ENTRY))
-#define GTK_IS_PANDA_ENTRY_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_ENTRY))
+#define GTK_PANDA_TYPE_WINDOW                  (gtk_panda_window_get_type ())
+#define GTK_PANDA_WINDOW(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_WINDOW, GtkPandaWindow))
+#define GTK_PANDA_WINDOW_CLASS(klass)          (G_TYPE_CHECK_CLASS_CAST ((klass), GTK_PANDA_TYPE_WINDOW, GtkPandaWindowClass))
+#define GTK_IS_PANDA_WINDOW(obj)               (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_PANDA_TYPE_WINDOW))
+#define GTK_IS_PANDA_WINDOW_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_PANDA_TYPE_WINDOW))
 
-typedef struct _GtkPandaEntry       GtkPandaEntry;
-typedef struct _GtkPandaEntryClass  GtkPandaEntryClass;
+typedef struct _GtkPandaWindow       GtkPandaWindow;
+typedef struct _GtkPandaWindowClass  GtkPandaWindowClass;
 
-typedef enum  {
-  GTK_PANDA_ENTRY_ASCII,
-  GTK_PANDA_ENTRY_KANA,
-  GTK_PANDA_ENTRY_XIM
-}GtkPandaEntryInputMode;
-
-struct _GtkPandaEntry
+struct _GtkPandaWindow
 {
-  GtkEntry entry;
+  GtkWindow window;
 
-  GtkPandaEntryInputMode input_mode;
-  gboolean xim_enabled;
+  gchar *wmclass_class;
+  gchar *wmclass_name;
+  gint x;
+  gint y;
 };
 
-struct _GtkPandaEntryClass
+struct _GtkPandaWindowClass
 {
-  GtkEntryClass parent_class;
+  GtkWindowClass parent_class;
 };
 
-GType gtk_panda_entry_get_type (void);
-GtkWidget* gtk_panda_entry_new (void);
-void gtk_panda_entry_set_input_mode (
-	GtkPandaEntry *entry, 
-	GtkPandaEntryInputMode mode);
-void gtk_panda_entry_set_xim_enabled (GtkPandaEntry *entry, gboolean flag);
+GType gtk_panda_window_get_type (void);
+GtkWidget* gtk_panda_window_new (GtkWindowType type);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
 
-#endif /* __GTK_PANDA_ENTRY_H__ */
+#endif /* __GTK_PANDA_WINDOW_H__ */

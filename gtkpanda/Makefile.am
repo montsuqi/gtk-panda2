@@ -21,6 +21,7 @@ gtkpanda_public_h_sources = \
 	imcontrol.h			\
 	gtkpandapdf.h			\
 	gtkpandapixmap.h		\
+	gtkpandawindow.h		\
 	gtkpandatable.h			\
 	pandacellrenderertext.h		\
 	pandamarshal.h
@@ -40,6 +41,7 @@ gtkpanda_c_sources = 			\
 	imcontrol.c			\
 	gtkpandapdf.c			\
 	gtkpandapixmap.c		\
+	gtkpandawindow.c		\
 	gtkpandatable.c			\
 	gtkpandamain.c			\
 	gtkpandahtml.c			\
@@ -82,3 +84,58 @@ EXTRA_DIST = 				\
 	tree_plus.xpm 			\
 	tree_minus.xpm			\
 	pandamarshal.h
+
+
+# test programs, not to be installed
+
+noinst_PROGRAMS = 	\
+    testclist		\
+	testcombo		\
+	testfileentry	\
+	testnumeric 	\
+	testentry 		\
+	testhtml		\
+	testtext		\
+	testtimer		\
+	testpdf			\
+	testpixmap		\
+	testtable
+
+DEPS = \
+	libgtkpanda-2.0.la
+LDADDS =	\
+	./libgtkpanda-2.0.la	\
+	$(GTK_PANDA_LIBS)
+
+testclist_DEPENDENCIES = $(DEPS)
+testclist_LDADD = $(LDADDS)
+
+testcombo_DEPENDENCIES = $(DEPS)
+testcombo_LDADD = $(LDADDS)
+
+testfileentry_DEPENDENCIES = $(DEPS)
+testfileentry_LDADD = $(LDADDS)
+
+testnumeric_DEPENDENCIES = $(DEPS)
+testnumeric_LDADD = $(LDADDS)
+
+testentry_DEPENDENCIES = $(DEPS)
+testentry_LDADD = $(LDADDS)
+
+testhtml_DEPENDENCIES = $(DEPS)
+testhtml_LDADD = $(LDADDS)
+
+testtext_DEPENDENCIES = $(DEPS)
+testtext_LDADD = $(LDADDS)
+
+testtimer_DEPENDENCIES = $(DEPS)
+testtimer_LDADD = $(LDADDS)
+
+testpdf_DEPENDENCIES = $(DEPS)
+testpdf_LDADD = $(LDADDS)
+
+testpixmap_DEPENDENCIES = $(DEPS)
+testpixmap_LDADD = $(LDADDS)
+
+testtable_DEPENDENCIES = $(DEPS)
+testtable_LDADD = $(LDADDS)

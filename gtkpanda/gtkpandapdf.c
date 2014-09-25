@@ -131,24 +131,6 @@ gtk_panda_pdf_get_type (void)
   return type;
 }
 
-GType
-gtk_panda_p_df_get_type (void)
-{
-	return gtk_panda_pdf_get_type();
-}
-
-GType
-gtk_panda_pd_f_get_type (void)
-{
-	return gtk_panda_pdf_get_type();
-}
-
-GType
-gtk_panda_p_d_f_get_type (void)
-{
-	return gtk_panda_pdf_get_type();
-}
-
 static void
 gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
 {

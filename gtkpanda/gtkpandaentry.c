@@ -68,15 +68,15 @@ static void gtk_panda_entry_init          (GtkPandaEntry     *entry);
 
 static void gtk_panda_entry_hide          (GtkWidget         *widget);
 static gint gtk_panda_entry_focus_in      (GtkWidget         *widget,
-             GdkEventFocus     *event);
+					   GdkEventFocus     *event);
 static gint gtk_panda_entry_focus_out     (GtkWidget         *widget,
-             GdkEventFocus     *event);
+					   GdkEventFocus     *event);
 static gint gtk_panda_entry_key_press     (GtkWidget         *widget,
-             GdkEventKey       *event);
+					   GdkEventKey       *event);
 static void gtk_panda_entry_insert_text   (GtkEditable       *editable,
-             const gchar       *new_text,
-             gint               new_text_length,
-             gint              *position);
+					   const gchar       *new_text,
+					   gint               new_text_length,
+					   gint              *position);
 static void  gtk_panda_entry_set_property       (GObject         *object,
                        guint            prop_id,
                        const GValue    *value,
@@ -87,7 +87,7 @@ static void  gtk_panda_entry_get_property       (GObject         *object,
                        GParamSpec      *pspec);
 
 static GtkWidgetClass *parent_class = NULL;
-static gboolean force_feature_off = FALSE;
+static gboolean force_im_disable = FALSE;
 
 GType
 gtk_panda_entry_get_type (void)
@@ -162,6 +162,9 @@ gtk_panda_entry_init (GtkPandaEntry *entry)
     G_CALLBACK(gtk_panda_entry_key_press), entry);
   g_signal_connect (entry, "insert_text",
     G_CALLBACK(gtk_panda_entry_insert_text), entry);
+  if (getenv("GTK_PANDA_ENTRY_FORCE_IM_DISABLE") != NULL) {
+    force_im_disable = TRUE;
+  }
 }
 
 GtkWidget*
@@ -185,7 +188,7 @@ gtk_panda_entry_hide (GtkWidget *widget)
 
 static gint
 gtk_panda_entry_focus_in (GtkWidget     *widget,
-        GdkEventFocus *event)
+			  GdkEventFocus *event)
 {
   GtkEntry *entry;
   GtkPandaEntry *pentry;
@@ -199,7 +202,11 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
   pentry = GTK_PANDA_ENTRY (widget);
   mim = GTK_IM_MULTICONTEXT(entry->im_context);
 
-  if (!force_feature_off && pentry->input_mode == GTK_PANDA_ENTRY_XIM) {
+  if (force_im_disable) {
+    pentry->input_mode = GTK_PANDA_ENTRY_ASCII;
+  }
+
+  if (pentry->input_mode == GTK_PANDA_ENTRY_XIM) {
     set_im_state_pre_focus(widget, mim, pentry->xim_enabled);
   }
 
@@ -208,7 +215,7 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
       (widget, event);
   }
 
-  if (!force_feature_off && pentry->input_mode == GTK_PANDA_ENTRY_XIM) {
+  if (pentry->input_mode == GTK_PANDA_ENTRY_XIM) {
     set_im_state_post_focus(widget, mim, pentry->xim_enabled);
   }
 
@@ -218,7 +225,7 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
 
 static gint
 gtk_panda_entry_focus_out (GtkWidget     *widget,
-         GdkEventFocus *event)
+			   GdkEventFocus *event)
 {
   g_return_val_if_fail (widget != NULL, FALSE);
   g_return_val_if_fail (GTK_IS_ENTRY (widget), FALSE);
@@ -233,7 +240,7 @@ gtk_panda_entry_focus_out (GtkWidget     *widget,
 
 static gint
 gtk_panda_entry_key_press (GtkWidget      *widget,
-      GdkEventKey       *event)
+			GdkEventKey       *event)
 {
   GtkPandaEntry *entry;
   gchar *last_char;
@@ -242,7 +249,7 @@ gtk_panda_entry_key_press (GtkWidget      *widget,
 
   entry = GTK_PANDA_ENTRY (widget);
 
-  if (!force_feature_off && entry->input_mode == GTK_PANDA_ENTRY_KANA)
+  if (entry->input_mode == GTK_PANDA_ENTRY_KANA)
     {
       if (event->keyval == GDK_Return)
         {
@@ -257,8 +264,8 @@ gtk_panda_entry_key_press (GtkWidget      *widget,
               gtk_editable_set_position(GTK_EDITABLE(entry), end_pos);
             }
           g_free(last_char);
-    }
-  }
+		}
+	}
   return FALSE;
 }
 
@@ -345,22 +352,22 @@ get_kana (gchar *prefix, gchar key)
   for (i = 0; kana_table[i].prefix; i++)
     if (strcmp (prefix, kana_table[i].prefix) == 0)
       switch (key)
-  {
-  case 'a': return kana_table[i].a;
-  case 'i': return kana_table[i].i;
-  case 'u': return kana_table[i].u;
-  case 'e': return kana_table[i].e;
-  case 'o': return kana_table[i].o;
-  default:  return 0;
-  }
+	{
+	case 'a': return kana_table[i].a;
+	case 'i': return kana_table[i].i;
+	case 'u': return kana_table[i].u;
+	case 'e': return kana_table[i].e;
+	case 'o': return kana_table[i].o;
+	default:  return 0;
+	}
   return 0;
 }
 
 static void
 gtk_panda_entry_insert_text (GtkEditable *editable,
-           const gchar *new_text,
-           gint         new_text_length,
-           gint        *position)
+			     const gchar *new_text,
+			     gint         new_text_length,
+			     gint        *position)
 {
   GtkEntry *entry;
   gchar *prefix = NULL;
@@ -371,66 +378,69 @@ gtk_panda_entry_insert_text (GtkEditable *editable,
   entry = GTK_ENTRY (editable);
 
   /* Handle kana input */
-  if (!force_feature_off &&
-    GTK_PANDA_ENTRY (entry)->input_mode == GTK_PANDA_ENTRY_KANA) {
-    gchar buff[8];
-    gint prefix_start, prefix_end;
-    gchar this, last;
+  if (GTK_PANDA_ENTRY (entry)->input_mode == GTK_PANDA_ENTRY_KANA)
+    {
+      gchar buff[8];
+      gint prefix_start, prefix_end;
+      gchar this, last;
 
-    /* Do nothing if there is no input */
-    if (new_text_length < 1)
-      return;
+      /* Do nothing if there is no input */
+      if (new_text_length < 1)
+	return;
 
-    /* Just insert for non-keyboard input */
-    if (new_text_length > 1)
-      goto insert;
+      /* Just insert for non-keyboard input */
+      if (new_text_length > 1)
+	goto insert;
 
-    /* Find the prefix */
-    prefix_end = gtk_editable_get_position(editable);
-    for (prefix_start = prefix_end; prefix_start > 0; prefix_start--) {
-      gchar *s = gtk_editable_get_chars (editable, prefix_start - 1, -1);
-      if (*s < 'a' || 'z' < *s)
-        break;
-      }
+      /* Find the prefix */
+      prefix_end = gtk_editable_get_position(editable);
+      for (prefix_start = prefix_end; prefix_start > 0; prefix_start--)
+	{
+	  gchar *s = gtk_editable_get_chars (editable, prefix_start - 1, -1);
+	  if (*s < 'a' || 'z' < *s)
+	    break;
+	}
       prefix = gtk_editable_get_chars (editable, prefix_start, prefix_end);
 
       this = *new_text;
       last = *prefix;
 
-      if (last == 0) {
-        /* single char */
-        gchar *s = get_symbol (new_text[0]);
-        if (s != 0) {
-          new_text = s;
-        } else {
-          goto insert;
-        }
-      } else if (this == 'a' || this == 'i' || this == 'u'
-         || this == 'e' || this == 'o') {
-        /* カナ */
-        gchar *s = get_kana (prefix, new_text[0]);
-        if (s != 0) {
-          new_text = s;
-        } else {
-          goto insert;
-        }
-      } else if (last == 'n' && this != 'y') {
-        /* n -> ン */
-        if (this == 'n' || this == '\'') {
-          strcpy (buff, "ン");
-        } else {
-          sprintf (buff, "ン%c", this);
-          new_text = buff;
-        }
-      }
+      if (last == 0)
+	{
+	  /* single char */
+	  gchar *s = get_symbol (new_text[0]);
+	  if (s != 0)
+	    new_text = s;
+	  else
+	    goto insert;
+	}
+      else if (this == 'a' || this == 'i' || this == 'u'
+	       || this == 'e' || this == 'o')
+	{
+	  /* カナ */
+	  gchar *s = get_kana (prefix, new_text[0]);
+	  if (s != 0)
+	    new_text = s;
+	  else
+	    goto insert;
+	}
+      else if (last == 'n' && this != 'y')
+	{
+	  /* n -> ン */
+	  if (this == 'n' || this == '\'')
+	    strcpy (buff, "ン");
+	  else
+	    sprintf (buff, "ン%c", this);
+	  new_text = buff;
+	}
       else if (this == last)
-      {
-        /* xx -> ッ */
-        sprintf (buff, "ッ%c", this);
-        new_text = buff;
-      } else {
-        goto insert;
-      }
+	{
+	  /* xx -> ッ */
+	  sprintf (buff, "ッ%c", this);
+	  new_text = buff;
+	}
+      else
+	goto insert;
 
       new_text_length = strlen (new_text);
       *position = prefix_start;
@@ -452,9 +462,9 @@ gtk_panda_entry_insert_text (GtkEditable *editable,
 
 static void 
 gtk_panda_entry_set_property (GObject         *object,
-          guint            prop_id,
-          const GValue    *value,
-          GParamSpec      *pspec)
+		      guint            prop_id,
+		      const GValue    *value,
+		      GParamSpec      *pspec)
 {
   GtkPandaEntry *entry;
 
@@ -476,9 +486,9 @@ gtk_panda_entry_set_property (GObject         *object,
 }
 
 static void gtk_panda_entry_get_property (GObject         *object,
-          guint            prop_id,
-          GValue          *value,
-          GParamSpec      *pspec)
+				  guint            prop_id,
+				  GValue          *value,
+				  GParamSpec      *pspec)
 {
   GtkPandaEntry *entry;
 
@@ -503,7 +513,7 @@ static void gtk_panda_entry_get_property (GObject         *object,
 
 void
 gtk_panda_entry_set_input_mode (GtkPandaEntry *entry,
-        GtkPandaEntryInputMode mode)
+				GtkPandaEntryInputMode mode)
 {
   entry->input_mode = mode;
 }
@@ -514,8 +524,3 @@ gtk_panda_entry_set_xim_enabled (GtkPandaEntry *entry, gboolean flag)
   entry->xim_enabled = flag;
 }
 
-void
-gtk_panda_entry_force_feature_off()
-{
-  force_feature_off = TRUE;
-}

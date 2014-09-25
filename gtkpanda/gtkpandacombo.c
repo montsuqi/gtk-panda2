@@ -125,17 +125,11 @@ set_focusable(GtkWidget *widget, gpointer data)
 static void
 gtk_panda_combo_init (GtkPandaCombo * combo)
 {
-  GtkListStore *store;
   GtkCellRenderer *renderer;
-
-  store = gtk_list_store_new(1,G_TYPE_STRING);
-  g_object_set(G_OBJECT(combo),
-    "model", GTK_TREE_MODEL(store),
-    NULL);
-  g_object_unref(store);
-
   combo->entry = gtk_panda_entry_new();
+#if 0
   GTK_ENTRY (combo->entry)->is_cell_renderer = TRUE;
+#endif
   gtk_container_add(GTK_CONTAINER(combo), combo->entry);
   gtk_widget_show (combo->entry);
 
@@ -201,9 +195,15 @@ GtkWidget *
 gtk_panda_combo_new (void)
 {
   GtkWidget *ret;
+  GtkListStore *store;
 
+  store = gtk_list_store_new(1, G_TYPE_STRING);
+ 
   ret = g_object_new( gtk_panda_combo_get_type(),
+                      "model", GTK_TREE_MODEL(store),
                       NULL);
+  g_object_unref (store);
+
   return ret;
 }
 

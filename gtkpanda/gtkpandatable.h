@@ -45,6 +45,8 @@ extern "C" {
 enum GtkPandaTableRendererType {
   GTK_PANDA_TABLE_RENDERER_TEXT = 0,
   GTK_PANDA_TABLE_RENDERER_LABEL,
+  GTK_PANDA_TABLE_RENDERER_CHECK,
+  GTK_PANDA_TABLE_RENDERER_ICON
 };
 
 typedef struct _GtkPandaTable		GtkPandaTable;
