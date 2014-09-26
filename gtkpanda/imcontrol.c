@@ -89,7 +89,7 @@ fprintf(stderr,"emit_toggle_key %p %ld\n",widget,t);
   kevent->key.state = 16;
   kevent->key.length = 0;
   kevent->key.string = "";
-  kevent->key.keyval = GDK_Zenkaku_Hankaku;
+  kevent->key.keyval = GDK_KEY_Zenkaku_Hankaku;
   if (GTK_IS_ENTRY(widget)) {
     gtk_entry_im_context_filter_keypress(GTK_ENTRY(widget),(GdkEventKey*)kevent);
   } else if (GTK_IS_TEXT_VIEW(widget)) {

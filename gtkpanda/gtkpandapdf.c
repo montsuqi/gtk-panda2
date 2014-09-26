@@ -223,33 +223,33 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_TYPE_NONE, 0);
 
   binding_set = gtk_binding_set_by_class (klass);
-  gtk_binding_entry_add_signal (binding_set, GDK_g, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_g, GDK_CONTROL_MASK,
     "zoom_fit_page", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_f, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_f, GDK_CONTROL_MASK,
     "zoom_fit_width", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_plus, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_plus, GDK_CONTROL_MASK,
     "zoom_in", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_minus, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_minus, GDK_CONTROL_MASK,
     "zoom_out", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_F5, GDK_SHIFT_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_F5, GDK_SHIFT_MASK,
     "zoom_fit_page", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_F6, GDK_SHIFT_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_F6, GDK_SHIFT_MASK,
     "zoom_fit_width", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_F7, GDK_SHIFT_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_F7, GDK_SHIFT_MASK,
     "zoom_in", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_F8, GDK_SHIFT_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_F8, GDK_SHIFT_MASK,
     "zoom_out", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_Right, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_Right, GDK_CONTROL_MASK,
     "page_next", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_Left, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_Left, GDK_CONTROL_MASK,
     "page_prev", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_Up, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_Up, GDK_CONTROL_MASK,
     "page_prev", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_Down, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_Down, GDK_CONTROL_MASK,
     "page_next", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_s, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_s, GDK_CONTROL_MASK,
     "save", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_p, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_p, GDK_CONTROL_MASK,
     "print", 0);
 }
 

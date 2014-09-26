@@ -351,24 +351,24 @@ gtk_panda_table_key_press(GtkWidget *widget,
   table = GTK_PANDA_TABLE(widget);
 
   switch (event->keyval) {
-  case GDK_Page_Up:
+  case GDK_KEY_Page_Up:
     g_idle_add(_move_to_start,widget);
     break;
-  case GDK_Page_Down:
+  case GDK_KEY_Page_Down:
     g_idle_add(_move_to_start,widget);
     break;
-  case GDK_Left:
-  case GDK_KP_Left:
+  case GDK_KEY_Left:
+  case GDK_KEY_KP_Left:
     move_left(GTK_TREE_VIEW(widget));
     return TRUE;
     break;
-  case GDK_Right:
-  case GDK_KP_Right:
+  case GDK_KEY_Right:
+  case GDK_KEY_KP_Right:
     move_right(GTK_TREE_VIEW(widget));
     return TRUE;
     break;
-  case GDK_Tab:
-  case GDK_ISO_Left_Tab:
+  case GDK_KEY_Tab:
+  case GDK_KEY_ISO_Left_Tab:
     if (event->state & GDK_CONTROL_MASK) {
     } else {
       if (event->state & GDK_SHIFT_MASK) {

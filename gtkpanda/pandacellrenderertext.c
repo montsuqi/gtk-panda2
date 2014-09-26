@@ -180,16 +180,16 @@ editing_entry_key_press (GtkWidget *entry,
   switch(event->keyval) {
   case GDK_KEY_Menu: /* avoid freeze on ubuntu 12.04*/
     return TRUE;
-  case GDK_Return:
-  case GDK_KP_Enter:
+  case GDK_KEY_Return:
+  case GDK_KEY_KP_Enter:
     if (!(event->state & GDK_SHIFT_MASK ) && 
         !(event->state & GDK_CONTROL_MASK) && 
         !(event->state & GDK_MOD1_MASK) ) {
       keyval = event->keyval;
     }
     break;
-  case GDK_Up:
-  case GDK_KP_Up:
+  case GDK_KEY_Up:
+  case GDK_KEY_KP_Up:
     if (!(event->state & GDK_SHIFT_MASK ) && 
         !(event->state & GDK_CONTROL_MASK) && 
         !(event->state & GDK_MOD1_MASK) ) {
@@ -205,8 +205,8 @@ editing_entry_key_press (GtkWidget *entry,
       }
     }
     break;
-  case GDK_Down:
-  case GDK_KP_Down:
+  case GDK_KEY_Down:
+  case GDK_KEY_KP_Down:
     if (!(event->state & GDK_SHIFT_MASK ) && 
         !(event->state & GDK_CONTROL_MASK) && 
         !(event->state & GDK_MOD1_MASK) ) {
@@ -227,9 +227,9 @@ editing_entry_key_press (GtkWidget *entry,
       }
     }
     break;
-  case GDK_Tab:
-  case GDK_KP_Tab:
-  case GDK_ISO_Left_Tab:
+  case GDK_KEY_Tab:
+  case GDK_KEY_KP_Tab:
+  case GDK_KEY_ISO_Left_Tab:
     if (!(event->state & GDK_MOD1_MASK) && view != NULL) {
       if (!(event->state & GDK_CONTROL_MASK)) {
         if (!(event->state & GDK_SHIFT_MASK)) {

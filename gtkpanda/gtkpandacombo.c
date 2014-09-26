@@ -356,19 +356,19 @@ gtk_panda_combo_entry_key_press(GtkEntry * entry,
   GdkEventKey * event, 
   GtkPandaCombo * combo) {   
 
-  if ((event->keyval == GDK_Tab) && (event->state & GDK_MOD1_MASK)) {     
+  if ((event->keyval == GDK_KEY_Tab) && (event->state & GDK_MOD1_MASK)) {     
     /* completion */
     gtk_panda_combo_completion(combo);
     return TRUE;
 
   } else if(((event->state & GDK_MOD1_MASK) && 
-    ((event->keyval == GDK_Down) || (event->keyval == GDK_KP_Down)))) {
+    ((event->keyval == GDK_KEY_Down) || (event->keyval == GDK_KEY_KP_Down)))) {
     /* open popdown */
     gtk_combo_box_popup(GTK_COMBO_BOX(combo));
     return TRUE;
 
-  } else if ((event->keyval == GDK_Up)
-    || (event->keyval == GDK_KP_Up)
+  } else if ((event->keyval == GDK_KEY_Up)
+    || (event->keyval == GDK_KEY_KP_Up)
     || ((event->state & GDK_MOD1_MASK) && ((event->keyval == 'p') 
        || (event->keyval == 'P')))) {
     /* select previous */
@@ -377,8 +377,8 @@ gtk_panda_combo_entry_key_press(GtkEntry * entry,
     }
     return TRUE;
 
-  } else if ((event->keyval == GDK_Down)
-    || (event->keyval == GDK_KP_Down)
+  } else if ((event->keyval == GDK_KEY_Down)
+    || (event->keyval == GDK_KEY_KP_Down)
     || ((event->state & GDK_MOD1_MASK) && ((event->keyval == 'n') 
        || (event->keyval == 'N')))) {
     /* select next */

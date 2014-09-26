@@ -239,7 +239,7 @@ gtk_panda_entry_key_press (GtkWidget      *widget,
 
   if (entry->input_mode == GTK_PANDA_ENTRY_KANA)
     {
-      if (event->keyval == GDK_Return)
+      if (event->keyval == GDK_KEY_Return)
         {
           start_pos = (gtk_entry_get_text_length(GTK_ENTRY(entry)) - 1);
           end_pos = -1;
