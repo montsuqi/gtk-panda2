@@ -11,7 +11,6 @@ gtkpanda_public_h_sources = \
 	gtkpanda.h 				\
 	gtkpandaclist.h			\
 	gtkpandacombo.h			\
-	gtkpandafileentry.h		\
 	gtkpandaentry.h 		\
 	gtkpandahtml.h 			\
 	gtkpandatext.h			\
@@ -31,7 +30,6 @@ gtkpanda_c_sources = 		\
 	numeric.c 				\
 	gtkpandaclist.c			\
 	gtkpandacombo.c			\
-	gtkpandafileentry.c		\
 	gtknumberentry.c 		\
 	gtkpandaentry.c 		\
 	gtkpandatext.c			\
@@ -92,7 +90,6 @@ EXTRA_DIST = 				\
 noinst_PROGRAMS = 	\
     testclist		\
 	testcombo		\
-	testfileentry	\
 	testnumeric 	\
 	testentry 		\
 	testhtml		\
@@ -113,9 +110,6 @@ testclist_LDADD = $(LDADDS)
 
 testcombo_DEPENDENCIES = $(DEPS)
 testcombo_LDADD = $(LDADDS)
-
-testfileentry_DEPENDENCIES = $(DEPS)
-testfileentry_LDADD = $(LDADDS)
 
 testnumeric_DEPENDENCIES = $(DEPS)
 testnumeric_LDADD = $(LDADDS)
