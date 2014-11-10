@@ -105,6 +105,9 @@ _set_im(
   if (!gtk_widget_has_focus(widget)) {
     return;
   }
+  if (!im_control_enabled) {
+    return;
+  }
 #ifdef IBUS_1_5
   {
     gchar *statusfile,*buf;
