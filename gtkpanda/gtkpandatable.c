@@ -911,6 +911,17 @@ _start_editing(gpointer data)
 }
 
 void 
+gtk_panda_table_start_editing (
+  GtkPandaTable *table)
+{
+  g_return_if_fail (table != NULL);
+  g_return_if_fail (GTK_IS_PANDA_TABLE (table));
+
+  g_idle_add(_start_editing,table);
+  g_idle_add(_start_editing,table);
+}
+
+void 
 gtk_panda_table_moveto (
   GtkPandaTable *table,
   gint      row,
@@ -931,18 +942,7 @@ gtk_panda_table_moveto (
   gtk_tree_view_scroll_to_cell(
     GTK_TREE_VIEW(table), path, col, use_align, row_align, col_align);
   gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,FALSE);
-  g_idle_add(_start_editing,table);
   gtk_tree_path_free(path);
-}
-
-void 
-gtk_panda_table_stay (
-  GtkPandaTable *table)
-{
-  g_return_if_fail (table != NULL);
-  g_return_if_fail (GTK_IS_PANDA_TABLE (table));
-
-  g_idle_add(_start_editing,table);
 }
 
 gboolean
