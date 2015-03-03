@@ -64,7 +64,6 @@ struct _GtkPandaTable {
   int renderer_types[GTK_PANDA_TABLE_MAX_COLS];
   GType model_types[GTK_PANDA_TABLE_MAX_COLS];
   GList *keyevents;
-  GList *eventids;
 };
 
 struct _GtkPandaTableClass {
@@ -109,7 +108,6 @@ void gtk_panda_table_start_editing(GtkPandaTable *tabler);
 gint gtk_panda_table_get_rows(GtkPandaTable *table);
 gint gtk_panda_table_get_columns(GtkPandaTable *table);
 gint gtk_panda_table_get_column_type(GtkPandaTable *table,gint column);
-void gtk_panda_table_cancel_idle_events(GtkPandaTable *table);
 
 #ifdef __cplusplus
 }

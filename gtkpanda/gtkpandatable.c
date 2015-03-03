@@ -169,7 +169,6 @@ gtk_panda_table_init ( GtkPandaTable * table)
   table->im_controls = g_strdup("");
   table->rows = 0;
   table->keyevents = NULL;
-  table->eventids = NULL;
   gtk_panda_table_set_columns(table,1);
   gtk_tree_view_set_enable_search(GTK_TREE_VIEW(table), FALSE );
   gtk_tree_view_set_rubber_banding(GTK_TREE_VIEW(table), FALSE );
@@ -344,17 +343,6 @@ _move_to_end(gpointer data)
   return FALSE;
 }
 
-static void
-_g_idle_add(
-  GSourceFunc func,
-  GtkPandaTable *table)
-{
-  guint id;
-
-  id = g_idle_add(func,table);
-  table->eventids = g_list_append(table->eventids,GUINT_TO_POINTER(id));
-}
-
 static gboolean
 gtk_panda_table_key_press(GtkWidget *widget,
   GdkEventKey *event)
@@ -365,10 +353,10 @@ gtk_panda_table_key_press(GtkWidget *widget,
 
   switch (event->keyval) {
   case GDK_KEY_Page_Up:
-    _g_idle_add(_move_to_start,table);
+    g_idle_add(_move_to_start,table);
     break;
   case GDK_KEY_Page_Down:
-    _g_idle_add(_move_to_start,table);
+    g_idle_add(_move_to_start,table);
     break;
   case GDK_KEY_Left:
   case GDK_KEY_KP_Left:
@@ -930,8 +918,8 @@ gtk_panda_table_start_editing (
   g_return_if_fail (table != NULL);
   g_return_if_fail (GTK_IS_PANDA_TABLE (table));
 
-  _g_idle_add(_start_editing,table);
-  _g_idle_add(_start_editing,table);
+  g_idle_add(_start_editing,table);
+  g_idle_add(_start_editing,table);
 }
 
 void 
@@ -1089,18 +1077,4 @@ cb_cursor_changed(GtkTreeView *view,
     GINT_TO_POINTER(col));
   g_object_set_data(G_OBJECT(view),"changed_value",
     NULL);
-}
-
-
-void
-gtk_panda_table_cancel_idle_events(
-  GtkPandaTable *table)
-{
-  GList *l;
-
-  for(l=table->eventids;l!=NULL;l=l->next) {
-    g_source_remove(GPOINTER_TO_UINT(l->data));
-  }
-  g_list_free(table->eventids);
-  table->eventids = NULL;
 }
