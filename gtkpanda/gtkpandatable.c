@@ -926,12 +926,13 @@ gtk_panda_table_moveto (
 }
 
 void 
-gtk_panda_table_stay (
+gtk_panda_table_start_editing (
   GtkPandaTable *table)
 {
   g_return_if_fail (table != NULL);
   g_return_if_fail (GTK_IS_PANDA_TABLE (table));
 
+  g_idle_add(_start_editing,table);
   g_idle_add(_start_editing,table);
 }
 

@@ -32,46 +32,84 @@
 static gboolean im_control_enabled = TRUE;
 
 static void
-emit_toggle_key(GtkWidget *widget,
-  GtkIMContext *im)
+emit_toggle_key(GtkWidget *widget)
 {
+  static guint32 prev = 0;
+  guint32 t;
   GdkEvent *kevent;
+  GdkWindow *window;
+  GtkIMMulticontext *mim;
+
+  window = gtk_widget_get_parent_window(widget);
+  t = gdk_x11_get_server_time(window);
 
   kevent = gdk_event_new(GDK_KEY_PRESS);
-  kevent->key.window = gtk_widget_get_parent_window(widget);
+  kevent->key.window = window;
   kevent->key.send_event = 0;
-  kevent->key.time = gdk_x11_get_server_time(kevent->key.window);
+  kevent->key.time = t;
   kevent->key.state = 16;
   kevent->key.length = 0;
   kevent->key.string = "";
-  kevent->key.keyval = GDK_Zenkaku_Hankaku;
-  gtk_im_context_filter_keypress(im, (GdkEventKey *)kevent);
+  kevent->key.keyval = GDK_KEY_Zenkaku_Hankaku;
+  if (GTK_IS_ENTRY(widget)) {
+    gtk_entry_im_context_filter_keypress(GTK_ENTRY(widget),(GdkEventKey*)kevent);
+  } else if (GTK_IS_TEXT_VIEW(widget)) {
+    gtk_text_view_im_context_filter_keypress(GTK_TEXT_VIEW(widget),(GdkEventKey*)kevent);
+  }
 }
 
-void 
-set_im_state_post_focus(
+static void 
+_set_im(
   GtkWidget *widget, 
-  GtkIMMulticontext *mim,
-  gboolean enabled)
+  gboolean enable)
 {
+  if (!gtk_widget_has_focus(widget)) {
+    return;
+  }
   if (!im_control_enabled) {
     return;
   }
-  GtkIMContext *im;
-  gboolean *state;
 
-  if (mim != NULL && !strcmp("ibus", mim->context_id)) {
-    im = mim->slave;
-    if (mim->slave == NULL) {
+  {
+    gboolean *state;
+    GtkIMMulticontext *mim;
+    GtkIMContext *im;
+
+    if (GTK_IS_ENTRY(widget)) {
+      mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(widget)->im_context);
+    } else if (GTK_IS_TEXT_VIEW(widget)) {
+      mim = GTK_IM_MULTICONTEXT(GTK_TEXT_VIEW(widget)->im_context);
+    } else {
       return;
     }
-    state = (gboolean *)g_object_get_data(G_OBJECT(im), "im-state");
-    if (state != NULL) {
-      if (*state != enabled) {
-          emit_toggle_key(widget, im);
+
+    if (mim != NULL && !strcmp("ibus",mim->context_id)) {
+      im = mim->slave;
+      if (im == NULL) {
+        return;
+      }
+
+      state = (gboolean *)g_object_get_data(G_OBJECT(im),"im-state");
+      if (state != NULL) {
+        if (*state!=enable) {
+          emit_toggle_key(widget);
+        }
       }
     }
   }
+}
+
+void
+set_im(
+  GtkWidget *widget)
+{
+  _set_im(widget,TRUE);
+}
+
+void
+unset_im(
+  GtkWidget *widget)
+{
 }
 
 void

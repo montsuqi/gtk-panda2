@@ -188,7 +188,6 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
 {
   GtkEntry *entry;
   GtkPandaEntry *pentry;
-  GtkIMMulticontext *mim;
 
   g_return_val_if_fail (widget != NULL, FALSE);
   g_return_val_if_fail (GTK_IS_ENTRY (widget), FALSE);
@@ -196,15 +195,16 @@ gtk_panda_entry_focus_in (GtkWidget     *widget,
 
   entry = GTK_ENTRY (widget);
   pentry = GTK_PANDA_ENTRY (widget);
-  mim = GTK_IM_MULTICONTEXT(entry->im_context);
 
   if (GTK_WIDGET_CLASS (parent_class)->focus_in_event) {
     (* GTK_WIDGET_CLASS (parent_class)->focus_in_event)
       (widget, event);
   }
 
-  if (pentry->input_mode == GTK_PANDA_ENTRY_XIM) {
-    set_im_state_post_focus(widget, mim, pentry->xim_enabled);
+  if (pentry->input_mode == GTK_PANDA_ENTRY_XIM && pentry->xim_enabled) {
+    set_im(widget);    
+  } else {
+    unset_im(widget);
   }
 
   gtk_editable_set_position(GTK_EDITABLE(widget), -1);
@@ -506,4 +506,14 @@ void
 gtk_panda_entry_set_xim_enabled (GtkPandaEntry *entry, gboolean flag)
 {
   entry->xim_enabled = flag;
+}
+
+void
+gtk_panda_entry_set_im(GtkPandaEntry *entry)
+{
+  if (entry->xim_enabled) {
+    set_im(GTK_WIDGET(entry));
+  } else {
+    unset_im(GTK_WIDGET(entry));
+  }
 }

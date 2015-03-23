@@ -285,18 +285,14 @@ cb_button_press_event(GtkWidget *widget,
   }
 }
 
+
 static gint
-_enable_im(gpointer data)
+_set_im(gpointer data)
 {
   if (!GTK_IS_PANDA_ENTRY(data)) {
     return FALSE;
   }
-  GtkPandaEntry *entry;
-  GtkIMMulticontext *mim;
-  
-  entry = GTK_PANDA_ENTRY(data);
-  mim = GTK_IM_MULTICONTEXT(GTK_ENTRY(entry)->im_context);
-  set_im_state_post_focus(GTK_WIDGET(entry),mim,entry->xim_enabled);
+  gtk_panda_entry_set_im(GTK_PANDA_ENTRY(data));
   return FALSE;
 }
 
@@ -336,8 +332,7 @@ start_editing (GtkCellRenderer      *cell,
 
   if (celltext->text) {
     if (im_enabled) {
-      gtk_panda_entry_set_xim_enabled(GTK_PANDA_ENTRY(entry),
-        TRUE);
+      gtk_panda_entry_set_xim_enabled(GTK_PANDA_ENTRY(entry),TRUE);
     }
     gtk_entry_set_text(GTK_ENTRY (entry),celltext->text);
   }
@@ -396,7 +391,7 @@ start_editing (GtkCellRenderer      *cell,
   table->keyevents = NULL;
 
   if (im_enabled) {
-    g_idle_add(_enable_im,entry);
+    g_idle_add(_set_im,entry);
   }
 
 #if 0

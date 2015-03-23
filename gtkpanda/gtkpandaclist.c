@@ -82,8 +82,6 @@ gtk_panda_clist_button_press (GtkWidget      *widget,
 static gboolean
 gtk_panda_clist_key_press (GtkWidget      *widget,
   GdkEventKey *event);
-static void preserve_selection (GtkPandaCList *clist,
-  GList *selection);
 static void selection_changed (GtkTreeSelection *selection, 
   gpointer user_data);
 
