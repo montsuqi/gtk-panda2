@@ -401,9 +401,9 @@ gtk_panda_combo_get_items(GtkPandaCombo *combo)
 
   list = NULL;
   model = gtk_combo_box_get_model(GTK_COMBO_BOX(combo));
-  g_return_val_if_fail(
-    gtk_tree_model_get_iter(model, &iter, gtk_tree_path_new_first()),
-    NULL);
+  if (!gtk_tree_model_get_iter(model, &iter, gtk_tree_path_new_first())) {
+    return NULL;
+  }
 
   do {
     gtk_tree_model_get(model, &iter, 0, &label, -1);
