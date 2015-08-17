@@ -172,9 +172,7 @@ void
 unset_im(
   GtkWidget *widget)
 {
-#ifdef IBUS_1_5
   _set_im(widget,FALSE);
-#endif
 }
 
 void
