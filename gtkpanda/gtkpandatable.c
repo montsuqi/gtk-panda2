@@ -220,23 +220,6 @@ gtk_panda_table_new ()
 }
 
 static void
-start_editing(GtkTreeView * view)
-{
-  GtkTreePath *path;
-  GtkTreeViewColumn *column;
-
-  path = NULL;
-
-  gtk_tree_view_get_cursor(view,&path,&column);
-  if (path != NULL && column != NULL) { 
-    gtk_tree_view_set_cursor(view,path,column,TRUE);
-  }
-  if (path != NULL) {
-    gtk_tree_path_free(path);
-  }
-}
-
-static void
 move_left(GtkTreeView * view)
 {
   GtkTreePath *path;
@@ -309,8 +292,8 @@ _move_to_start(gpointer data)
   if (gtk_tree_view_get_visible_range(view, &start, &end)) {
     gtk_tree_view_get_cursor(view,&path,&column);
     if (path != NULL && column != NULL) {
-      gtk_tree_view_set_cursor(view,start,column,FALSE);
-      start_editing(view);
+      gtk_tree_view_set_cursor(view,start,column,TRUE);
+      gtk_tree_view_set_cursor(view,start,column,TRUE);
       gtk_tree_path_free(path);
     }
   }
@@ -332,8 +315,8 @@ _move_to_end(gpointer data)
     gtk_tree_view_get_cursor(view,&path,&column);
     if (path != NULL && column != NULL) {
       if (gtk_tree_path_prev(end)) {
-        gtk_tree_view_set_cursor(view,end,column,FALSE);
-        start_editing(view);
+        gtk_tree_view_set_cursor(view,end,column,TRUE);
+        gtk_tree_view_set_cursor(view,end,column,TRUE);
       }
       gtk_tree_path_free(path);
     }
@@ -904,24 +887,6 @@ gtk_panda_table_get_column_type(GtkPandaTable *table,
   return table->renderer_types[col];
 }
 
-static gint
-_start_editing(gpointer data)
-{
-  start_editing(GTK_TREE_VIEW(data));
-  return FALSE;
-}
-
-void 
-gtk_panda_table_start_editing (
-  GtkPandaTable *table)
-{
-  g_return_if_fail (table != NULL);
-  g_return_if_fail (GTK_IS_PANDA_TABLE (table));
-
-  g_idle_add(_start_editing,table);
-  g_idle_add(_start_editing,table);
-}
-
 void 
 gtk_panda_table_moveto (
   GtkPandaTable *table,
@@ -940,9 +905,10 @@ gtk_panda_table_moveto (
   path = gtk_tree_path_new_from_indices(row, -1);
   col = gtk_tree_view_get_column(GTK_TREE_VIEW(table), column);
 
+  gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,TRUE);
+  gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,TRUE);
   gtk_tree_view_scroll_to_cell(
     GTK_TREE_VIEW(table), path, col, use_align, row_align, col_align);
-  gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,FALSE);
   gtk_tree_path_free(path);
 }
 
