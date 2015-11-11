@@ -15,7 +15,7 @@ AC_PROG_CXX
 AC_PROG_CC
 if test "$GCC" = "yes"; then
 #       CFLAGS="$CFLAGS -O4 -Wall -Wunused -Wredundant-decls -funsigned-char"
-        CFLAGS="-g -O4 -Wall -Wunused -funsigned-char -Wno-pointer-sign"
+        CFLAGS="-g -Wall -Wunused -funsigned-char -Wno-pointer-sign"
 fi
 AC_GNU_SOURCE
 AC_PROG_INSTALL
