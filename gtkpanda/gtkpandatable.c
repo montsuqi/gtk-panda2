@@ -281,8 +281,8 @@ move_right(GtkTreeView * view)
   }
 }
 
-static gint
-_move_to_start(gpointer data)
+static void
+page_up(gpointer data)
 {
   GtkTreeView *view;
   GtkTreeViewColumn *column;
@@ -299,12 +299,11 @@ _move_to_start(gpointer data)
   }
   gtk_tree_path_free(start);
   gtk_tree_path_free(end);
-  return FALSE;
 }
 
 
-static gint
-_move_to_end(gpointer data)
+static void
+page_down(gpointer data)
 {
   GtkTreeView *view;
   GtkTreeViewColumn *column;
@@ -323,7 +322,22 @@ _move_to_end(gpointer data)
   }
   gtk_tree_path_free(start);
   gtk_tree_path_free(end);
-  return FALSE;
+}
+
+static	void 
+start_editing (
+  GtkPandaTable *table)
+{
+  GtkTreePath *path;
+  GtkTreeViewColumn *col;
+
+  g_return_if_fail (table != NULL);
+  g_return_if_fail (GTK_IS_PANDA_TABLE (table));
+
+  gtk_tree_view_get_cursor(GTK_TREE_VIEW(table),&path,&col);
+  gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,TRUE);
+  gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,TRUE);
+  gtk_tree_path_free(path);
 }
 
 static gboolean
@@ -336,10 +350,10 @@ gtk_panda_table_key_press(GtkWidget *widget,
 
   switch (event->keyval) {
   case GDK_KEY_Page_Up:
-    g_idle_add(_move_to_start,table);
+    page_up(table);
     break;
   case GDK_KEY_Page_Down:
-    g_idle_add(_move_to_start,table);
+    page_down(table);
     break;
   case GDK_KEY_Left:
   case GDK_KEY_KP_Left:
@@ -366,8 +380,8 @@ gtk_panda_table_key_press(GtkWidget *widget,
     }
     break;
   }
-  table->keyevents = g_list_append(table->keyevents,
-    gdk_event_copy((const GdkEvent *)event));
+  table->keyevents = g_list_append(table->keyevents,gdk_event_copy((const GdkEvent *)event));
+  start_editing(table);
   return GTK_WIDGET_CLASS(parent_class)->key_press_event(widget,event);
 }
 
