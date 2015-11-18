@@ -220,6 +220,44 @@ gtk_panda_table_new ()
 }
 
 static void
+move_up(GtkTreeView * view)
+{
+  GtkTreePath *path;
+  GtkTreeViewColumn *column;
+
+  path = NULL;
+
+  gtk_tree_view_get_cursor(view,&path,&column);
+  if (path != NULL && column != NULL) { 
+    gtk_tree_path_prev(path);
+    gtk_tree_view_set_cursor(view,path,column,TRUE);
+    gtk_tree_view_set_cursor(view,path,column,TRUE);
+  }
+  if (path != NULL) {
+    gtk_tree_path_free(path);
+  }
+}
+
+static void
+move_down(GtkTreeView * view)
+{
+  GtkTreePath *path;
+  GtkTreeViewColumn *column;
+
+  path = NULL;
+
+  gtk_tree_view_get_cursor(view,&path,&column);
+  if (path != NULL && column != NULL) { 
+    gtk_tree_path_next(path);
+    gtk_tree_view_set_cursor(view,path,column,TRUE);
+    gtk_tree_view_set_cursor(view,path,column,TRUE);
+  }
+  if (path != NULL) {
+    gtk_tree_path_free(path);
+  }
+}
+
+static void
 move_left(GtkTreeView * view)
 {
   GtkTreePath *path;
@@ -242,6 +280,7 @@ move_left(GtkTreeView * view)
     } else {
       column = GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,g_list_length(list)-1));
     }
+    gtk_tree_view_set_cursor(view,path,column,TRUE);
     gtk_tree_view_set_cursor(view,path,column,TRUE);
   }
   g_list_free(list);
@@ -273,6 +312,7 @@ move_right(GtkTreeView * view)
     } else {
       column = GTK_TREE_VIEW_COLUMN(g_list_nth_data(list,0));
     }
+    gtk_tree_view_set_cursor(view,path,column,TRUE);
     gtk_tree_view_set_cursor(view,path,column,TRUE);
   }
   g_list_free(list);
@@ -326,7 +366,7 @@ page_down(gpointer data)
 
 static	void 
 start_editing (
-  GtkPandaTable *table)
+  GtkWidget *table)
 {
   GtkTreePath *path;
   GtkTreeViewColumn *col;
@@ -349,6 +389,23 @@ gtk_panda_table_key_press(GtkWidget *widget,
   table = GTK_PANDA_TABLE(widget);
 
   switch (event->keyval) {
+  case GDK_KEY_Return:
+  case GDK_KEY_KP_Enter:
+fprintf(stderr,"push return\n");
+    start_editing(widget);
+    return TRUE;
+    break;
+  case GDK_KEY_Up:
+  case GDK_KEY_KP_Up:
+fprintf(stderr,"push up\n");
+    move_up(GTK_TREE_VIEW(widget));
+    return TRUE;
+    break;
+  case GDK_KEY_Down:
+  case GDK_KEY_KP_Down:
+    move_down(GTK_TREE_VIEW(widget));
+    return TRUE;
+    break;
   case GDK_KEY_Page_Up:
     page_up(table);
     break;
@@ -381,7 +438,7 @@ gtk_panda_table_key_press(GtkWidget *widget,
     break;
   }
   table->keyevents = g_list_append(table->keyevents,gdk_event_copy((const GdkEvent *)event));
-  start_editing(table);
+  start_editing(widget);
   return GTK_WIDGET_CLASS(parent_class)->key_press_event(widget,event);
 }
 
