@@ -283,6 +283,12 @@ cb_button_press_event(GtkWidget *widget,
 static gint
 _set_im(gpointer data)
 {
+  if (data == NULL) {
+    return FALSE;
+  }
+  if (!GTK_IS_WIDGET(data)) {
+    return FALSE;
+  }
   if (!GTK_IS_PANDA_ENTRY(data)) {
     return FALSE;
   }
@@ -379,7 +385,7 @@ start_editing (GtkCellRenderer      *cell,
   g_list_free(table->keyevents);
   table->keyevents = NULL;
 
-  g_idle_add(_set_im,entry);
+  _set_im((gpointer)entry);
 
   return GTK_CELL_EDITABLE (entry);
 }
