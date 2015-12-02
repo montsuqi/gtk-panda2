@@ -1051,11 +1051,9 @@ gtk_panda_table_moveto (
   path = gtk_tree_path_new_from_indices(row, -1);
   col = gtk_tree_view_get_column(GTK_TREE_VIEW(table), column);
 
-  gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,FALSE);
-  gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,FALSE);
-
-  gtk_tree_view_scroll_to_cell(
-    GTK_TREE_VIEW(table), path, col, use_align, row_align, col_align);
+  gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,TRUE);
+  gtk_tree_view_set_cursor(GTK_TREE_VIEW(table),path,col,TRUE);
+  gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(table),path,col,use_align,row_align,col_align);
 
   gtk_tree_path_free(path);
 }
