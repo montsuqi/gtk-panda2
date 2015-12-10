@@ -7,6 +7,7 @@ LTVERSION = 2:1:0
 gtkpanda_public_h_sources = \
 	debug.h 				\
 	numeric.h 				\
+	gtkpandaintl.h			\
 	gtknumberentry.h		\
 	gtkpanda.h 				\
 	gtkpandaclist.h			\
@@ -23,8 +24,8 @@ gtkpanda_public_h_sources = \
 	gtkpandapixmap.h		\
 	gtkpandawindow.h		\
 	gtkpandatable.h			\
-	pandacellrenderertext.h	\
-	pandamarshal.h
+	pandacellrenderertext.h
+
 
 gtkpanda_c_sources = 		\
 	numeric.c 				\
@@ -44,8 +45,7 @@ gtkpanda_c_sources = 		\
 	gtkpandatable.c			\
 	gtkpandamain.c			\
 	gtkpandahtml.c			\
-	pandacellrenderertext.c	\
-	pandamarshal.c
+	pandacellrenderertext.c
 
 gtkpanda_private_h_sources =
 
@@ -60,7 +60,8 @@ libgtkpandainclude_HEADERS = $(gtkpanda_public_h_sources)
 lib_LTLIBRARIES = libgtkpanda-2.0.la
 libgtkpanda_2_0_la_SOURCES =		\
 	$(gtkpanda_c_sources)			\
-	$(gtkpanda_public_h_sources)
+	$(gtkpanda_public_h_sources)		\
+	$(BUILT_SOURCES)
 libgtkpanda_2_0_la_LDFLAGS = 	\
 	-version-info  $(LTVERSION)	\
 	-export-dynamic 			\
@@ -80,9 +81,8 @@ EXTRA_HEADERS =
 EXTRA_DIST = 				\
 	$(gtkpanda_private_h_sources) 	\
 	gtkpanda.def makefile.msc 	\
-	tree_plus.xpm 			\
-	tree_minus.xpm			\
-	pandamarshal.h
+	pandamarshal.list
+
 
 
 # test programs, not to be installed

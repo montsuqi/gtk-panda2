@@ -476,7 +476,7 @@ gtk_panda_pdf_print_real(GtkPandaPDF *self,
   GtkPageSetup *page_setup;
   GtkPrintOperationResult r;
   GtkPrintOperationAction action;
-  char job_name[128];
+  char job_name[128],time_stamp[64];
   time_t t;
   struct tm *tmp;
 
@@ -504,7 +504,8 @@ gtk_panda_pdf_print_real(GtkPandaPDF *self,
 
   t = time(NULL);
   tmp = localtime(&t);
-  strftime(job_name,sizeof(job_name),"%Y%m%d%H%M%S",tmp);
+  strftime(time_stamp,sizeof(time_stamp),"%Y%m%d%H%M%S",tmp);
+  snprintf(job_name,sizeof(job_name),"%s-%p",time_stamp,self);
 
   gtk_print_operation_set_job_name(operation, job_name);
   gtk_print_operation_set_n_pages(operation , 

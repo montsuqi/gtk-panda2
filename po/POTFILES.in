@@ -3,7 +3,6 @@ gtkpanda/gtknumberentry.c
 gtkpanda/gtkpandaclist.c
 gtkpanda/gtkpandacombo.c
 gtkpanda/gtkpandaentry.c
-gtkpanda/gtkpandafileentry.c
 gtkpanda/gtkpandahtml.c
 gtkpanda/gtkpandapdf.c
 gtkpanda/gtkpandadownload.c

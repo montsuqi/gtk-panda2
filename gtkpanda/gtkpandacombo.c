@@ -296,9 +296,9 @@ complete_combo_entry (gpointer data)
   editable = GTK_EDITABLE (data);
   combo = GTK_PANDA_COMBO(gtk_widget_get_parent(GTK_WIDGET(editable)));
   model = gtk_combo_box_get_model(GTK_COMBO_BOX(combo));
-  g_return_val_if_fail(
-    gtk_tree_model_get_iter(model, &iter, gtk_tree_path_new_first()),
-    0); 
+  if (!gtk_tree_model_get_iter(model, &iter, gtk_tree_path_new_first())) {
+    return 0;
+  }
 
   prefix = gtk_editable_get_chars(editable, 0, -1);
   prefixlen = strlen(prefix);
