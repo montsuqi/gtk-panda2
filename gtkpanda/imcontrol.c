@@ -43,7 +43,9 @@ static gboolean check_fcitx = TRUE;
 static void
 emit_toggle_key(GtkWidget *widget)
 {
+#ifdef IBUS_1_5
   static guint32 prev = 0;
+#endif
   guint32 t;
   GdkEvent *kevent;
   GdkWindow *window;
@@ -102,6 +104,9 @@ _set_im(
   GtkWidget *widget, 
   gboolean enable)
 {
+  if (widget == NULL || !G_IS_OBJECT(widget)) {
+    return;
+  }
   if (!gtk_widget_has_focus(widget)) {
     return;
   }
