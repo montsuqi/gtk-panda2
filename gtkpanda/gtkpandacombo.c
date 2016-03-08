@@ -683,5 +683,5 @@ gtk_panda_combo_set_popdown_strings (GtkPandaCombo * combo, gchar **strs)
     gtk_list_store_append(model,&iter);
     gtk_list_store_set(model,&iter,0,strs[i],-1);
   }
-  gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
+  gtk_combo_box_set_active (GTK_COMBO_BOX (combo), -1);
 }

@@ -152,7 +152,7 @@ main (int argc, char *argv[])
   gtk_box_pack_start (
     GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(window1))), 
     combo1, TRUE, TRUE, 0);
-  items1[0] = "item1";
+  items1[0] = "";
   items1[1] = "item2_____________________________________________";
   items1[2] = "item3";
   items1[3] = NULL;
