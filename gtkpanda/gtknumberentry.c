@@ -299,6 +299,19 @@ dbgmsg("<gtk_number_entry_get_value");
   return  (NumericRescale(entry->value,pr,sc));
 }
 
+static gboolean wantSign(
+  GtkNumberEntry *entry)
+{
+  if (entry->format == NULL) {
+    return FALSE;
+  }
+
+  if (entry->format[0] == '-' || entry->format[0] == '+') {
+    return FALSE;
+  }
+  return TRUE;
+}
+
 static gint
 gtk_number_entry_key_press (
   GtkWidget  *widget,
@@ -405,7 +418,7 @@ dbgmsg(">gtk_entry_key_press");
           minus = 1;
         }
         for  ( p = event->string , i = 0 ; i < event->length ; i ++, p ++ ) {
-          if    (  *p  ==  '-'  ) {
+          if    (  *p  ==  '-'  && wantSign(entry)) {
             minus = ( minus < 0 ) ? 1 : -1;
           } else
           if    (  *p  ==  '.'  ) {
