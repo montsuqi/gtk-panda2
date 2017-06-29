@@ -52,7 +52,7 @@ enum {
 
 static void gtk_panda_html_class_init(GtkPandaHTMLClass *klass);
 static void gtk_panda_html_init(GtkPandaHTML     *html);
-static void gtk_panda_html_set_proxy(void);
+static void gtk_panda_html_set_proxy(GtkPandaHTML *html,const gchar *uri);
 static void gtk_panda_html_set_property (
   GObject         *object,
   guint           prop_id,
@@ -174,7 +174,6 @@ cb_document_load_finished(
 static void
 gtk_panda_html_init (GtkPandaHTML *self)
 {
-  gtk_panda_html_set_proxy();
   self->scroll = gtk_scrolled_window_new(NULL,NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(self->scroll),
     GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
@@ -203,17 +202,36 @@ gtk_panda_html_new (void)
 }
 
 static void
-gtk_panda_html_set_proxy(void)
+gtk_panda_html_set_proxy(
+	GtkPandaHTML *html,
+	const gchar *uri)
 {
-  char *proxy;
+  int i,fnoproxy = 0;
+  gchar *proxy,*noproxy,**hosts;
 
-  if ((proxy = getenv("http_proxy")) != NULL) {
-    SoupURI *uri = soup_uri_new(proxy);
-    g_object_set(webkit_get_default_session(),
-      SOUP_SESSION_PROXY_URI,uri,NULL);
-    if (uri) {
-      soup_uri_free(uri);
+  proxy   = getenv("http_proxy");
+  noproxy = getenv("no_proxy");
+
+  if (proxy == NULL) {
+    return;
+  }
+
+  if (noproxy != NULL) {
+    hosts = g_strsplit(noproxy,",",-1);
+    for (i=0;hosts[i]!=NULL;i++) {
+      if (g_strstr_len(uri,-1,hosts[i]) != NULL) {
+        fnoproxy = 1;
+      }
     }
+    g_strfreev(hosts);
+  }
+
+  if (fnoproxy) {
+    g_object_set(webkit_get_default_session(),SOUP_SESSION_PROXY_URI,NULL,NULL);
+  } else {
+    SoupURI *soup_uri = soup_uri_new(proxy);
+    g_object_set(webkit_get_default_session(),SOUP_SESSION_PROXY_URI,soup_uri,NULL);
+    soup_uri_free(soup_uri);
   }
 }
 
@@ -273,6 +291,7 @@ void
 gtk_panda_html_set_uri (GtkPandaHTML *self, const gchar *uri)
 {
   if (getenv("GTK_PANDA_HTML_DISABLE") == NULL) {
+    gtk_panda_html_set_proxy(self,uri);
     webkit_web_view_load_uri(
       WEBKIT_WEB_VIEW(self->webview), uri);
   }
