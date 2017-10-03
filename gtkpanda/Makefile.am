@@ -7,11 +7,11 @@ LTVERSION = 2:1:0
 gtkpanda_public_h_sources = \
 	debug.h 				\
 	numeric.h 				\
+	gtkpandaintl.h			\
 	gtknumberentry.h		\
 	gtkpanda.h 				\
 	gtkpandaclist.h			\
 	gtkpandacombo.h			\
-	gtkpandafileentry.h		\
 	gtkpandaentry.h 		\
 	gtkpandahtml.h 			\
 	gtkpandatext.h			\
@@ -24,14 +24,13 @@ gtkpanda_public_h_sources = \
 	gtkpandapixmap.h		\
 	gtkpandawindow.h		\
 	gtkpandatable.h			\
-	pandacellrenderertext.h	\
-	pandamarshal.h
+	pandacellrenderertext.h
+
 
 gtkpanda_c_sources = 		\
 	numeric.c 				\
 	gtkpandaclist.c			\
 	gtkpandacombo.c			\
-	gtkpandafileentry.c		\
 	gtknumberentry.c 		\
 	gtkpandaentry.c 		\
 	gtkpandatext.c			\
@@ -46,8 +45,7 @@ gtkpanda_c_sources = 		\
 	gtkpandatable.c			\
 	gtkpandamain.c			\
 	gtkpandahtml.c			\
-	pandacellrenderertext.c	\
-	pandamarshal.c
+	pandacellrenderertext.c
 
 gtkpanda_private_h_sources =
 
@@ -62,7 +60,8 @@ libgtkpandainclude_HEADERS = $(gtkpanda_public_h_sources)
 lib_LTLIBRARIES = libgtkpanda-2.0.la
 libgtkpanda_2_0_la_SOURCES =		\
 	$(gtkpanda_c_sources)			\
-	$(gtkpanda_public_h_sources)
+	$(gtkpanda_public_h_sources)		\
+	$(BUILT_SOURCES)
 libgtkpanda_2_0_la_LDFLAGS = 	\
 	-version-info  $(LTVERSION)	\
 	-export-dynamic 			\
@@ -82,9 +81,8 @@ EXTRA_HEADERS =
 EXTRA_DIST = 				\
 	$(gtkpanda_private_h_sources) 	\
 	gtkpanda.def makefile.msc 	\
-	tree_plus.xpm 			\
-	tree_minus.xpm			\
-	pandamarshal.h
+	pandamarshal.list
+
 
 
 # test programs, not to be installed
@@ -92,7 +90,6 @@ EXTRA_DIST = 				\
 noinst_PROGRAMS = 	\
     testclist		\
 	testcombo		\
-	testfileentry	\
 	testnumeric 	\
 	testentry 		\
 	testhtml		\
@@ -113,9 +110,6 @@ testclist_LDADD = $(LDADDS)
 
 testcombo_DEPENDENCIES = $(DEPS)
 testcombo_LDADD = $(LDADDS)
-
-testfileentry_DEPENDENCIES = $(DEPS)
-testfileentry_LDADD = $(LDADDS)
 
 testnumeric_DEPENDENCIES = $(DEPS)
 testnumeric_LDADD = $(LDADDS)

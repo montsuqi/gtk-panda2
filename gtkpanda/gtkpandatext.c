@@ -121,7 +121,7 @@ gtk_panda_text_class_init ( GtkPandaTextClass * klass)
         G_TYPE_NONE, 0);
 
   binding_set = gtk_binding_set_by_class (klass);
-  gtk_binding_entry_add_signal (binding_set, GDK_Return, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_Return, GDK_CONTROL_MASK,
     "activate", 0);
 }
 

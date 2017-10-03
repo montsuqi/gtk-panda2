@@ -43,7 +43,9 @@ static gboolean check_fcitx = TRUE;
 static void
 emit_toggle_key(GtkWidget *widget)
 {
+#ifdef IBUS_1_5
   static guint32 prev = 0;
+#endif
   guint32 t;
   GdkEvent *kevent;
   GdkWindow *window;
@@ -89,7 +91,7 @@ fprintf(stderr,"emit_toggle_key %p %ld\n",widget,t);
   kevent->key.state = 16;
   kevent->key.length = 0;
   kevent->key.string = "";
-  kevent->key.keyval = GDK_Zenkaku_Hankaku;
+  kevent->key.keyval = GDK_KEY_Zenkaku_Hankaku;
   if (GTK_IS_ENTRY(widget)) {
     gtk_entry_im_context_filter_keypress(GTK_ENTRY(widget),(GdkEventKey*)kevent);
   } else if (GTK_IS_TEXT_VIEW(widget)) {
@@ -102,7 +104,13 @@ _set_im(
   GtkWidget *widget, 
   gboolean enable)
 {
+  if (widget == NULL || !G_IS_OBJECT(widget)) {
+    return;
+  }
   if (!gtk_widget_has_focus(widget)) {
+    return;
+  }
+  if (!im_control_enabled) {
     return;
   }
 #ifdef IBUS_1_5
@@ -172,9 +180,7 @@ void
 unset_im(
   GtkWidget *widget)
 {
-#ifdef IBUS_1_5
   _set_im(widget,FALSE);
-#endif
 }
 
 void

@@ -299,6 +299,19 @@ dbgmsg("<gtk_number_entry_get_value");
   return  (NumericRescale(entry->value,pr,sc));
 }
 
+static gboolean wantSign(
+  GtkNumberEntry *entry)
+{
+  if (entry->format == NULL) {
+    return FALSE;
+  }
+
+  if (entry->format[0] == '-' || entry->format[0] == '+') {
+    return FALSE;
+  }
+  return TRUE;
+}
+
 static gint
 gtk_number_entry_key_press (
   GtkWidget  *widget,
@@ -335,14 +348,14 @@ dbgmsg(">gtk_entry_key_press");
 
   if (!gtk_editable_get_editable(editable)) {
     switch(event->keyval){
-      case GDK_Tab:
+      case GDK_KEY_Tab:
         return FALSE;
         break;
-      case GDK_Left:
-      case GDK_Right:
-      case GDK_Up:
-      case GDK_Down:
-      case GDK_Return:
+      case GDK_KEY_Left:
+      case GDK_KEY_Right:
+      case GDK_KEY_Up:
+      case GDK_KEY_Down:
+      case GDK_KEY_Return:
       break;
       default:
       return TRUE;     
@@ -351,17 +364,17 @@ dbgmsg(">gtk_entry_key_press");
 
   NumericFormatToPrecision(entry->format,&pr,&sc);
   switch(event->keyval)  {
-    case GDK_BackSpace:
-    case GDK_Clear:
-    case GDK_Home:
-    case GDK_End:
+    case GDK_KEY_BackSpace:
+    case GDK_KEY_Clear:
+    case GDK_KEY_Home:
+    case GDK_KEY_End:
       return_val = TRUE;
       entry->scale = 0;
       entry->expo = 0;
       NumericFree(entry->value);
       entry->value = NumericInput("0",pr+1,sc);
       break;
-    case GDK_Insert:
+    case GDK_KEY_Insert:
       return_val = TRUE;
       if (event->state & GDK_SHIFT_MASK) {
         gtk_editable_paste_clipboard (editable);
@@ -370,26 +383,26 @@ dbgmsg(">gtk_entry_key_press");
         gtk_editable_copy_clipboard (editable);
       }
       break;
-    case GDK_Delete:
+    case GDK_KEY_Delete:
       return_val = TRUE;
       if (event->state & GDK_SHIFT_MASK)  {
         gtk_editable_cut_clipboard (editable);
       }
       break;
-    case GDK_Tab:
+    case GDK_KEY_Tab:
       return FALSE;
       break;
-    case GDK_Left:
-    case GDK_Right:
-    case GDK_Shift_L:
-    case GDK_Shift_R:
-    case GDK_Escape:
-    case GDK_Up:
-    case GDK_Down:
+    case GDK_KEY_Left:
+    case GDK_KEY_Right:
+    case GDK_KEY_Shift_L:
+    case GDK_KEY_Shift_R:
+    case GDK_KEY_Escape:
+    case GDK_KEY_Up:
+    case GDK_KEY_Down:
       return_val = TRUE;
       break;
-    case GDK_Return:
-    case GDK_KP_Enter:
+    case GDK_KEY_Return:
+    case GDK_KEY_KP_Enter:
       return_val = TRUE;
       g_signal_emit_by_name (G_OBJECT (entry), "activate");
       break;
@@ -405,7 +418,7 @@ dbgmsg(">gtk_entry_key_press");
           minus = 1;
         }
         for  ( p = event->string , i = 0 ; i < event->length ; i ++, p ++ ) {
-          if    (  *p  ==  '-'  ) {
+          if    (  *p  ==  '-'  && wantSign(entry)) {
             minus = ( minus < 0 ) ? 1 : -1;
           } else
           if    (  *p  ==  '.'  ) {

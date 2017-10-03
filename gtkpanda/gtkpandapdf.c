@@ -223,33 +223,33 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
         G_TYPE_NONE, 0);
 
   binding_set = gtk_binding_set_by_class (klass);
-  gtk_binding_entry_add_signal (binding_set, GDK_g, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_g, GDK_CONTROL_MASK,
     "zoom_fit_page", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_f, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_f, GDK_CONTROL_MASK,
     "zoom_fit_width", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_plus, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_plus, GDK_CONTROL_MASK,
     "zoom_in", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_minus, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_minus, GDK_CONTROL_MASK,
     "zoom_out", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_F5, GDK_SHIFT_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_F5, GDK_SHIFT_MASK,
     "zoom_fit_page", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_F6, GDK_SHIFT_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_F6, GDK_SHIFT_MASK,
     "zoom_fit_width", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_F7, GDK_SHIFT_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_F7, GDK_SHIFT_MASK,
     "zoom_in", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_F8, GDK_SHIFT_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_F8, GDK_SHIFT_MASK,
     "zoom_out", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_Right, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_Right, GDK_CONTROL_MASK,
     "page_next", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_Left, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_Left, GDK_CONTROL_MASK,
     "page_prev", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_Up, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_Up, GDK_CONTROL_MASK,
     "page_prev", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_Down, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_Down, GDK_CONTROL_MASK,
     "page_next", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_s, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_s, GDK_CONTROL_MASK,
     "save", 0);
-  gtk_binding_entry_add_signal (binding_set, GDK_p, GDK_CONTROL_MASK,
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_p, GDK_CONTROL_MASK,
     "print", 0);
 }
 
@@ -476,7 +476,7 @@ gtk_panda_pdf_print_real(GtkPandaPDF *self,
   GtkPageSetup *page_setup;
   GtkPrintOperationResult r;
   GtkPrintOperationAction action;
-  char job_name[128];
+  char job_name[128],time_stamp[64];
   time_t t;
   struct tm *tmp;
 
@@ -504,7 +504,8 @@ gtk_panda_pdf_print_real(GtkPandaPDF *self,
 
   t = time(NULL);
   tmp = localtime(&t);
-  strftime(job_name,sizeof(job_name),"%Y%m%d%H%M%S",tmp);
+  strftime(time_stamp,sizeof(time_stamp),"%Y%m%d%H%M%S",tmp);
+  snprintf(job_name,sizeof(job_name),"%s-%p",time_stamp,self);
 
   gtk_print_operation_set_job_name(operation, job_name);
   gtk_print_operation_set_n_pages(operation , 

@@ -296,9 +296,9 @@ complete_combo_entry (gpointer data)
   editable = GTK_EDITABLE (data);
   combo = GTK_PANDA_COMBO(gtk_widget_get_parent(GTK_WIDGET(editable)));
   model = gtk_combo_box_get_model(GTK_COMBO_BOX(combo));
-  g_return_val_if_fail(
-    gtk_tree_model_get_iter(model, &iter, gtk_tree_path_new_first()),
-    0); 
+  if (!gtk_tree_model_get_iter(model, &iter, gtk_tree_path_new_first())) {
+    return 0;
+  }
 
   prefix = gtk_editable_get_chars(editable, 0, -1);
   prefixlen = strlen(prefix);
@@ -356,19 +356,19 @@ gtk_panda_combo_entry_key_press(GtkEntry * entry,
   GdkEventKey * event, 
   GtkPandaCombo * combo) {   
 
-  if ((event->keyval == GDK_Tab) && (event->state & GDK_MOD1_MASK)) {     
+  if ((event->keyval == GDK_KEY_Tab) && (event->state & GDK_MOD1_MASK)) {     
     /* completion */
     gtk_panda_combo_completion(combo);
     return TRUE;
 
   } else if(((event->state & GDK_MOD1_MASK) && 
-    ((event->keyval == GDK_Down) || (event->keyval == GDK_KP_Down)))) {
+    ((event->keyval == GDK_KEY_Down) || (event->keyval == GDK_KEY_KP_Down)))) {
     /* open popdown */
     gtk_combo_box_popup(GTK_COMBO_BOX(combo));
     return TRUE;
 
-  } else if ((event->keyval == GDK_Up)
-    || (event->keyval == GDK_KP_Up)
+  } else if ((event->keyval == GDK_KEY_Up)
+    || (event->keyval == GDK_KEY_KP_Up)
     || ((event->state & GDK_MOD1_MASK) && ((event->keyval == 'p') 
        || (event->keyval == 'P')))) {
     /* select previous */
@@ -377,8 +377,8 @@ gtk_panda_combo_entry_key_press(GtkEntry * entry,
     }
     return TRUE;
 
-  } else if ((event->keyval == GDK_Down)
-    || (event->keyval == GDK_KP_Down)
+  } else if ((event->keyval == GDK_KEY_Down)
+    || (event->keyval == GDK_KEY_KP_Down)
     || ((event->state & GDK_MOD1_MASK) && ((event->keyval == 'n') 
        || (event->keyval == 'N')))) {
     /* select next */
@@ -683,5 +683,5 @@ gtk_panda_combo_set_popdown_strings (GtkPandaCombo * combo, gchar **strs)
     gtk_list_store_append(model,&iter);
     gtk_list_store_set(model,&iter,0,strs[i],-1);
   }
-  gtk_combo_box_set_active (GTK_COMBO_BOX (combo), 0);
+  gtk_combo_box_set_active (GTK_COMBO_BOX (combo), -1);
 }

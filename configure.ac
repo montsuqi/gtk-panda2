@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(gtk+panda, 2.0.5)
+AC_INIT(gtk+panda, 2.0.5, [http://www.montsuqi.org/], [gtk+panda2])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([gtkpanda/gtkpandaentry.c])
 AC_CONFIG_HEADER([config.h])
@@ -15,7 +15,7 @@ AC_PROG_CXX
 AC_PROG_CC
 if test "$GCC" = "yes"; then
 #       CFLAGS="$CFLAGS -O4 -Wall -Wunused -Wredundant-decls -funsigned-char"
-        CFLAGS="-g -O4 -Wall -Wunused -funsigned-char -Wno-pointer-sign"
+        CFLAGS="-g -Wall -Wunused -funsigned-char -Wno-pointer-sign"
 fi
 AC_GNU_SOURCE
 AC_PROG_INSTALL

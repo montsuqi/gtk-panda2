@@ -714,10 +714,10 @@ gtk_panda_clist_key_press(
   tree = GTK_TREE_VIEW(widget);
 
   switch (event->keyval) {
-  case GDK_space:
-  case GDK_Return:
-  case GDK_KP_Space:
-  case GDK_KP_Enter:
+  case GDK_KEY_space:
+  case GDK_KEY_Return:
+  case GDK_KEY_KP_Space:
+  case GDK_KEY_KP_Enter:
     gtk_tree_view_get_cursor(tree, &path, &column);
     if (path != NULL) {
       select = gtk_tree_view_get_selection(tree);
@@ -732,8 +732,8 @@ gtk_panda_clist_key_press(
       }
     }
     break;
-  case GDK_Tab:
-  case GDK_ISO_Left_Tab:
+  case GDK_KEY_Tab:
+  case GDK_KEY_ISO_Left_Tab:
     if (event->state & GDK_SHIFT_MASK) {
       return gtk_widget_child_focus(widget,GTK_DIR_TAB_BACKWARD);
     } else {
