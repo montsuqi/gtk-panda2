@@ -85,8 +85,9 @@ extern GtkWidget *gtk_panda_pdf_new (void);
 extern gboolean gtk_panda_pdf_set (GtkPandaPDF *pps, int size, char *buff);
 extern gboolean gtk_panda_pdf_load (GtkPandaPDF *pps, char *fname);
 extern int gtk_panda_pdf_get_page_count(GtkPandaPDF *pps);
-extern void gtk_panda_pdf_print(GtkPandaPDF *pps,gboolean showdialog);
-extern void gtk_panda_pdf_print_with_printer(GtkPandaPDF *pps,const char *printer);
+extern void gtk_panda_pdf_print(GtkPandaPDF *pps);
+extern void gtk_panda_pdf_print_with_printer(GtkPandaPDF *pps,int copies,const char *printer);
+extern GList* gtk_panda_pdf_get_printer_list(void);
 
 #ifdef __cplusplus
 }

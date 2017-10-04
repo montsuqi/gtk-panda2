@@ -37,6 +37,7 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
+#include <gtk/gtkprinter.h>
 #include <gdk/gdkkeysyms.h>
 
 #include "gtkpandaintl.h"
@@ -105,7 +106,6 @@ void gtk_panda_pdf_prev_page(GtkPandaPDF *pdf);
 void gtk_panda_pdf_save(GtkPandaPDF *pdf);
 
 static void combo_changed_cb (GtkComboBox *combo, GtkPandaPDF *pdf);
-static void _gtk_panda_pdf_print(GtkPandaPDF *self);
 
 GType
 gtk_panda_pdf_get_type (void)
@@ -148,7 +148,7 @@ gtk_panda_pdf_class_init (GtkPandaPDFClass *klass)
   klass->page_next = gtk_panda_pdf_next_page;
   klass->page_prev = gtk_panda_pdf_prev_page;
   klass->save = gtk_panda_pdf_save;
-  klass->print = _gtk_panda_pdf_print;
+  klass->print = gtk_panda_pdf_print;
 
   signals[ZOOM_FIT_PAGE] =
   g_signal_new ("zoom_fit_page",
@@ -375,11 +375,8 @@ gtk_panda_pdf_save (GtkPandaPDF *self)
   				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
   				      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
   				      NULL);
-  gtk_file_chooser_set_do_overwrite_confirmation ( 
-    GTK_FILE_CHOOSER (dialog), TRUE);
-  
-  gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), 
-    "*.pdf");
+  gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+  gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog),"*.pdf");
   
   if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT) {
       char *filename;
@@ -387,8 +384,7 @@ gtk_panda_pdf_save (GtkPandaPDF *self)
 
       filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 
-      if (!g_file_set_contents(filename, 
-            self->data, self->size, &error)) {
+      if (!g_file_set_contents(filename,self->data, self->size, &error)) {
         GtkWidget *mdialog;
         mdialog = gtk_message_dialog_new (GTK_WINDOW(dialog),
                                   GTK_DIALOG_MODAL,
@@ -460,27 +456,21 @@ draw_page(GtkPrintOperation *print,
   g_object_unref(page);
 }
 
-static void
-_gtk_panda_pdf_print(GtkPandaPDF *self)
-{
-  gtk_panda_pdf_print(self,TRUE);
-}
-
-static void
-gtk_panda_pdf_print_real(GtkPandaPDF *self,
-  gboolean showdialog,
+void
+gtk_panda_pdf_print_with_printer(GtkPandaPDF *self,
+  int copies,
   const char *printer)
 {
   GtkPrintOperation *operation;
   static GtkPrintSettings *settings = NULL;
   GtkPageSetup *page_setup;
   GtkPrintOperationResult r;
-  GtkPrintOperationAction action;
   char job_name[128],time_stamp[64];
   time_t t;
   struct tm *tmp;
 
   if (self->doc == NULL) return;
+  if (printer == NULL) return;
 
   operation = gtk_print_operation_new();
 
@@ -488,9 +478,9 @@ gtk_panda_pdf_print_real(GtkPandaPDF *self,
     settings = gtk_print_settings_new();
   }
   gtk_print_operation_set_print_settings(operation, settings);
-  if (printer != NULL) {
-    gtk_print_settings_set_printer(settings,printer);  
-  }
+
+  gtk_print_settings_set_printer(settings,printer);  
+  gtk_print_settings_set_n_copies(settings,copies);  
 
   page_setup = gtk_print_operation_get_default_page_setup(operation);
   if (page_setup == NULL) {
@@ -517,12 +507,7 @@ gtk_panda_pdf_print_real(GtkPandaPDF *self,
   g_signal_connect(operation, "begin_print", 
     G_CALLBACK(begin_print), (gpointer) self);
 
-  if (showdialog) {
-    action = GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG;
-  } else {
-    action = GTK_PRINT_OPERATION_ACTION_PRINT;
-  }
-  r = gtk_print_operation_run(operation, action, NULL, NULL);
+  r = gtk_print_operation_run(operation,GTK_PRINT_OPERATION_ACTION_PRINT, NULL, NULL);
 
   if (r == GTK_PRINT_OPERATION_RESULT_APPLY) {   
     if (settings) {
@@ -534,18 +519,61 @@ gtk_panda_pdf_print_real(GtkPandaPDF *self,
 }
 
 void
-gtk_panda_pdf_print(GtkPandaPDF *self,
-  gboolean showdialog)
+gtk_panda_pdf_print(GtkPandaPDF *self)
 {
-  gtk_panda_pdf_print_real(self,showdialog,NULL);
+  GtkPrintOperation *operation;
+  GtkPrintSettings *settings = NULL;
+  GtkPageSetup *page_setup;
+  GtkPrintOperationResult r;
+  GtkPrintOperationAction action;
+  char job_name[128],time_stamp[64];
+  time_t t;
+  struct tm *tmp;
+
+  if (self->doc == NULL) return;
+
+  operation = gtk_print_operation_new();
+
+  settings = gtk_print_settings_new();
+  gtk_print_operation_set_print_settings(operation, settings);
+
+  page_setup = gtk_print_operation_get_default_page_setup(operation);
+  if (page_setup == NULL) {
+    page_setup = gtk_page_setup_new();
+  }
+  gtk_page_setup_set_top_margin(page_setup, 0.0, GTK_UNIT_MM);    
+  gtk_page_setup_set_bottom_margin(page_setup, 0.0, GTK_UNIT_MM);    
+  gtk_page_setup_set_left_margin(page_setup, 0.0, GTK_UNIT_MM);    
+  gtk_page_setup_set_right_margin(page_setup, 0.0, GTK_UNIT_MM);    
+  gtk_print_operation_set_default_page_setup(operation, page_setup);
+
+  t = time(NULL);
+  tmp = localtime(&t);
+  strftime(time_stamp,sizeof(time_stamp),"%Y%m%d%H%M%S",tmp);
+  snprintf(job_name,sizeof(job_name),"%s-%p",time_stamp,self);
+
+  gtk_print_operation_set_job_name(operation, job_name);
+  gtk_print_operation_set_n_pages(operation , 
+    poppler_document_get_n_pages(self->doc));
+  gtk_print_operation_set_embed_page_setup(operation, TRUE);
+
+  g_signal_connect(operation, "draw_page", 
+    G_CALLBACK(draw_page), (gpointer) self);  
+  g_signal_connect(operation, "begin_print", 
+    G_CALLBACK(begin_print), (gpointer) self);
+
+  action = GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG;
+  r = gtk_print_operation_run(operation, action, NULL, NULL);
+
+  if (r == GTK_PRINT_OPERATION_RESULT_APPLY) {   
+    if (settings) {
+      g_object_unref(settings);
+    }
+    settings = g_object_ref(gtk_print_operation_get_print_settings(operation));
+  }
+  g_object_unref(operation);
 }
 
-void
-gtk_panda_pdf_print_with_printer(GtkPandaPDF *self,
-  const char *printer)
-{
-  gtk_panda_pdf_print_real(self,FALSE,printer);
-}
 
 void
 gtk_panda_pdf_next_page(GtkPandaPDF *self)
@@ -709,7 +737,7 @@ save_clicked_cb (GtkButton *button, GtkPandaPDF *self)
 static void
 print_clicked_cb (GtkButton *button, GtkPandaPDF *self)
 {
-  _gtk_panda_pdf_print(self);
+  gtk_panda_pdf_print(self);
 }
 
 static void
@@ -966,4 +994,32 @@ gtk_panda_pdf_get_page_count(GtkPandaPDF *self)
     return 0;
   }
   return poppler_document_get_n_pages(self->doc);
+}
+
+static gboolean
+gtk_panda_pdf_printer_func(GtkPrinter *printer,gpointer data)
+{
+  GList **list = (GList**)data;
+  gchar *name;
+
+  if (gtk_printer_is_active(printer)) {
+    name = (gchar*)gtk_printer_get_name(printer);
+    if (!g_strcmp0("Print to File",name)) {
+      return FALSE;
+    }
+    if (!g_strcmp0("ファイルに出力する",name)) {
+      return FALSE;
+    }
+    *list = g_list_append(*list,g_strdup(name));
+  }
+  return FALSE;
+}
+
+extern GList* 
+gtk_panda_pdf_get_printer_list(void)
+{
+  GList *list = NULL;
+
+  gtk_enumerate_printers(gtk_panda_pdf_printer_func,(gpointer)&list,NULL,TRUE);
+  return list;
 }

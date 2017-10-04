@@ -53,6 +53,7 @@ PKG_CHECK_MODULES(GTK_PANDA,
 [
 	glib-2.0					>=	2.0.0
 	gtk+-2.0 					>=	2.0.0
+	gtk+-unix-print-2.0 		>=	2.0.0
 	poppler-glib 				>=	0.6.4
 	webkit-1.0					>=	1.2.5
 ])

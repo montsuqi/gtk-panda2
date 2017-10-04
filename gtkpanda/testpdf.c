@@ -24,8 +24,7 @@ activated(GtkWidget *widget,
   gpointer p)
 {
 fprintf(stderr,"-> (%s)\n",(char*)gtk_entry_get_text(GTK_ENTRY(entry2)));
-  gtk_panda_pdf_print_with_printer(GTK_PANDA_PDF(pdf), 
-    (char*)gtk_entry_get_text(GTK_ENTRY(entry2)));
+  gtk_panda_pdf_print_with_printer(GTK_PANDA_PDF(pdf),1,(char*)gtk_entry_get_text(GTK_ENTRY(entry2)));
 }
 
 int main( int   argc,
@@ -37,6 +36,14 @@ int main( int   argc,
   GtkWidget *hbox;
 
   gtk_init (&argc, &argv);
+
+  {
+    GList *list,*l;
+    list = gtk_panda_pdf_get_printer_list();
+    for(l=list;l != NULL; l = l->next) {
+      fprintf(stderr,"%s\n",(char*)l->data);
+    }
+  }
 
 #if 0
   GtkWidget *pdf = gtk_panda_pdf_new();
