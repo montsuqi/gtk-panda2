@@ -336,9 +336,9 @@ page_up(gpointer data)
       gtk_tree_view_set_cursor(view,start,column,TRUE);
       gtk_tree_path_free(path);
     }
+    gtk_tree_path_free(start);
+    gtk_tree_path_free(end);
   }
-  gtk_tree_path_free(start);
-  gtk_tree_path_free(end);
 }
 
 
@@ -359,9 +359,9 @@ page_down(gpointer data)
       }
       gtk_tree_path_free(path);
     }
+    gtk_tree_path_free(start);
+    gtk_tree_path_free(end);
   }
-  gtk_tree_path_free(start);
-  gtk_tree_path_free(end);
 }
 
 static	void 
