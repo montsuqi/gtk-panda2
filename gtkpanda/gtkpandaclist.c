@@ -512,11 +512,12 @@ gtk_panda_clist_row_is_visible (GtkPandaCList *clist,
   ret = FALSE;
   if (gtk_tree_view_get_visible_range(GTK_TREE_VIEW(clist), &start, &end)) {
     indices = gtk_tree_path_get_indices(start);
-    if (indices != NULL && indices[0] <= row)
+    if (indices != NULL && indices[0] <= row) {
       ret = TRUE;
+    }
+    gtk_tree_path_free(start);
+    gtk_tree_path_free(end);
   }
-  gtk_tree_path_free(start);
-  gtk_tree_path_free(end);
 
   return ret;
 }
