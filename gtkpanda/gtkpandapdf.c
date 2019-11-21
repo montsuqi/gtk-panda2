@@ -438,6 +438,7 @@ draw_page(GtkPrintOperation *print,
 static GtkPaperSize*
 get_paper_size(GtkPandaPDF *self)
 {
+/* 72DPI 72pixel/25.4mm = 2.83... */
 #define _72DPI_PIXEL_MM (2.8346457)
   PopplerPage *page;
   gdouble w,h;
