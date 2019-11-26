@@ -61,7 +61,7 @@ int main( int   argc,
 
   hbox = gtk_hbox_new(FALSE,1);
   entry = gtk_entry_new();
-  btton = gtk_button_new_with_label("load");
+  button = gtk_button_new_with_label("load");
   gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 1);
   gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 1);
 
