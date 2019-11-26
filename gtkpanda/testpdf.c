@@ -45,13 +45,11 @@ int main( int   argc,
     }
   }
 
-#if 0
+#if 1
   GtkWidget *pdf = gtk_panda_pdf_new();
   gtk_panda_pdf_load(GTK_PANDA_PDF(pdf),"/tmp/test.pdf");
-  gtk_panda_pdf_print(GTK_PANDA_PDF(pdf),FALSE);
-  exit(0);
-#endif
-
+  gtk_panda_pdf_print_with_printer(GTK_PANDA_PDF(pdf),1,"PDF");
+#else
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   g_signal_connect (G_OBJECT (window), "destroy",
       G_CALLBACK (destroy), NULL);
@@ -86,6 +84,7 @@ int main( int   argc,
   gtk_widget_show_all (window);
 
   gtk_main();
+#endif
 
   return 0;
 }
