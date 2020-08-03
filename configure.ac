@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(gtk+panda, 2.0.6, [http://www.montsuqi.org/], [gtk+panda2])
+AC_INIT(gtk+panda, 2.0.7, [http://www.montsuqi.org/], [gtk+panda2])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([gtkpanda/gtkpandaentry.c])
 AC_CONFIG_HEADER([config.h])
@@ -20,8 +20,8 @@ fi
 AC_GNU_SOURCE
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
-AC_PATH_PROG(GNOME_MOZ_REMOTE_PROG, gnome-open, "")
-AC_DEFINE_UNQUOTED(OPEN_BROWSER_COMMAND, "$GNOME_MOZ_REMOTE_PROG", "")
+AC_PATH_PROG(BROWSER_COMMAND_PATH, firefox, "")
+AC_DEFINE_UNQUOTED(OPEN_BROWSER_COMMAND, "$BROWSER_COMMAND_PATH", "")
 
 # Checks for libraries.
 AM_GNU_GETTEXT
