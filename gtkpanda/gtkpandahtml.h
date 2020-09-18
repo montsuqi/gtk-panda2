@@ -29,6 +29,7 @@
 
 #include <glib-object.h>
 #include <gtk/gtk.h>
+#include <webkit/webkit.h>
 
 #define GTK_PANDA_TYPE_HTML                  (gtk_panda_html_get_type ())
 #define GTK_PANDA_HTML(obj)                  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_PANDA_TYPE_HTML, GtkPandaHTML))
@@ -45,6 +46,7 @@ struct _GtkPandaHTML
 {
   GtkVBox parent;
   GtkWidget *scroll;
+  GtkWidget *webview;
 };
 
 struct _GtkPandaHTMLClass

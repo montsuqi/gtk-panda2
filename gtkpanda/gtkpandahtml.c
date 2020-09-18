@@ -121,12 +121,72 @@ gtk_panda_html_class_init (GtkPandaHTMLClass *klass)
         G_TYPE_POINTER);
 }
 
+static gboolean
+cb_new_window(WebKitWebView *webview,
+  WebKitWebFrame *frame,
+  WebKitNetworkRequest *request,
+  WebKitWebNavigationAction action,
+  WebKitWebPolicyDecision *decision,
+  gpointer user_data)
+{
+  const char *uri;
+  char *argv[3];
+  int pid;
+  extern char **environ;
+
+  uri = webkit_network_request_get_uri(request);
+
+  if (uri != NULL) {
+    if ((pid = fork()) == 0) {
+      if (strlen(OPEN_BROWSER_COMMAND) > 0) {
+        argv[0] = (char *)OPEN_BROWSER_COMMAND;
+        argv[1] = (char *)uri;
+        argv[2] = NULL;
+        execve(argv[0], argv, environ);
+      } else {
+        g_error("cannot open external browser.");
+      }
+    } else if (pid < 0) {
+      g_error("fork failed");
+    } 
+  }
+#if 0
+  webkit_web_policy_decision_ignore(decision);
+#endif
+
+  return TRUE;
+}
+
+static void
+cb_document_load_finished(
+  WebKitWebView *webview,
+  WebKitWebFrame *frame,
+  GtkScrolledWindow *scroll)
+{
+  GtkAdjustment *vadj;
+  GtkAdjustment *hadj;
+  vadj = gtk_scrolled_window_get_vadjustment(scroll);
+  hadj = gtk_scrolled_window_get_hadjustment(scroll);
+  gtk_adjustment_set_value(vadj,0);
+  gtk_adjustment_set_value(hadj,0);
+}
+
 static void
 gtk_panda_html_init (GtkPandaHTML *self)
 {
   self->scroll = gtk_scrolled_window_new(NULL,NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(self->scroll),
     GTK_POLICY_AUTOMATIC,GTK_POLICY_AUTOMATIC);
+  self->webview = webkit_web_view_new();
+  g_signal_connect(WEBKIT_WEB_VIEW(self->webview), 
+    "new-window-policy-decision-requested",
+    G_CALLBACK(cb_new_window), NULL);
+  g_signal_connect(WEBKIT_WEB_VIEW(self->webview), 
+    "document-load-finished",
+    G_CALLBACK(cb_document_load_finished), 
+    GTK_SCROLLED_WINDOW(self->scroll));
+  gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(self->scroll),
+    self->webview);
   
   if (getenv("GTK_PANDA_HTML_DISABLE") == NULL) {
     gtk_box_pack_start(GTK_BOX (self), 
@@ -166,7 +226,6 @@ gtk_panda_html_set_proxy(
     g_strfreev(hosts);
   }
 
-#if 0
   if (fnoproxy) {
     g_object_set(webkit_get_default_session(),SOUP_SESSION_PROXY_URI,NULL,NULL);
   } else {
@@ -174,7 +233,6 @@ gtk_panda_html_set_proxy(
     g_object_set(webkit_get_default_session(),SOUP_SESSION_PROXY_URI,soup_uri,NULL);
     soup_uri_free(soup_uri);
   }
-#endif
 }
 
 static void
@@ -226,7 +284,7 @@ gtk_panda_html_get_property (
 gchar *
 gtk_panda_html_get_uri (GtkPandaHTML *self)
 {
-  return "";
+  return (gchar*)webkit_web_view_get_uri(WEBKIT_WEB_VIEW(self->webview));
 }
 
 void
@@ -234,5 +292,7 @@ gtk_panda_html_set_uri (GtkPandaHTML *self, const gchar *uri)
 {
   if (getenv("GTK_PANDA_HTML_DISABLE") == NULL) {
     gtk_panda_html_set_proxy(self,uri);
+    webkit_web_view_load_uri(
+      WEBKIT_WEB_VIEW(self->webview), uri);
   }
 }
