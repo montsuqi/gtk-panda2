@@ -425,13 +425,7 @@ draw_page(GtkPrintOperation *print,
   poppler_page_get_size(page, &doc_w, &doc_h);
   cr = gtk_print_context_get_cairo_context(context);
 
-#ifdef POPPLER_0_8
-  /* may be need poppler >= 0.8 */
   poppler_page_render_for_printing(page, cr);
-#else
-  cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 0.0);
-  poppler_page_render(page, cr);
-#endif
   g_object_unref(page);
 }
 
