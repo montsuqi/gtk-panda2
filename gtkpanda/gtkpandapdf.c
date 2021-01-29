@@ -429,27 +429,59 @@ draw_page(GtkPrintOperation *print,
   g_object_unref(page);
 }
 
-static GtkPaperSize*
-get_paper_size(GtkPandaPDF *self)
+static void
+get_page_size(GtkPandaPDF *self, double *w, double *h)
 {
 /* 72DPI 72pixel/25.4mm = 2.83... */
 #define _72DPI_PIXEL_MM (2.8346457)
   PopplerPage *page;
-  gdouble w,h;
 
   /* use first page size */
   page = poppler_document_get_page(self->doc, 0);
   if (page == NULL) {
-    /* default size  */
-    return gtk_paper_size_new(NULL);
+    *w = *h = 0;
+    return ;
   }
-  poppler_page_get_size(page, &w, &h);
+  poppler_page_get_size(page, w, h);
   /* pixel to mm */
-  if (w != 0.0) w = floor(w/_72DPI_PIXEL_MM+0.5);
-  if (h != 0.0) h = floor(h/_72DPI_PIXEL_MM+0.5);
-
+  if (*w == 0.0 || *h == 0.0)  {
+    *w = *h = 0;
+    return ;
+  } 
+  *w = floor(*w/_72DPI_PIXEL_MM+0.5);
+  *h = floor(*h/_72DPI_PIXEL_MM+0.5);
   g_object_unref(page);
-  return gtk_paper_size_new_custom("tmp","tmp", w, h, GTK_UNIT_MM);
+}
+
+static GtkPaperSize*
+get_paper_size(GtkPandaPDF *self)
+{
+  double w,h;
+  get_page_size(self,&w,&h);
+  if (w==0.0) {
+    return gtk_paper_size_new(NULL);
+  } else {
+    if (w>h) {
+      return gtk_paper_size_new_custom("tmp","tmp", h, w, GTK_UNIT_MM);
+    } else {
+      return gtk_paper_size_new_custom("tmp","tmp", w, h, GTK_UNIT_MM);
+    }
+  }
+}
+
+static int
+get_orientation(GtkPandaPDF *self)
+{
+  double w,h;
+  get_page_size(self,&w,&h);
+  if (w==0.0) {
+    return GTK_PAGE_ORIENTATION_PORTRAIT;
+  }
+  if (w > h) {
+    return GTK_PAGE_ORIENTATION_LANDSCAPE;
+  } else {
+    return GTK_PAGE_ORIENTATION_PORTRAIT;
+  }
 }
 
 void
@@ -467,7 +499,6 @@ gtk_panda_pdf_print_with_printer(GtkPandaPDF *self,
   struct tm *tmp;
 
   if (self->doc == NULL) return;
-  if (printer == NULL) return;
 
   operation = gtk_print_operation_new();
 
@@ -476,10 +507,13 @@ gtk_panda_pdf_print_with_printer(GtkPandaPDF *self,
   }
   gtk_print_operation_set_print_settings(operation, settings);
 
-  gtk_print_settings_set_printer(settings,printer);  
-  gtk_print_settings_set_n_copies(settings,copies);  
+  if (printer != NULL) {
+    gtk_print_settings_set_printer(settings, printer);  
+  }
+  gtk_print_settings_set_n_copies(settings, copies);  
   paper_size = get_paper_size(self);
   gtk_print_settings_set_paper_size(settings,paper_size);
+  gtk_print_settings_set_orientation(settings,get_orientation(self));
 
   page_setup = gtk_print_operation_get_default_page_setup(operation);
   if (page_setup == NULL) {
@@ -503,9 +537,14 @@ gtk_panda_pdf_print_with_printer(GtkPandaPDF *self,
   g_signal_connect(operation, "draw_page", G_CALLBACK(draw_page), (gpointer) self);
   g_signal_connect(operation, "begin_print", G_CALLBACK(begin_print), (gpointer) self);
 
-  r = gtk_print_operation_run(operation,GTK_PRINT_OPERATION_ACTION_PRINT, NULL, NULL);
+  if (printer == NULL) {
+    r = gtk_print_operation_run(operation, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, NULL, NULL);
+  } else {
+    r = gtk_print_operation_run(operation, GTK_PRINT_OPERATION_ACTION_PRINT, NULL, NULL);
+  }
 
   if (r == GTK_PRINT_OPERATION_RESULT_APPLY) {   
+fprintf(stderr,"in\n");
     if (settings) {
       g_object_unref(settings);
     }
@@ -518,61 +557,7 @@ gtk_panda_pdf_print_with_printer(GtkPandaPDF *self,
 void
 gtk_panda_pdf_print(GtkPandaPDF *self)
 {
-  GtkPrintOperation *operation;
-  GtkPrintSettings *settings = NULL;
-  GtkPageSetup *page_setup;
-  GtkPaperSize *paper_size;
-  GtkPrintOperationResult r;
-  GtkPrintOperationAction action;
-  char job_name[128],time_stamp[64];
-  time_t t;
-  struct tm *tmp;
-
-  if (self->doc == NULL) return;
-
-  operation = gtk_print_operation_new();
-
-  settings = gtk_print_settings_new();
-  gtk_print_operation_set_print_settings(operation, settings);
-  paper_size = get_paper_size(self);
-  gtk_print_settings_set_paper_size(settings,paper_size);
-
-  page_setup = gtk_print_operation_get_default_page_setup(operation);
-  if (page_setup == NULL) {
-    page_setup = gtk_page_setup_new();
-  }
-  gtk_page_setup_set_top_margin(page_setup, 0.0, GTK_UNIT_MM);
-  gtk_page_setup_set_bottom_margin(page_setup, 0.0, GTK_UNIT_MM);
-  gtk_page_setup_set_left_margin(page_setup, 0.0, GTK_UNIT_MM);
-  gtk_page_setup_set_right_margin(page_setup, 0.0, GTK_UNIT_MM);
-  gtk_print_operation_set_default_page_setup(operation, page_setup);
-
-  t = time(NULL);
-  tmp = localtime(&t);
-  strftime(time_stamp,sizeof(time_stamp),"%Y%m%d%H%M%S",tmp);
-  snprintf(job_name,sizeof(job_name),"%s-%p",time_stamp,self);
-
-  gtk_print_operation_set_job_name(operation, job_name);
-  gtk_print_operation_set_n_pages(operation , 
-    poppler_document_get_n_pages(self->doc));
-  gtk_print_operation_set_embed_page_setup(operation, TRUE);
-
-  g_signal_connect(operation, "draw_page", 
-    G_CALLBACK(draw_page), (gpointer) self);
-  g_signal_connect(operation, "begin_print",
-    G_CALLBACK(begin_print), (gpointer) self);
-
-  action = GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG;
-  r = gtk_print_operation_run(operation, action, NULL, NULL);
-
-  if (r == GTK_PRINT_OPERATION_RESULT_APPLY) {
-    if (settings) {
-      g_object_unref(settings);
-    }
-    settings = g_object_ref(gtk_print_operation_get_print_settings(operation));
-  }
-  gtk_paper_size_free(paper_size);
-  g_object_unref(operation);
+  gtk_panda_pdf_print_with_printer(self, 1, NULL);
 }
 
 
